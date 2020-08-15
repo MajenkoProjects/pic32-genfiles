@@ -1,0 +1,388 @@
+#!/usr/bin/php
+<?php
+
+$COMPILER='~/.uecide/compilers/mipsel-unknown-elf/bin';
+
+$xc = array();
+
+$xc[] = "#ifndef __XC_H";
+$xc[] = "#define __XC_H";
+$xc[] = "";
+
+$first = true;
+
+$dir = opendir("chips");
+while ($file = readdir($dir)) {
+    if (substr($file, -4, 4) == ".reg") {
+        $chip = substr($file, 0, -4);
+        genfile($chip);
+
+        if ($first) {
+            $xc[] = "#if defined(__" . strtoupper($chip) . "__)";
+        } else {
+            $xc[] = "#elif defined(__" . strtoupper($chip) . "__)";
+        }
+        $xc[] = "#include <proc/p" . $chip . ".h>";
+        $first = false;
+    }
+}
+closedir($dir);
+$xc[] = "#else";
+$xc[] = "#error No support for your CPU";
+$xc[] = "#endif";
+$xc[] = "";
+
+$xc[] = "#ifdef __LANGUAGE_ASSEMBLY__";
+$xc[] = "";
+$xc[] = "#define zero    $0";
+$xc[] = "#define at_reg  $1";
+$xc[] = "#define AT_reg  $1";
+$xc[] = "#define v0      $2";
+$xc[] = "#define v1      $3";
+$xc[] = "#define a0      $4";
+$xc[] = "#define a1      $5";
+$xc[] = "#define a2      $6";
+$xc[] = "#define a3      $7";
+$xc[] = "#define t0      $8";
+$xc[] = "#define t1      $9";
+$xc[] = "#define t2      $10";
+$xc[] = "#define t3      $11";
+$xc[] = "#define t4      $12";
+$xc[] = "#define t5      $13";
+$xc[] = "#define t6      $14";
+$xc[] = "#define t7      $15";
+$xc[] = "#define s0      $16";
+$xc[] = "#define s1      $17";
+$xc[] = "#define s2      $18";
+$xc[] = "#define s3      $19";
+$xc[] = "#define s4      $20";
+$xc[] = "#define s5      $21";
+$xc[] = "#define s6      $22";
+$xc[] = "#define s7      $23";
+$xc[] = "#define t8      $24";
+$xc[] = "#define t9      $25";
+$xc[] = "#define k0      $26";
+$xc[] = "#define k1      $27";
+$xc[] = "#define gp      $28";
+$xc[] = "#define sp      $29";
+$xc[] = "#define s8      $30";
+$xc[] = "#define fp      $30";
+$xc[] = "#define ra      $31";
+$xc[] = "";
+$xc[] = "#endif";
+
+$xc[] = "";
+$xc[] = "#endif";
+
+file_put_contents("include/xc.h", implode("\n", $xc) . "\n");
+
+function genfile($chip) {
+
+    global $COMPILER;
+
+    $regfile = "chips/$chip.reg";
+    if (!file_exists($regfile)) {
+        print "Unknown chip: $chip\n";
+        exit(10);
+    }
+
+    @mkdir("include");
+    @mkdir("include/proc");
+    @mkdir("lib");
+    @mkdir("lib/proc");
+
+    $in = file_get_contents($regfile);
+    $lines = explode("\n", $in);
+
+    $data = array(
+        "registers" => array(),
+        "interrupts" => array(),
+        "vectors" => array(),
+        "peripherals" => array(),
+        "family" => "MX",
+        "speed" => 0,
+        "memory" => array(
+            "flash" => 0,
+            "sram" => 0,
+            "boot" => 0,
+            "dram" => 0
+        )
+    );
+
+    $register = "";
+    $lineno = 0;
+
+    foreach ($lines as $line) {
+        $lineno++;
+        $line = trim($line);
+        if ($line == "") continue;
+        if (substr($line, 0, 1) == "#") continue;
+        if (substr($line, 0, 1) == ";") continue;
+
+        $chunks = preg_split("/\s+/", $line);
+
+        switch ($chunks[0]) {
+            case "PERIPHERAL":
+                $data['peripherals'][$chunks[2]] = array(
+                    "base" => hexdec($chunks[1])
+                );
+                break;
+            case "FAMILY":
+                $data['family'] = $chunks[1];
+                break;
+
+            case "SPEED":
+                $data['speed'] = $chunks[1] - 0;
+                break;
+
+            case "FLASH":
+                $data['memory']['flash'] = $chunks[1] - 0;
+                break;
+
+            case "SRAM":
+                $data['memory']['sram'] = $chunks[1] - 0;
+                break;
+
+            case "BOOT":
+                $data['memory']['boot'] = $chunks[1] - 0;
+                break;
+
+            case "DRAM":
+                $data['memory']['dram'] = $chunks[1] - 0;
+                break;
+
+            case "PIN":
+                break;
+
+            case "INMAP":
+                break;
+           
+            case "OUTMAP":
+                break;
+
+            case "REG":
+                $register = $chunks[2];
+                $address = hexdec("0x" . $chunks[1]);
+                $data['registers'][$register] = array(
+                    "address" => $address,
+                    "bits" => array()
+                );
+
+                for ($i = 3; $i < count($chunks); $i++) {
+                    $address += 0x4;
+                    $data['registers'][$register . $chunks[$i]] = array(
+                        "address" => $address
+                    );
+                }
+                        
+                break;
+            case "BIT":
+                $bits = explode("-", $chunks[1]);
+                if (count($bits) != 2) {
+                    $bits[1] = $bits[0];
+                }
+
+                if ($bits[1] > $bits[0]) {
+                    $x = $bits[1];
+                    $bits[1] = $bits[0];
+                    $bits[0] = $x;
+                }
+
+                if (!is_numeric($bits[0]) || !is_numeric($bits[1])) {
+                    print "Bad bit span at line $lineno\n";
+                    exit(10);
+                }
+
+                $size = $bits[0] - $bits[1] + 1;
+                $name = $chunks[2];
+                if ($name == "UNUSED") {
+                    $name = "";
+                }
+
+                $data['registers'][$register]['bits'][$bits[1]] = array(
+                    "name" => $name,
+                    "size" => $size
+                );
+                ksort($data['registers'][$register]['bits']);
+                break;
+            case "IRQ":
+                $data['interrupts'][$chunks[1]] = array(
+                    "irq" => $chunks[2]
+                );
+                break;
+            case "VEC":
+                $data['vectors'][$chunks[1]] = array(
+                    "vector" => $chunks[2]
+                );
+                break;
+            default:
+                print "Syntax error at line " . $lineno . "\n";
+                exit(10);
+        }
+    }
+
+    $header = array();
+    $header[] = "/*";
+    $header[] = " * $chip.h header file";
+    $header[] = " * Auto-generated " . date("r");
+    $header[] = " *";
+    $header[] = " * Copyright (c) " . date("Y") . ", Majenko Technologies";
+    $header[] = " * All rights reserved.";
+    $header[] = " *";
+    $header[] = " * Redistribution and use in source and binary forms, with or without modification,";
+    $header[] = " * are permitted provided that the following conditions are met:";
+    $header[] = " *";
+    $header[] = " * * Redistributions of source code must retain the above copyright notice, this";
+    $header[] = " *   list of conditions and the following disclaimer.";
+    $header[] = " *";
+    $header[] = " * * Redistributions in binary form must reproduce the above copyright notice, this";
+    $header[] = " *   list of conditions and the following disclaimer in the documentation and/or";
+    $header[] = " *   other materials provided with the distribution.";
+    $header[] = " *";
+    $header[] = " * * Neither the name of Majenko Technologies nor the names of its";
+    $header[] = " *   contributors may be used to endorse or promote products derived from";
+    $header[] = " *   this software without specific prior written permission.";
+    $header[] = " *";
+    $header[] = " * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND";
+    $header[] = " * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED";
+    $header[] = " * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE";
+    $header[] = " * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR";
+    $header[] = " * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES";
+    $header[] = " * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;";
+    $header[] = " * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON";
+    $header[] = " * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT";
+    $header[] = " * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS";
+    $header[] = " * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.";
+    $header[] = " */";
+    $header[] = "";
+    $header[] = "#ifndef __" . strtoupper($chip) . "_H";
+    $header[] = "#define __" . strtoupper($chip) . "_H";
+    $header[] = "";
+    $header[] = "#if defined(__LANGUAGE_C__) || defined(__LANGUAGE_C_PLUS_PLUS)";
+    $header[] = "";
+    $header[] = "#ifdef __cplusplus";
+    $header[] = "extern \"C\" {";
+    $header[] = "#endif // __cplusplus";
+    $header[] = "";
+
+    foreach ($data['registers'] as $register=>$regdata) {
+        if (array_key_exists("bits", $regdata)) {
+            $header[] = "";
+            $header[] = "#define $register $register";
+        }
+        $header[] = "extern volatile unsigned int $register __attribute__((section(\"sfrs\")));";
+        if (array_key_exists("bits", $regdata)) {
+            $header[] = "typedef union {";
+            $header[] = "    struct {";
+            foreach ($regdata['bits'] as $pos=>$bit) {
+                $header[] = "        unsigned " . $bit['name'] . ":" . $bit['size'] . ";";
+            }        
+            $header[] = "    };";
+            $header[] = "    struct {";
+            $header[] = "        unsigned w:32;";
+            $header[] = "    };";
+            $header[] = "} __" . $register . "bits_t;";
+            $header[] = "extern volatile __" . $register . "bits_t " . $register . "bits __asm__ (\"$register\") __attribute__((section(\"sfrs\")));";
+        }
+    }
+
+    $header[] = "";
+    $header[] = "#ifdef __cplusplus";
+    $header[] = "}";
+    $header[] = "#endif // __cplusplus";
+    $header[] = "";
+    $header[] = "#elif defined(__LANGUAGE_ASSEMBLY__)";
+    foreach ($data['registers'] as $register=>$regdata) {
+        $header[] = "    .extern $register";
+    }
+
+    $header[] = "";
+    $header[] = "#endif // defined(__LANGUAGE_C__) || defined(__LANGUAGE_C_PLUS_PLUS)";
+
+    foreach ($data['registers'] as $register=>$regdata) {
+        if (array_key_exists("bits", $regdata)) {
+            foreach ($regdata['bits'] as $pos=>$bit) {
+                if ($bit['name'] != "") {
+                    $header[] = "";
+                    $header[] = "#define _" . $register . "_" . $bit['name'] . "_POSITION 0x" . sprintf("%08X", $pos);
+                    $header[] = "#define _" . $register . "_" . $bit['name'] . "_MASK     0x" . sprintf("%08X", ((1 << $bit['size']) - 1) << $pos);
+                    $header[] = "#define _" . $register . "_" . $bit['name'] . "_LENGTH   0x" . sprintf("%08X", $bit['size']);
+                }
+            }
+        }
+    }
+
+    $header[] = "";
+    foreach ($data['peripherals'] as $perif=>$pdat) {
+        $header[] = "#define _" . $perif . "_BASE_ADDRESS " . sprintf("0x%08X", $pdat['base']);
+    }
+
+    $header[] = "";
+    foreach ($data['interrupts'] as $interrupt=>$intdata) {
+        $header[] = "#define _" . $interrupt . "_IRQ " . $intdata['irq'];
+    }
+
+    $header[] = "";
+    foreach ($data['vectors'] as $vector=>$vecdata) {
+        $header[] = "#define _" . $vector . "_VECTOR " . $vecdata['vector'];
+    }
+
+    $header[] = "";
+
+    $header[] = "#define __PIC32_HAS_L1CACHE 1";
+    $header[] = "#define __PIC32" . $data['family'] . "__ 1";
+    $header[] = "#define __CTYPE_NEWLIB";
+    $header[] = "#define _NEED_REVERSE";
+    $header[] = "#define _NEED_LTOA";
+    $header[] = "#define _NEED_ULTOA";
+    $header[] = "#define _NEED_DTOSTRF";
+    $header[] = "#endif // __" . strtoupper($chip) . "_H";
+
+    file_put_contents("include/proc/p$chip.h", implode("\n", $header) . "\n");
+
+    $ld = array();
+
+    $ld[] = "/*";
+    $ld[] = " * $chip.S register definition file";
+    $ld[] = " * Auto-generated " . date("r");
+    $ld[] = " *";
+    $ld[] = " * Copyright (c) " . date("Y") . ", Majenko Technologies";
+    $ld[] = " * All rights reserved.";
+    $ld[] = " *";
+    $ld[] = " * Redistribution and use in source and binary forms, with or without modification,";
+    $ld[] = " * are permitted provided that the following conditions are met:";
+    $ld[] = " *";
+    $ld[] = " * * Redistributions of source code must retain the above copyright notice, this";
+    $ld[] = " *   list of conditions and the following disclaimer.";
+    $ld[] = " *";
+    $ld[] = " * * Redistributions in binary form must reproduce the above copyright notice, this";
+    $ld[] = " *   list of conditions and the following disclaimer in the documentation and/or";
+    $ld[] = " *   other materials provided with the distribution.";
+    $ld[] = " *";
+    $ld[] = " * * Neither the name of Majenko Technologies nor the names of its";
+    $ld[] = " *   contributors may be used to endorse or promote products derived from";
+    $ld[] = " *   this software without specific prior written permission.";
+    $ld[] = " *";
+    $ld[] = " * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND";
+    $ld[] = " * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED";
+    $ld[] = " * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE";
+    $ld[] = " * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR";
+    $ld[] = " * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES";
+    $ld[] = " * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;";
+    $ld[] = " * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON";
+    $ld[] = " * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT";
+    $ld[] = " * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS";
+    $ld[] = " * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.";
+    $ld[] = " */";
+    $ld[] = "";
+    foreach ($data['registers'] as $register=>$regdata) {
+        $ld[] = "$register = 0x" . sprintf("%08X", $regdata['address']);
+        $ld[] = "    .global $register";
+    }
+
+    file_put_contents("lib/proc/$chip.S", implode("\n", $ld) . "\n");
+    system("$COMPILER/mipsel-unknown-elf-gcc -march=m4k -c lib/proc/$chip.S -o lib/proc/$chip.o");
+    system("$COMPILER/mipsel-unknown-elf-ar rcs lib/proc/lib$chip.a lib/proc/$chip.o");
+    unlink("lib/proc/$chip.S");
+    unlink("lib/proc/$chip.o");
+}
