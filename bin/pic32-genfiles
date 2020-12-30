@@ -91,14 +91,13 @@ function genfile($chip) {
     @mkdir("lib");
     @mkdir("lib/proc");
 
-    $in = file_get_contents($regfile);
-    $lines = explode("\n", $in);
 
     $data = array(
         "registers" => array(),
         "interrupts" => array(),
         "vectors" => array(),
         "peripherals" => array(),
+        "settings" => array(),
         "family" => "MX",
         "speed" => 0,
         "memory" => array(
@@ -109,117 +108,7 @@ function genfile($chip) {
         )
     );
 
-    $register = "";
-    $lineno = 0;
-
-    foreach ($lines as $line) {
-        $lineno++;
-        $line = trim($line);
-        if ($line == "") continue;
-        if (substr($line, 0, 1) == "#") continue;
-        if (substr($line, 0, 1) == ";") continue;
-
-        $chunks = preg_split("/\s+/", $line);
-
-        switch ($chunks[0]) {
-            case "PERIPHERAL":
-                $data['peripherals'][$chunks[2]] = array(
-                    "base" => hexdec($chunks[1])
-                );
-                break;
-            case "FAMILY":
-                $data['family'] = $chunks[1];
-                break;
-
-            case "SPEED":
-                $data['speed'] = $chunks[1] - 0;
-                break;
-
-            case "FLASH":
-                $data['memory']['flash'] = $chunks[1] - 0;
-                break;
-
-            case "SRAM":
-                $data['memory']['sram'] = $chunks[1] - 0;
-                break;
-
-            case "BOOT":
-                $data['memory']['boot'] = $chunks[1] - 0;
-                break;
-
-            case "DRAM":
-                $data['memory']['dram'] = $chunks[1] - 0;
-                break;
-
-            case "PIN":
-                break;
-
-            case "INMAP":
-                break;
-           
-            case "OUTMAP":
-                break;
-
-            case "REG":
-                $register = $chunks[2];
-                $address = hexdec("0x" . $chunks[1]);
-                $data['registers'][$register] = array(
-                    "address" => $address,
-                    "bits" => array()
-                );
-
-                for ($i = 3; $i < count($chunks); $i++) {
-                    $address += 0x4;
-                    $data['registers'][$register . $chunks[$i]] = array(
-                        "address" => $address
-                    );
-                }
-                        
-                break;
-            case "BIT":
-                $bits = explode("-", $chunks[1]);
-                if (count($bits) != 2) {
-                    $bits[1] = $bits[0];
-                }
-
-                if ($bits[1] > $bits[0]) {
-                    $x = $bits[1];
-                    $bits[1] = $bits[0];
-                    $bits[0] = $x;
-                }
-
-                if (!is_numeric($bits[0]) || !is_numeric($bits[1])) {
-                    print "Bad bit span at line $lineno\n";
-                    exit(10);
-                }
-
-                $size = $bits[0] - $bits[1] + 1;
-                $name = $chunks[2];
-                if ($name == "UNUSED") {
-                    $name = "";
-                }
-
-                $data['registers'][$register]['bits'][$bits[1]] = array(
-                    "name" => $name,
-                    "size" => $size
-                );
-                ksort($data['registers'][$register]['bits']);
-                break;
-            case "IRQ":
-                $data['interrupts'][$chunks[1]] = array(
-                    "irq" => $chunks[2]
-                );
-                break;
-            case "VEC":
-                $data['vectors'][$chunks[1]] = array(
-                    "vector" => $chunks[2]
-                );
-                break;
-            default:
-                print "Syntax error at line " . $lineno . "\n";
-                exit(10);
-        }
-    }
+    processFile($regfile, $data);
 
     $header = array();
     $header[] = "/*";
@@ -385,4 +274,219 @@ function genfile($chip) {
     system("$COMPILER/mipsel-unknown-elf-ar rcs lib/proc/lib$chip.a lib/proc/$chip.o");
     unlink("lib/proc/$chip.S");
     unlink("lib/proc/$chip.o");
+}
+
+function processFile($regfile, &$data, $keys = array()) {
+    $in = file_get_contents($regfile);
+    $register = "";
+    $lines = explode("\n", $in);
+    $lineno = 0;
+
+    foreach ($lines as $line) {
+        $lineno++;
+        $line = trim($line);
+        if ($line == "") continue;
+        if (substr($line, 0, 1) == "#") continue;
+        if (substr($line, 0, 1) == ";") continue;
+
+        $tokens = array_merge($data['settings'], $keys);
+
+        while (preg_match("/^(.*)([\?\$]){([^}]+)}(.*)$/", $line, $m)) {
+            $start = $m[1];
+            $operation = $m[2];
+            $inner = $m[3];
+            $end = $m[4];
+
+            if ($operation == "$") {
+                $bits = explode("+", $inner);
+                if (!array_key_exists($bits[0], $tokens)) {
+                    print "Error: Token $inner not found in $regfile line $lineno\n";
+                    exit(10);
+                }
+                if (count($bits) == 2) {
+                    $base = hexdec($tokens[$bits[0]]);
+                    $offset = hexdec($bits[1]);
+                    $address = sprintf("%08X", $base + $offset);
+                    $line = $start . $address . $end;
+                } else {
+                    $line = $start . $tokens[$bits[0]] . $end;
+                }
+            } else if ($operation == "?") {
+
+                $bits = explode(":", $inner);
+
+                $condition = $bits[0];
+                $true = $bits[1];
+                $false = $bits[2];
+
+                if (preg_match("/^([^!><=]+)([!><=]+)([^!><=]+)$/", $condition, $m)) {
+                    $l = $m[1];
+                    $op = $m[2];
+                    $r = $m[3];
+
+                    $truth = false;
+
+                    if (array_key_exists($l, $tokens)) {
+                        $l = $tokens[$l];
+                    }
+
+                    if (array_key_exists($r, $tokens)) {
+                        $r = $tokens[$r];
+                    }
+                
+                    if ($op == "=" || $op == "==") {
+                        $truth = ($l == $r);
+                    } else if ($op == ">") {
+                        $truth = ($l > $r);
+                    } else if ($op == ">=") {
+                        $truth = ($l >= $r);
+                    } else if ($op == "<") {
+                        $truth = ($l < $r);
+                    } else if ($op == "<=") {
+                        $truth = ($l <= $r);
+                    } else if ($op == "!=") {
+                        $truth = ($l != $r);
+                    } else {
+                        print "Error: unknown operator in ternary in $regfile line $lineno\n";
+                        exit(10);
+                    }
+
+                    if ($truth) {
+                        $line = $start . $true . $end;
+                    } else {
+                        $line = $start . $false . $end;
+                    }
+        
+                } else {
+                    print "Error: syntax error in ternary condition in $regfile line $lineno\n";
+                    exit(10);
+                }
+            }
+
+        }
+
+        $chunks = preg_split("/\s+/", $line);
+
+        switch ($chunks[0]) {
+
+            case "INCLUDE":
+                $filename = $chunks[1];
+                if (!file_exists($filename)) {
+                    print "Error: File $filename not found in INCLUDE at $regfile line $lineno\n";
+                    exit(10);
+                }
+                $args = $data['settings'];
+                for ($i = 2; $i < count($chunks); $i++) {
+                    $kv = explode("=", $chunks[$i]);
+                    $args[$kv[0]] = $kv[1];
+                }
+                processFile($filename, $data, $args);
+                break;
+
+            case "SET":
+                $data['settings'][$chunks[1]] = $chunks[2];
+                break;
+
+            case "PERIPHERAL":
+                $data['peripherals'][$chunks[2]] = array(
+                    "base" => hexdec($chunks[1])
+                );
+                break;
+            case "FAMILY":
+                $data['family'] = $chunks[1];
+                break;
+
+            case "SPEED":
+                $data['speed'] = $chunks[1] - 0;
+                break;
+
+            case "FLASH":
+                $data['memory']['flash'] = $chunks[1] - 0;
+                $data['settings']['FLASH'] = $chunks[1] - 0;
+                break;
+
+            case "SRAM":
+                $data['memory']['sram'] = $chunks[1] - 0;
+                $data['settings']['SRAM'] = $chunks[1] - 0;
+                break;
+
+            case "BOOT":
+                $data['memory']['boot'] = $chunks[1] - 0;
+                $data['settings']['BOOT'] = $chunks[1] - 0;
+                break;
+
+            case "DRAM":
+                $data['memory']['dram'] = $chunks[1] - 0;
+                $data['settings']['DRAM'] = $chunks[1] - 0;
+                break;
+
+            case "PIN":
+                break;
+
+            case "INMAP":
+                break;
+           
+            case "OUTMAP":
+                break;
+
+            case "REG":
+                $register = $chunks[2];
+                $address = hexdec("0x" . $chunks[1]);
+                $data['registers'][$register] = array(
+                    "address" => $address,
+                    "bits" => array()
+                );
+
+                for ($i = 3; $i < count($chunks); $i++) {
+                    $address += 0x4;
+                    $data['registers'][$register . $chunks[$i]] = array(
+                        "address" => $address
+                    );
+                }
+                        
+                break;
+            case "BIT":
+                $bits = explode("-", $chunks[1]);
+                if (count($bits) != 2) {
+                    $bits[1] = $bits[0];
+                }
+
+                if ($bits[1] > $bits[0]) {
+                    $x = $bits[1];
+                    $bits[1] = $bits[0];
+                    $bits[0] = $x;
+                }
+
+                if (!is_numeric($bits[0]) || !is_numeric($bits[1])) {
+                    print "Bad bit span at line $lineno\n";
+                    exit(10);
+                }
+
+                $size = $bits[0] - $bits[1] + 1;
+                $name = $chunks[2];
+                if ($name == "UNUSED") {
+                    $name = "";
+                }
+
+                $data['registers'][$register]['bits'][$bits[1]] = array(
+                    "name" => $name,
+                    "size" => $size
+                );
+                ksort($data['registers'][$register]['bits']);
+                break;
+            case "IRQ":
+                $data['interrupts'][$chunks[1]] = array(
+                    "irq" => $chunks[2]
+                );
+                break;
+            case "VEC":
+                $data['vectors'][$chunks[1]] = array(
+                    "vector" => $chunks[2]
+                );
+                break;
+            default:
+                print "Syntax error at line " . $lineno . "\n";
+                exit(10);
+        }
+    }
 }

@@ -1,0 +1,595 @@
+FLASH 524288
+SRAM  131072
+BOOT 163840
+SPEED 200000000
+FAMILY MZ
+
+
+PIN AN17/ETXEN/RPE5/PMD5/RE5
+PIN AN16/ETXD0/PMD6/RE6
+PIN AN15/ETXD1/PMD7/RE7
+PIN AN14/C1IND/RPG6/SCK2/PMA5/RG6
+PIN AN13/C1INC/RPG7/SDA4/PMA4/RG7
+PIN AN12/C2IND/RPG8/SCL4/PMA3/RG8
+PIN AN11/C2INC/RPG9/PMA2/RG9
+PIN AN45/C1INA/RPB5/RB5
+PIN AN4/C1INB/RB4
+PIN AN3/C2INA/RPB3/RB3
+PIN AN2/C2INB/RPB2/RB2
+PIN PGEC1/VREF-/CVREF-/AN1/RPB1/RB1
+PIN PGED1/VREF+/CVREF+/AN0/RPB0/PMA6/RB0
+PIN PGEC2/AN46/RPB6/RB6
+PIN PGED2/AN47/RPB7/RB7
+PIN AN48/RPB8/PMA10/RB8
+PIN AN49/RPB9/PMA7/RB9
+PIN TMS/CVREFOUT/AN5/RPB10/PMA13/RB10
+PIN TDO/AN6/PMA12/RB11
+PIN TCK/AN7/PMA11/RB12
+PIN TDI/AN8/RB13
+PIN AN9/RPB14/SCK3/PMA1/RB14
+PIN AN10/EMDC/AEMDC/RPB15/OCFB/PMA0/RB15
+PIN OSC1/CLKI/RC12
+PIN OSC2/CLKO/RC15
+PIN RPF3/USBID/RF3
+PIN RPF4/SDA5/PMA9/RF4
+PIN RPF5/SCL5/PMA8/RF5
+PIN AERXD0/ETXD2/RPD9/SDA1/PMCS2/PMA15/RD9
+PIN ECOL/RPD10/SCL1/SCK4/RD10
+PIN AERXCLK/AEREFCLK/ECRS/RPD11/PMCS1/PMA14/RD11
+PIN AERXD1/ETXD3/RPD0/RTCC/INT0/RD0
+PIN SOSCI/RPC13/RC13
+PIN SOSCO/RPC14/T1CK/RC14
+PIN EMDIO/AEMDIO/RPD1/SCK1/RD1
+PIN ETXERR/AETXEN/RPD2/SDA3/RD2
+PIN AERXERR/ETXCLK/RPD3/SCL3/RD3
+PIN SQICS0/RPD4/PMWR/RD4
+PIN SQICS1/RPD5/PMRD/RD5
+PIN ERXD3/AETXD1/RPF0/RF0
+PIN TRCLK/SQICLK/ERXD2/AETXD0/RPF1/RF1
+PIN TRD0/SQID0/ERXD1/PMD0/RE0
+PIN TRD1/SQID1/ERXD0/PMD1/RE1
+PIN TRD2/SQID2/ERXDV/ECRSDV/AECRSDV/PMD2/RE2
+PIN TRD3/SQID3/ERXCLK/EREFCLK/RPE3/PMD3/RE3
+PIN AN18/ERXERR/PMD4/RE4
+
+INMAP RPD2/RPG8/RPF4/RPD10/RPF1/RPB9/RPB10/RPC14/RPB5 INT3/T2CK/T6CK/IC3/IC7/U1RX/U2CTS/U5RX/U6CTS/SDI1/SDI3/REFCLKI1
+INMAP RPD3/RPG7/RPF5/RPD11/RPF0/RPB1/RPE5/RPC13/RPB3 INT4/T5CK/T7CK/IC4/IC8/U3RX/U4CTS/SDI2/SDI4/C1RX/REFCLKI4
+INMAP RPD9/RPG6/RPB8/RPB15/RPD4/RPB0/RPE3/RPB7 INT2/T3CK/T8CK/IC2/IC5/IC9/U1CTS/U2RX/U5CTS/SS1/SS3/SS4/C2RX
+INMAP RPD1/RPG9/RPB14/RPD0/RPB6/RPD5/RPB2/RPF3 INT1/T4CK/T9CK/IC1/IC6/U3CTS/U4RX/U6RX/SS2/OCFA/REFCLKI3
+
+OUTMAP RPD2/RPG8/RPF4/RPD10/RPF1/RPB9/RPB10/RPC14/RPB5 U3TX/U4RTS/SDO1/SDO2/SDO3/OC3/OC6/REFCLKO4/C2OUT/C1TX
+OUTMAP RPD3/RPG7/RPF5/RPD11/RPF0/RPB1/RPE5/RPC13/RPB3 U1TX/U2RTS/U5TX/U6RTS/SDO1/SDO2/SDO3/SDO4/OC4/OC7/REFCLKO1
+OUTMAP RPD9/RPG6/RPB8/RPB15/RPD4/RPB0/RPE3/RPB7 U3RTS/U4TX/U6TX/SS1/SS3/SS4/OC5/OC8/C1OUT/REFCLKO3
+OUTMAP RPD1/RPG9/RPB14/RPD0/RPB6/RPD5/RPB2/RPF3 U1RTS/U2TX/U5RTS/U6TX/SS2/SDO4/OC2/OC1/OC9/C2TX
+
+
+
+
+PERIPHERAL BF8F0000 SB
+REG BF8F0510 SBFLAG
+BIT 31-14   UNUSED
+BIT 13      T13PGV
+BIT 12      T12PGV
+BIT 11      T11PGV
+BIT 10      T10PGV
+BIT 9       T9PGV
+BIT 8       T8PGV
+BIT 7       T7PGV
+BIT 6       T6PGV
+BIT 5       T5PGV
+BIT 4       T4PGV
+BIT 3       T3PGV
+BIT 2       T2PGV
+BIT 1       T1PGV
+BIT 0       T0PGV
+
+REG BF8F8020 SBT0ELOG1
+BIT 31      MULTI
+BIT 30-28   UNUSED
+BIT 27-24   CODE
+BIT 23-16   UNUSED
+BIT 15-8    INITID
+BIT 7-4     REGION
+BIT 3       UNUSED
+BIT 2-0     CMD
+
+REG BF8F8024 SBT0ELOG2
+BIT 31-2    UNUSED
+BIT 1-0     GROUP
+
+REG BF8F8028 SBT0ECON
+BIT 31-25   UNUSED
+BIT 24      ERRP
+BIT 23-0    UNUSED
+
+REG BF8F8030 SBT0ECLRS
+BIT 31-1    UNUSED
+BIT 0       CLEAR
+
+REG BF8F8038 SBT0ECLRM
+BIT 31-1    UNUSED
+BIT 0       CLEAR
+
+REG BF8F8040 SBT0REG0
+BIT 31-10   BASE
+BIT 9       PRI
+BIT 8       UNUSED
+BIT 7-3     SIZE
+BIT 2-0     UNUSED
+
+REG BF8F8050 SBT0RD0
+BIT 31-4    UNUSED
+BIT 3       GROUP3
+BIT 2       GROUP2
+BIT 1       GROUP1
+BIT 0       GROUP0
+
+REG BF8F8058 SBT0WR0
+BIT 31-4    UNUSED
+BIT 3       GROUP3
+BIT 2       GROUP2
+BIT 1       GROUP1
+BIT 0       GROUP0
+
+REG BF8F8060 SBT0REG1
+BIT 31-10   BASE
+BIT 9       PRI
+BIT 8       UNUSED
+BIT 7-3     SIZE
+BIT 2-0     UNUSED
+
+REG BF8F8070 SBT0RD1
+BIT 31-4    UNUSED
+BIT 3       GROUP3
+BIT 2       GROUP2
+BIT 1       GROUP1
+BIT 0       GROUP0
+
+REG BF8F8078 SBT0WR1
+BIT 31-4    UNUSED
+BIT 3       GROUP3
+BIT 2       GROUP2
+BIT 1       GROUP1
+BIT 0       GROUP0
+
+
+REG BF8F8420 SBT1ELOG1
+BIT 31      MULTI
+BIT 30-28   UNUSED
+BIT 27-24   CODE
+BIT 23-16   UNUSED
+BIT 15-8    INITID
+BIT 7-4     REGION
+BIT 3       UNUSED
+BIT 2-0     CMD
+
+REG BF8F8424 SBT1ELOG2
+BIT 31-2    UNUSED
+BIT 1-0     GROUP
+
+REG BF8F8428 SBT1ECON
+BIT 31-25   UNUSED
+BIT 24      ERRP
+BIT 23-0    UNUSED
+
+REG BF8F8430 SBT1ECLRS
+BIT 31-1    UNUSED
+BIT 0       CLEAR
+
+REG BF8F8438 SBT1ECLRM
+BIT 31-1    UNUSED
+BIT 0       CLEAR
+
+REG BF8F8440 SBT1REG0
+BIT 31-10   BASE
+BIT 9       PRI
+BIT 8       UNUSED
+BIT 7-3     SIZE
+BIT 2-0     UNUSED
+
+REG BF8F8450 SBT1RD0
+BIT 31-4    UNUSED
+BIT 3       GROUP3
+BIT 2       GROUP2
+BIT 1       GROUP1
+BIT 0       GROUP0
+
+REG BF8F8458 SBT1WR0
+BIT 31-4    UNUSED
+BIT 3       GROUP3
+BIT 2       GROUP2
+BIT 1       GROUP1
+BIT 0       GROUP0
+
+REG BF8F8480 SBT1REG2
+BIT 31-10   BASE
+BIT 9       PRI 
+BIT 8       UNUSED
+BIT 7-3     SIZE
+BIT 2-0     UNUSED
+
+REG BF8F8490 SBT1RD2
+BIT 31-4    UNUSED
+BIT 3       GROUP3
+BIT 2       GROUP2
+BIT 1       GROUP1
+BIT 0       GROUP0
+
+REG BF8F8498 SBT1WR2
+BIT 31-4    UNUSED
+BIT 3       GROUP3
+BIT 2       GROUP2
+BIT 1       GROUP1
+BIT 0       GROUP0
+
+REG BF8F84A0 SBT1REG3
+BIT 31-10   BASE
+BIT 9       PRI 
+BIT 8       UNUSED
+BIT 7-3     SIZE
+BIT 2-0     UNUSED
+
+REG BF8F84B0 SBT1RD3
+BIT 31-4    UNUSED
+BIT 3       GROUP3
+BIT 2       GROUP2
+BIT 1       GROUP1
+BIT 0       GROUP0
+
+REG BF8F84B8 SBT1WR3
+BIT 31-4    UNUSED
+BIT 3       GROUP3
+BIT 2       GROUP2
+BIT 1       GROUP1
+BIT 0       GROUP0
+
+REG BF8F84C0 SBT1REG4
+BIT 31-10   BASE
+BIT 9       PRI 
+BIT 8       UNUSED
+BIT 7-3     SIZE
+BIT 2-0     UNUSED
+
+REG BF8F84D0 SBT1RD4
+BIT 31-4    UNUSED
+BIT 3       GROUP3
+BIT 2       GROUP2
+BIT 1       GROUP1
+BIT 0       GROUP0
+
+REG BF8F84D8 SBT1WR4
+BIT 31-4    UNUSED
+BIT 3       GROUP3
+BIT 2       GROUP2
+BIT 1       GROUP1
+BIT 0       GROUP0
+
+REG BF8F84E0 SBT1REG5
+BIT 31-10   BASE
+BIT 9       PRI 
+BIT 8       UNUSED
+BIT 7-3     SIZE
+BIT 2-0     UNUSED
+
+REG BF8F84F0 SBT1RD5
+BIT 31-4    UNUSED
+BIT 3       GROUP3
+BIT 2       GROUP2
+BIT 1       GROUP1
+BIT 0       GROUP0
+
+REG BF8F84F8 SBT1WR5
+BIT 31-4    UNUSED
+BIT 3       GROUP3
+BIT 2       GROUP2
+BIT 1       GROUP1
+BIT 0       GROUP0
+
+REG BF8F8500 SBT1REG6
+BIT 31-10   BASE
+BIT 9       PRI 
+BIT 8       UNUSED
+BIT 7-3     SIZE
+BIT 2-0     UNUSED
+
+REG BF8F8510 SBT1RD6
+BIT 31-4    UNUSED
+BIT 3       GROUP3
+BIT 2       GROUP2
+BIT 1       GROUP1
+BIT 0       GROUP0
+
+REG BF8F8518 SBT1WR6
+BIT 31-4    UNUSED
+BIT 3       GROUP3
+BIT 2       GROUP2
+BIT 1       GROUP1
+BIT 0       GROUP0
+
+REG BF8F8520 SBT1REG7
+BIT 31-10   BASE
+BIT 9       PRI
+BIT 8       UNUSED
+BIT 7-3     SIZE
+BIT 2-0     UNUSED
+
+REG BF8F8530 SBT1RD7
+BIT 31-4    UNUSED
+BIT 3       GROUP3
+BIT 2       GROUP2
+BIT 1       GROUP1
+BIT 0       GROUP0
+
+REG BF8F8538 SBT1WR7
+BIT 31-4    UNUSED
+BIT 3       GROUP3
+BIT 2       GROUP2
+BIT 1       GROUP1
+BIT 0       GROUP0
+
+REG BF8F8540 SBT1REG8
+BIT 31-10   BASE
+BIT 9       PRI
+BIT 8       UNUSED
+BIT 7-3     SIZE
+BIT 2-0     UNUSED
+
+REG BF8F8550 SBT1RD8
+BIT 31-4    UNUSED
+BIT 3       GROUP3
+BIT 2       GROUP2
+BIT 1       GROUP1
+BIT 0       GROUP0
+
+REG BF8F8558 SBT1WR8
+BIT 31-4    UNUSED
+BIT 3       GROUP3
+BIT 2       GROUP2
+BIT 1       GROUP1
+BIT 0       GROUP0
+
+REG BF8F8820 SBT2ELOG1
+BIT 31      MULTI
+BIT 30-28   UNUSED
+BIT 27-24   CODE
+BIT 23-16   UNUSED
+BIT 15-8    INITID
+BIT 7-4     REGION
+BIT 3       UNUSED
+BIT 2-0     CMD
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+VEC CORE_TIMER                            0
+VEC CORE_SOFTWARE_0                      1
+VEC CORE_SOFTWARE_1                      2
+VEC EXTERNAL_0                           3
+VEC TIMER_1                              4
+VEC INPUT_CAPTURE_1_ERROR                5
+VEC INPUT_CAPTURE_1                      6
+VEC OUTPUT_COMPARE_1                     7
+VEC EXTERNAL_1                           8
+VEC TIMER_2                              9
+VEC INPUT_CAPTURE_2_ERROR               10
+VEC INPUT_CAPTURE_2                     11
+VEC OUTPUT_COMPARE_2                    12
+VEC EXTERNAL_2                          13
+VEC TIMER_3                             14
+VEC INPUT_CAPTURE_3_ERROR               15
+VEC INPUT_CAPTURE_3                     16
+VEC OUTPUT_COMPARE_3                    17
+VEC EXTERNAL_3                          18
+VEC TIMER_4                             19
+VEC INPUT_CAPTURE_4_ERROR               20
+VEC INPUT_CAPTURE_4                     21
+VEC OUTPUT_COMPARE_4                    22
+VEC EXTERNAL_4                          23
+VEC TIMER_5                             24
+VEC INPUT_CAPTURE_5_ERROR               25
+VEC INPUT_CAPTURE_5                     26
+VEC OUTPUT_COMPARE_5                    27
+VEC TIMER_6                             28
+VEC INPUT_CAPTURE_6_ERROR               29
+VEC INPUT_CAPTURE_6                     30
+VEC OUTPUT_COMPARE_6                    31
+VEC TIMER_7                             32
+VEC INPUT_CAPTURE_7_ERROR               33
+VEC INPUT_CAPTURE_7                     34
+VEC OUTPUT_COMPARE_7                    35
+VEC TIMER_8                             36
+VEC INPUT_CAPTURE_8_ERROR               37
+VEC INPUT_CAPTURE_8                     38
+VEC OUTPUT_COMPARE_8                    39
+VEC TIMER_9                             40
+VEC INPUT_CAPTURE_9_ERROR               41
+VEC INPUT_CAPTURE_9                     42
+VEC OUTPUT_COMPARE_9                    43
+VEC ADC                                 44
+VEC ADC_FIFO                            45
+VEC ADC_DC1                             46
+VEC ADC_DC2                             47
+VEC ADC_DC3                             48
+VEC ADC_DC4                             49
+VEC ADC_DC5                             50
+VEC ADC_DC6                             51
+VEC ADC_DF1                             52
+VEC ADC_DF2                             53
+VEC ADC_DF3                             54
+VEC ADC_DF4                             55
+VEC ADC_DF5                             56
+VEC ADC_DF6                             57
+VEC ADC_FAULT                           58
+VEC ADC_DATA0                           59
+VEC ADC_DATA1                           60
+VEC ADC_DATA2                           61
+VEC ADC_DATA3                           62
+VEC ADC_DATA4                           63
+VEC ADC_DATA5                           64
+VEC ADC_DATA6                           65
+VEC ADC_DATA7                           66
+VEC ADC_DATA8                           67
+VEC ADC_DATA9                           68
+VEC ADC_DATA10                          69
+VEC ADC_DATA11                          70
+VEC ADC_DATA12                          71
+VEC ADC_DATA13                          72
+VEC ADC_DATA14                          73
+VEC ADC_DATA15                          74
+VEC ADC_DATA16                          75
+VEC ADC_DATA17                          76
+VEC ADC_DATA18                          77
+VEC ADC_DATA19                          78
+VEC ADC_DATA20                          79
+VEC ADC_DATA21                          80
+VEC ADC_DATA22                          81
+VEC ADC_DATA23                          82
+VEC ADC_DATA24                          83
+VEC ADC_DATA25                          84
+VEC ADC_DATA26                          85
+VEC ADC_DATA27                          86
+VEC ADC_DATA28                          87
+VEC ADC_DATA29                          88
+VEC ADC_DATA30                          89
+VEC ADC_DATA31                          90
+VEC ADC_DATA32                          91
+VEC ADC_DATA33                          92
+VEC ADC_DATA34                          93
+VEC ADC_DATA35                          94
+VEC ADC_DATA36                          95
+VEC ADC_DATA37                          96
+VEC ADC_DATA38                          97
+VEC ADC_DATA39                          98
+VEC ADC_DATA40                          99
+VEC ADC_DATA41                         100
+VEC ADC_DATA42                         101
+VEC ADC_DATA43                         102
+VEC ADC_DATA44                         103
+VEC CORE_PERF_COUNT                    104
+VEC CORE_FAST_DEBUG_CHAN               105
+VEC SYSTEM_BUS_PROTECTION              106
+VEC CRYPTO                             107
+
+VEC SPI1_FAULT                         109
+VEC SPI1_RX                            110
+VEC SPI1_TX                            111
+VEC UART1_FAULT                        112
+VEC UART1_RX                           113
+VEC UART1_TX                           114
+VEC I2C1_BUS                           115
+VEC I2C1_SLAVE                         116
+VEC I2C1_MASTER                        117
+VEC CHANGE_NOTICE_A                    118
+VEC CHANGE_NOTICE_B                    119
+VEC CHANGE_NOTICE_C                    120
+VEC CHANGE_NOTICE_D                    121
+VEC CHANGE_NOTICE_E                    122
+VEC CHANGE_NOTICE_F                    123
+VEC CHANGE_NOTICE_G                    124
+VEC CHANGE_NOTICE_H                    125
+VEC CHANGE_NOTICE_J                    126
+VEC CHANGE_NOTICE_K                    127
+VEC PMP                                128
+VEC PMP_ERROR                          129
+VEC COMPARATOR_1                       130
+VEC COMPARATOR_2                       131
+VEC USB1                               132
+VEC USB1_DMA                           133
+VEC DMA0                               134
+VEC DMA1                               135
+VEC DMA2                               136
+VEC DMA3                               137
+VEC DMA4                               138
+VEC DMA5                               139
+VEC DMA6                               140
+VEC DMA7                               141
+VEC SPI2_FAULT                         142
+VEC SPI2_RX                            143
+VEC SPI2_TX                            144
+VEC UART2_FAULT                        145
+VEC UART2_RX                           146
+VEC UART2_TX                           147
+VEC I2C2_BUS                           148
+VEC I2C2_SLAVE                         149
+VEC I2C2_MASTER                        150
+VEC CAN1                               151
+VEC CAN2                               152
+VEC ETHERNET                           153
+VEC SPI3_FAULT                         154
+VEC SPI3_RX                            155
+VEC SPI3_TX                            156
+VEC UART3_FAULT                        157
+VEC UART3_RX                           158
+VEC UART3_TX                           159
+VEC I2C3_BUS                           160
+VEC I2C3_SLAVE                         161
+VEC I2C3_MASTER                        162
+VEC SPI4_FAULT                         163
+VEC SPI4_RX                            164
+VEC SPI4_TX                            165
+VEC RTCC                               166
+VEC FLASH_CONTROL                      167
+VEC PREFETCH                           168
+VEC SQI1                               169
+VEC UART4_FAULT                        170
+VEC UART4_RX                           171
+VEC UART4_TX                           172
+VEC I2C4_BUS                           173
+VEC I2C4_SLAVE                         174
+VEC I2C4_MASTER                        175
+VEC SPI5_FAULT                         176
+VEC SPI5_RX                            177
+VEC SPI5_TX                            178
+VEC UART5_FAULT                        179
+VEC UART5_RX                           180
+VEC UART5_TX                           181
+VEC I2C5_BUS                           182
+VEC I2C5_SLAVE                         183
+VEC I2C5_MASTER                        184
+VEC SPI6_FAULT                         185
+VEC SPI6_RX                            186
+VEC SPI6_TX                            187
+VEC UART6_FAULT                        188
+VEC UART6_RX                           189
+VEC UART6_TX                           190
+
+VEC ADC_EOS                            192
+VEC ADC_ARDY                           193
+VEC ADC_URDY                           194
+
+VEC ADC_EARLY                          196
+
+VEC ADC0_EARLY                         198
+VEC ADC1_EARLY                         199
+VEC ADC2_EARLY                         200
+VEC ADC2_EARLY                         201
+VEC ADC4_EARLY                         202
+
+
+VEC ADC7_EARLY                         205
+VEC ADC0_WARM                          206
+VEC ADC1_WARM                          207
+VEC ADC2_WARM                          208
+VEC ADC3_WARM                          209
+VEC ADC4_WARM                          210
+
+
+VEC ADC7_WARM                          213

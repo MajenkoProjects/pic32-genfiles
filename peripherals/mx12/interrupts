@@ -1,0 +1,466 @@
+
+PERIPHERAL ${BASE+00} INT
+REG ${BASE+00} INTCON CLR SET INV
+BIT 31-13   UNUSED
+BIT 12      MVEC
+BIT 11      UNUSED
+BIT 10-8    TPC
+BIT 7-5     UNUSED
+BIT 4       INT4EP
+BIT 3       INT3EP
+BIT 2       INT2EP
+BIT 1       INT1EP
+BIT 0       INT0EP
+
+REG ${BASE+10} INTSTAT
+BIT 31-11   UNUSED
+BIT 10-8    SRIPL
+BIT 7-6     UNUSED
+BIT 5-0     VEC
+
+REG ${BASE+20} IPTMR CLR SET INV
+BIT 31-0    IPTMR
+
+REG ${BASE+30} IFS0 CLR SET INV
+BIT 31      FCEIF
+BIT 30      RTCCIF
+BIT 29      FSCMIF
+BIT 28      AD1IF
+BIT 27      OC5IF
+BIT 26      IC5IF
+BIT 25      IC5EIF
+BIT 24      T5IF
+BIT 23      INT4IF
+BIT 22      OC4IF
+BIT 21      IC4IF
+BIT 20      IC4EIF
+BIT 19      T4IF
+BIT 18      INT3IF
+BIT 17      OC3IF
+BIT 16      IC3IF
+BIT 15      IC3EIF
+BIT 14      T3IF
+BIT 13      INT2IF
+BIT 12      OC2IF
+BIT 11      IC2IF
+BIT 10      IC2EIF
+BIT 9       T2IF
+BIT 8       INT1IF
+BIT 7       OC1IF
+BIT 6       IC1IF
+BIT 5       IC1EIF
+BIT 4       T1IF
+BIT 3       INT0IF
+BIT 2       CS1IF
+BIT 1       CS0IF
+BIT 0       CTIF
+
+REG ${BASE+40} IFS1 CLR SET INV
+BIT 31      DMA3IF
+BIT 30      DMA2IF
+BIT 29      DMA1IF
+BIT 28      DMA0IF
+BIT 27      CTMUIF
+BIT 26      I2C2MIF
+BIT 25      I2C2SIF
+BIT 24      I2C2BIF
+BIT 23      U2TXIF
+BIT 22      U2RXIF
+BIT 21      U2EIF
+BIT 20      SPI2TXIF
+BIT 19      SPI2RXIF
+BIT 18      SPI2EIF
+BIT 17      PMPEIF
+BIT 16      PMPIF
+BIT 15      CNCIF
+BIT 14      CNBIF
+BIT 13      CNAIF
+BIT 12      I2C1MIF
+BIT 11      I2C1SIF
+BIT 10      I2C1BIF
+BIT 9       U1TXIF
+BIT 8       U1RXIF
+BIT 7       U1EIF
+BIT 6       SPI1TXIF
+BIT 5       SPI1RXIF
+BIT 4       SPI1EIF
+BIT 3       ?{USB==1:USBIF:UNUSED}
+BIT 2       CMP3IF
+BIT 1       CMP2IF
+BIT 0       CMP1IF
+
+REG ${BASE+60} IEC0 CLR SET INV
+BIT 31      FCEIE
+BIT 30      RTCCIE
+BIT 29      FSCMIE
+BIT 28      AD1IE
+BIT 27      OC5IE
+BIT 26      IC5IE
+BIT 25      IC5EIE
+BIT 24      T5IE
+BIT 23      INT4IE
+BIT 22      OC4IE
+BIT 21      IC4IE
+BIT 20      IC4EIE
+BIT 19      T4IE
+BIT 18      INT3IE
+BIT 17      OC3IE
+BIT 16      IC3IE
+BIT 15      IC3EIE
+BIT 14      T3IE
+BIT 13      INT2IE
+BIT 12      OC2IE
+BIT 11      IC2IE
+BIT 10      IC2EIE
+BIT 9       T2IE
+BIT 8       INT1IE
+BIT 7       OC1IE
+BIT 6       IC1IE
+BIT 5       IC1EIE
+BIT 4       T1IE
+BIT 3       INT0IE
+BIT 2       CS1IE
+BIT 1       CS0IE
+BIT 0       CTIE
+
+REG ${BASE+70} IEC1 CLR SET INV
+BIT 31      DMA3IE
+BIT 30      DMA2IE
+BIT 29      DMA1IE
+BIT 28      DMA0IE
+BIT 27      CTMUIE
+BIT 26      I2C2MIE
+BIT 25      I2C2SIE
+BIT 24      I2C2BIE
+BIT 23      U2TXIE
+BIT 22      U2RXIE
+BIT 21      U2EIE
+BIT 20      SPI2TXIE
+BIT 19      SPI2RXIE
+BIT 18      SPI2EIE
+BIT 17      PMPEIE
+BIT 16      PMPIE
+BIT 15      CNCIE
+BIT 14      CNBIE
+BIT 13      CNAIE
+BIT 12      I2C1MIE
+BIT 11      I2C1SIE
+BIT 10      I2C1BIE
+BIT 9       U1TXIE
+BIT 8       U1RXIE
+BIT 7       U1EIE
+BIT 6       SPI1TXIE
+BIT 5       SPI1RXIE
+BIT 4       SPI1EIE
+BIT 3       ?{USB==1:USBIE:UNUSED}
+BIT 2       CMP3IE
+BIT 1       CMP2IE
+BIT 0       CMP1IE
+
+REG ${BASE+90} IPC0 CLR SET INV
+BIT 31-29   UNUSED
+BIT 28-26   INT0IP
+BIT 25-24   INT0IS
+BIT 23-21   UNUSED
+BIT 20-18   CS1IP
+BIT 17-16   CS1IS
+BIT 15-13   UNUSED
+BIT 12-10   CS0IP
+BIT 9-8     CS0IS
+BIT 7-5     UNUSED
+BIT 4-2     CTIP
+BIT 1-0     CTIS
+
+REG ${BASE+A0} IPC1 CLR SET INV
+BIT 31-29   UNUSED
+BIT 28-26   INT1IP
+BIT 25-24   INT1IS
+BIT 23-21   UNUSED
+BIT 20-18   OC1IP
+BIT 17-16   OC1IS
+BIT 15-13   UNUSED
+BIT 12-10   IC1IP
+BIT 9-8     IC1IS
+BIT 7-5     UNUSED
+BIT 4-2     T1IP
+BIT 1-0     T1IS
+
+REG ${BASE+B0} IPC2 CLR SET INV
+BIT 31-29   UNUSED
+BIT 28-26   INT2IP
+BIT 25-24   INT2IS
+BIT 23-21   UNUSED
+BIT 20-18   OC2IP
+BIT 17-16   OC2IS
+BIT 15-13   UNUSED
+BIT 12-10   IC2IP
+BIT 9-8     IC2IS
+BIT 7-5     UNUSED
+BIT 4-2     T2IP
+BIT 1-0     T2IS
+
+REG ${BASE+C0} IPC3 CLR SET INV
+BIT 31-29   UNUSED
+BIT 28-26   INT3IP
+BIT 25-24   INT3IS
+BIT 23-21   UNUSED
+BIT 20-18   OC3IP
+BIT 17-16   OC3IS
+BIT 15-13   UNUSED
+BIT 12-10   IC3IP
+BIT 9-8     IC3IS
+BIT 7-5     UNUSED
+BIT 4-2     T3IP
+BIT 1-0     T3IS
+
+REG ${BASE+D0} IPC4 CLR SET INV
+BIT 31-29   UNUSED
+BIT 28-26   INT4IP
+BIT 25-24   INT4IS
+BIT 23-21   UNUSED
+BIT 20-18   OC4IP
+BIT 17-16   OC4IS
+BIT 15-13   UNUSED
+BIT 12-10   IC4IP
+BIT 9-8     IC4IS
+BIT 7-5     UNUSED
+BIT 4-2     T4IP
+BIT 1-0     T4IS
+
+REG ${BASE+E0} IPC5 CLR SET INV
+BIT 31-29   UNUSED
+BIT 28-26   AD1IP
+BIT 25-24   AD1IS
+BIT 23-21   UNUSED
+BIT 20-18   OC5IP
+BIT 17-16   OC5IS
+BIT 15-13   UNUSED
+BIT 12-10   IC5IP
+BIT 9-8     IC5IS
+BIT 7-5     UNUSED
+BIT 4-2     T5IP
+BIT 1-0     T5IS
+
+REG ${BASE+F0} IPC6 CLR SET INV
+BIT 31-29   UNUSED
+BIT 28-26   CMP1IP
+BIT 25-24   CMP1IS
+BIT 23-21   UNUSED
+BIT 20-18   FCEIP
+BIT 17-16   FCEIS
+BIT 15-13   UNUSED
+BIT 12-10   RTCCIP
+BIT 9-8     RTCCIS
+BIT 7-5     UNUSED
+BIT 4-2     FSCMIP
+BIT 1-0     FSCMIS
+
+REG ${BASE+100} IPC7 CLR SET INV
+BIT 31-29   UNUSED
+BIT 28-26   SPI1IP
+BIT 25-24   SPI1IS
+BIT 23-21   UNUSED
+BIT 20-18   ?{USB==1:USBIP:UNUSED}
+BIT 17-16   ?{USB==1:USBIS:UNUSED}
+BIT 15-13   UNUSED
+BIT 12-10   CMP3IP
+BIT 9-8     CMP3IS
+BIT 7-5     UNUSED
+BIT 4-2     CMP2IP
+BIT 1-0     CMP2IS
+
+REG ${BASE+110} IPC8 CLR SET INV
+BIT 31-29   UNUSED
+BIT 28-26   PMPIP
+BIT 25-24   PMPIS
+BIT 23-21   UNUSED
+BIT 20-18   CNIP
+BIT 17-16   CNIS
+BIT 15-13   UNUSED
+BIT 12-10   I2C1IP
+BIT 9-8     I2C1IS
+BIT 7-5     UNUSED
+BIT 4-2     U1IP
+BIT 1-0     U1IS
+
+REG ${BASE+120} IPC9 CLR SET INV
+BIT 31-29   UNUSED
+BIT 28-26   CTMUIP
+BIT 25-24   CTMUIS
+BIT 23-21   UNUSED
+BIT 20-18   I2C2IP
+BIT 17-16   I2C2IS
+BIT 15-13   UNUSED
+BIT 12-10   U2IP
+BIT 9-8     U2IS
+BIT 7-5     UNUSED
+BIT 4-2     SPI2IP
+BIT 1-0     SPI2IS
+
+REG ${BASE+130} IPC10 CLR SET INV
+BIT 31-29   UNUSED
+BIT 28-26   DMA3IP
+BIT 25-24   DMA3IS
+BIT 23-21   UNUSED
+BIT 20-18   DMA2IP
+BIT 17-16   DMA2IS
+BIT 15-13   UNUSED
+BIT 12-10   DMA1IP
+BIT 9-8     DMA1IS
+BIT 7-5     UNUSED
+BIT 4-2     DMA0IP
+BIT 1-0     DMA0IS
+
+IRQ CORE_TIMER                  0
+VEC CORE_TIMER                  0
+
+IRQ CORE_SOFTWARE_0             1
+VEC CORE_SOFTWARE_0             1
+
+IRQ CORE_SOFTWARE_1             2
+VEC CORE_SOFTWARE_1             2
+
+IRQ EXTERNAL_0                  3
+VEC EXTERNAL_0                  3
+
+IRQ TIMER_1                     4
+VEC TIMER_1                     4
+
+IRQ INPUT_CAPTURE_ERROR_1       5
+IRQ INPUT_CAPTURE_1             6
+VEC INPUT_CAPTURE_1             5 
+
+IRQ OUTPUT_COMPARE_1            7
+VEC OUTPUT_COMPARE_1            6
+
+IRQ EXTERNAL_1                  8
+VEC EXTERNAL_1                  7
+
+IRQ TIMER_2                     9 
+VEC TIMER_2                     8
+
+IRQ INPUT_CAPTURE_ERROR_2       10
+IRQ INPUT_CAPTURE_2             11
+VEC INPUT_CAPTURE_2             9
+
+IRQ OUTPUT_COMPARE_2            12
+VEC OUTPUT_COMPARE_2            10
+
+IRQ EXTERNAL_2                  13
+VEC EXTERNAL_2                  11
+
+IRQ TIMER_3                     14
+VEC TIMER3                      12
+
+IRQ INPUT_CAPTURE_ERROR_3       15
+IRQ INPUT_CAPTURE_3             16
+VEC INPUT_CAPTURE_3             13
+
+IRQ OUTPUT_COMPARE_3            17
+VEC OUTPUT_COMPARE_3            14
+
+IRQ EXTERNAL_3                  18
+VEC EXTERNAL_3                  15
+
+IRQ TIMER_4                     19
+VEC TIMER_4                     16
+
+IRQ INPUT_CAPTURE_ERROR_4       20
+IRQ INPUT_CAPTURE_4             21
+VEC INPUT_CAPTURE_4             17
+
+IRQ OUTPUT_COMPARE_4            22
+VEC OUTPUT_COMPARE_4            18
+
+IRQ EXTERNAL_4                  23
+VEC EXTERNAL_4                  19
+
+IRQ TIMER_5                     24
+VEC TIMER_5                     20
+
+IRQ INPUT_CAPTURE_ERROR_5       25
+IRQ INPUT_CAPTURE_5             26
+VEC INPUT_CAPTURE_5             21
+
+IRQ OUTPUT_COMPARE_5            27
+VEC OUTPUT_COMPARE_5            22
+
+IRQ ADC                         28
+VEC ADC                         23
+
+IRQ FAIL_SAFE_MONITOR           29
+VEC FAIL_SAFE_MONITOR           24
+
+IRQ RTCC                        30
+VEC RTCC                        25
+
+IRQ FLASH_CONTROL               31
+VEC FCE                         26
+
+IRQ COMPARATOR_1                32
+VEC COMPARATOR_1                27
+
+IRQ COMPARATOR_2                33
+VEC COMPARATOR_2                28
+
+IRQ COMPARATOR_3                34
+VEC COMPARATOR_3                29
+
+?{USB==1:IRQ USB                         35:}
+?{USB==1:VEC USB_1                       30:}
+
+IRQ SPI1_ERR                    36
+IRQ SPI1_RX                     37
+IRQ SPI1_TX                     38
+VEC SPI_1                       31
+
+IRQ UART1_ERR                   39
+IRQ UART1_RX                    40
+IRQ UART1_TX                    41
+VEC UART_1                      32
+
+IRQ I2C1_BUS                    42
+IRQ I2C1_SLAVE                  43
+IRQ I2C1_MASTER                 44
+VEC I2C_1                       33
+
+IRQ CHANGE_NOTICE_A             45
+IRQ CHANGE_NOTICE_B             46
+IRQ CHANGE_NOTICE_C             47
+VEC CHANGE_NOTICE               34
+
+IRQ PMP                         48
+IRQ PMP_ERROR                   49
+VEC PMP                         35
+
+IRQ SPI2_ERR                    50
+IRQ SPI2_RX                     51
+IRQ SPI2_TX                     52
+VEC SPI_2                       36
+
+IRQ UART2_ERR                   53
+IRQ UART2_RX                    54
+IRQ UART2_TX                    55
+VEC UART_2                      37
+
+IRQ I2C2_BUS                    56
+IRQ I2C2_SLAVE                  57
+IRQ I2C2_MASTER                 58
+VEC I2C_2                       38
+
+IRQ CTMU                        59
+VEC CTMU                        39
+
+IRQ DMA0                        60
+VEC DMA_0                       40
+
+IRQ DMA1                        61
+VEC DMA_1                       41
+
+IRQ DMA2                        62
+VEC DMA_2                       42
+
+IRQ DMA3                        63
+VEC DMA_3                       43
+
+
