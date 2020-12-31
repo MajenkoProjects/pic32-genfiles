@@ -270,7 +270,7 @@ function genfile($chip) {
     }
 
     file_put_contents("lib/proc/$chip.S", implode("\n", $ld) . "\n");
-    system("$COMPILER/mipsel-unknown-elf-gcc -march=m4k -c lib/proc/$chip.S -o lib/proc/$chip.o");
+    system("$COMPILER/mipsel-unknown-elf-gcc -march=mips32r2 -msoft-float -c lib/proc/$chip.S -o lib/proc/$chip.o");
     system("$COMPILER/mipsel-unknown-elf-ar rcs lib/proc/lib$chip.a lib/proc/$chip.o");
     unlink("lib/proc/$chip.S");
     unlink("lib/proc/$chip.o");
@@ -365,6 +365,9 @@ function processFile($regfile, &$data, $keys = array()) {
 
         }
 
+        $line = trim($line);
+        if ($line == "") continue;
+
         $chunks = preg_split("/\s+/", $line);
 
         switch ($chunks[0]) {
@@ -391,6 +394,7 @@ function processFile($regfile, &$data, $keys = array()) {
                 $data['peripherals'][$chunks[2]] = array(
                     "base" => hexdec($chunks[1])
                 );
+                $data['settings'][$chunks[2] . "_BASE"] = $chunks[1];
                 break;
             case "FAMILY":
                 $data['family'] = $chunks[1];
@@ -485,7 +489,8 @@ function processFile($regfile, &$data, $keys = array()) {
                 );
                 break;
             default:
-                print "Syntax error at line " . $lineno . "\n";
+                print "Syntax error at line " . $lineno . " of $regfile\n";
+                print "$line\n";
                 exit(10);
         }
     }
