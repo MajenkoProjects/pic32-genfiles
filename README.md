@@ -46,6 +46,9 @@ The amount of DRAM present in the chip (for MZ/DA chips for example) in bytes
 A list of optional features the chip supports. Equivalent to `SET <f> 1` and also 
 sets internal processing options.
 
+Features that affect the build:
+  * `FPU` - enables hardware FPU support when compiling support libraries
+
 * `PIN <func/func/func...>`
 A pin definition. The list of functions is a direct copy-and-paste from the
 chip datasheet. For example `PIN PGED1/AN2/C1IND/C2INB/C3IND/RPB0/RB0`
