@@ -98,6 +98,7 @@ function genfile($chip) {
         "vectors" => array(),
         "peripherals" => array(),
         "settings" => array(),
+        "features" => array(),
         "family" => "MX",
         "speed" => 0,
         "memory" => array(
@@ -269,11 +270,21 @@ function genfile($chip) {
         $ld[] = "    .global $register";
     }
 
+    $flags = array();
+    $flags[] = "-march=mips32r2";
+    if (!array_key_exists("FPU", $data['features'])) {
+        $flags[] = "-msoft-float";
+    }
+
+    $flags = implode(" ", $flags);
+
     file_put_contents("lib/proc/$chip.S", implode("\n", $ld) . "\n");
-    system("$COMPILER/mipsel-unknown-elf-gcc -march=mips32r2 -msoft-float -c lib/proc/$chip.S -o lib/proc/$chip.o");
-    system("$COMPILER/mipsel-unknown-elf-ar rcs lib/proc/lib$chip.a lib/proc/$chip.o");
+    system("$COMPILER/mipsel-unknown-elf-gcc $flags -c lib/proc/$chip.S -o lib/proc/$chip.o");
+    system("$COMPILER/mipsel-unknown-elf-gcc $flags -c src/libpic32.c -o lib/proc/$chip-libpic32.o");
+    system("$COMPILER/mipsel-unknown-elf-ar rcs lib/proc/lib$chip.a lib/proc/$chip.o lib/proc/$chip-libpic32.o");
     unlink("lib/proc/$chip.S");
     unlink("lib/proc/$chip.o");
+    unlink("lib/proc/$chip-libpic32.o");
 }
 
 function processFile($regfile, &$data, $keys = array()) {
@@ -384,6 +395,13 @@ function processFile($regfile, &$data, $keys = array()) {
                     $args[$kv[0]] = $kv[1];
                 }
                 processFile($filename, $data, $args);
+                break;
+
+            case "FEATURES":
+                for ($i = 1; $i < count($chunks); $i++) {
+                    $data['features'][$chunks[$i]] = 1;
+                    $data['settings'][$chunks[$i]] = 1;
+                }
                 break;
 
             case "SET":
