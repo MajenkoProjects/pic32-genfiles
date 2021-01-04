@@ -42,6 +42,10 @@ Other directives:
 * `DRAM <size>`
 The amount of DRAM present in the chip (for MZ/DA chips for example) in bytes
 
+* `FEATURES <f> ...`
+A list of optional features the chip supports. Equivalent to `SET <f> 1` and also 
+sets internal processing options.
+
 * `PIN <func/func/func...>`
 A pin definition. The list of functions is a direct copy-and-paste from the
 chip datasheet. For example `PIN PGED1/AN2/C1IND/C2INB/C3IND/RPB0/RB0`
@@ -97,3 +101,27 @@ in the database. The associated value is then replaced verbatim in the file.
 However if a `+` is included in the `token construct` it is split into two parts - the
 leftmost being the name used in the lookup, and the rightmost a value which is added to
 the returned value. 
+
+For example if BASE is set to bf880000 then ${BASE+1000} is replaced with bf881000.
+
+Query Replacements
+------------------
+
+A query replacement peforms a simple logical check on two values and selects one of two
+possible strings to replace with.  The format is:
+
+```
+?{query:true:false}
+
+If `query` is logically true then the whole block is replaced with `true`, otherwise
+it's replaced with `false`.
+
+Queries can be `==`, `!=`, `>`, `>=`, `<` or `<=`.
+
+For example, if USB is set to 1 then:
+```
+?{USB==1:HAS_USB:DOESNT_HAVE_USB}`
+```
+is replaced with `HAS_USB`.
+
+
