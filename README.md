@@ -47,7 +47,9 @@ A list of optional features the chip supports. Equivalent to `SET <f> 1` and als
 sets internal processing options.
 
 Features that affect the build:
-     * `FPU` - enables hardware FPU support when compiling support libraries
+```
+FPU - enables hardware FPU support when compiling support libraries
+```
 
 * `PIN <func/func/func...>`
 A pin definition. The list of functions is a direct copy-and-paste from the
