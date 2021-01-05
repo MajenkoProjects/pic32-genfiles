@@ -3,6 +3,8 @@ SRAM  8192
 BOOT 3072
 SPEED 50000000
 FAMILY MX
+FEATURES PPS
+SET DMA 4
 
 INCLUDE pinmap/mx/1xxc
 INCLUDE peripherals/mx/bmx BASE=BF882000
@@ -11,7 +13,7 @@ INCLUDE peripherals/mx/rcon BASE=BF80F600
 INCLUDE peripherals/mx12/interrupts BASE=BF881000
 INCLUDE peripherals/mx/osc BASE=BF80F000
 INCLUDE peripherals/mx/refosc BASE=BF80F020
-INCLUDE peripherals/mx12/dma BASE=BF883000
+INCLUDE peripherals/mx/dma BASE=BF883000
 INCLUDE peripherals/mx12/porta BASE=BF886000
 INCLUDE peripherals/mx12/portb BASE=BF886100
 INCLUDE peripherals/mx12/portc BASE=BF886200

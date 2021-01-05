@@ -148,6 +148,8 @@ function genfile($chip) {
     $header[] = "#ifndef __" . strtoupper($chip) . "_H";
     $header[] = "#define __" . strtoupper($chip) . "_H";
     $header[] = "";
+    $header[] = "#define __PIC32" . $data['family'] . "__";
+    $header[] = "";
     $header[] = "#if defined(__LANGUAGE_C__) || defined(__LANGUAGE_C_PLUS_PLUS)";
     $header[] = "";
     $header[] = "#ifdef __cplusplus";
@@ -165,7 +167,17 @@ function genfile($chip) {
             $header[] = "typedef union {";
             $header[] = "    struct {";
             foreach ($regdata['bits'] as $pos=>$bit) {
-                $header[] = "        unsigned " . $bit['name'] . ":" . $bit['size'] . ";";
+
+                $names = explode("/", $bit['name']);
+                if (count($names) == 1) {
+                    $header[] = "        unsigned " . $bit['name'] . ":" . $bit['size'] . ";";
+                } else {
+                    $header[] = "        union {";
+                    foreach ($names as $n) {
+                        $header[] = "            unsigned " . $n . ":" . $bit['size'] . ";";
+                    }
+                    $header[] = "        };";
+                }
             }        
             $header[] = "    };";
             $header[] = "    struct {";
@@ -193,10 +205,13 @@ function genfile($chip) {
         if (array_key_exists("bits", $regdata)) {
             foreach ($regdata['bits'] as $pos=>$bit) {
                 if ($bit['name'] != "") {
-                    $header[] = "";
-                    $header[] = "#define _" . $register . "_" . $bit['name'] . "_POSITION 0x" . sprintf("%08X", $pos);
-                    $header[] = "#define _" . $register . "_" . $bit['name'] . "_MASK     0x" . sprintf("%08X", ((1 << $bit['size']) - 1) << $pos);
-                    $header[] = "#define _" . $register . "_" . $bit['name'] . "_LENGTH   0x" . sprintf("%08X", $bit['size']);
+                    $names = explode("/", $bit['name']);
+                    foreach ($names as $n) {
+                        $header[] = "";
+                        $header[] = "#define _" . $register . "_" . $n . "_POSITION 0x" . sprintf("%08X", $pos);
+                        $header[] = "#define _" . $register . "_" . $n . "_MASK     0x" . sprintf("%08X", ((1 << $bit['size']) - 1) << $pos);
+                        $header[] = "#define _" . $register . "_" . $n . "_LENGTH   0x" . sprintf("%08X", $bit['size']);
+                    }
                 }
             }
         }
@@ -215,6 +230,11 @@ function genfile($chip) {
     $header[] = "";
     foreach ($data['vectors'] as $vector=>$vecdata) {
         $header[] = "#define _" . $vector . "_VECTOR " . $vecdata['vector'];
+    }
+
+    $header[] = "";
+    foreach ($data['peripherals'] as $perif=>$pdat) {
+        $header[] = "#define _" . $perif;
     }
 
     $header[] = "";
@@ -405,6 +425,10 @@ function processFile($regfile, &$data, $keys = array()) {
                 break;
 
             case "SET":
+                if (count($chunks) != 3) {
+                    print "Syntax error at line $lineno of $regfile\n";
+                    exit(10);
+                }
                 $data['settings'][$chunks[1]] = $chunks[2];
                 break;
 
