@@ -1,8 +1,6 @@
 #!/usr/bin/php
 <?php
 
-$COMPILER='~/.uecide/compilers/mipsel-unknown-elf/bin';
-
 $xc = array();
 
 $xc[] = "#ifndef __XC_H";
@@ -69,6 +67,15 @@ $xc[] = "#define s8      $30";
 $xc[] = "#define fp      $30";
 $xc[] = "#define ra      $31";
 $xc[] = "";
+//$xc[] = "#else";
+//$xc[] = "";
+
+//$inc = file_get_contents("src/libpic32.h");
+//$inc = explode("\n", $inc);
+//foreach ($inc as $i) {
+//    $xc[] = $i;
+//}
+//$xc[] = "";
 $xc[] = "#endif";
 
 $xc[] = "";
@@ -77,8 +84,6 @@ $xc[] = "#endif";
 file_put_contents("include/xc.h", implode("\n", $xc) . "\n");
 
 function genfile($chip) {
-
-    global $COMPILER;
 
     $regfile = "chips/$chip.reg";
     if (!file_exists($regfile)) {
@@ -242,10 +247,10 @@ function genfile($chip) {
     $header[] = "#define __PIC32_HAS_L1CACHE 1";
     $header[] = "#define __PIC32" . $data['family'] . "__ 1";
     $header[] = "#define __CTYPE_NEWLIB";
-    $header[] = "#define _NEED_REVERSE";
-    $header[] = "#define _NEED_LTOA";
-    $header[] = "#define _NEED_ULTOA";
-    $header[] = "#define _NEED_DTOSTRF";
+    //$header[] = "#define _NEED_REVERSE";
+    //$header[] = "#define _NEED_LTOA";
+    //$header[] = "#define _NEED_ULTOA";
+    //$header[] = "#define _NEED_DTOSTRF";
     $header[] = "#endif // __" . strtoupper($chip) . "_H";
 
     file_put_contents("include/proc/p$chip.h", implode("\n", $header) . "\n");
@@ -299,12 +304,13 @@ function genfile($chip) {
     $flags = implode(" ", $flags);
 
     file_put_contents("lib/proc/$chip.S", implode("\n", $ld) . "\n");
-    system("$COMPILER/mipsel-unknown-elf-gcc $flags -c lib/proc/$chip.S -o lib/proc/$chip.o");
-    system("$COMPILER/mipsel-unknown-elf-gcc $flags -c src/libpic32.c -o lib/proc/$chip-libpic32.o");
-    system("$COMPILER/mipsel-unknown-elf-ar rcs lib/proc/lib$chip.a lib/proc/$chip.o lib/proc/$chip-libpic32.o");
+    system("mipsel-pic32-elf-gcc $flags -c lib/proc/$chip.S -o lib/proc/$chip.o");
+    //system("mipsel-pic32-elf-gcc $flags -c src/libpic32.c -o lib/proc/$chip-libpic32.o");
+    //system("mipsel-pic32-elf-ar rcs lib/proc/lib$chip.a lib/proc/$chip.o lib/proc/$chip-libpic32.o");
+    system("mipsel-pic32-elf-ar rcs lib/proc/lib$chip.a lib/proc/$chip.o");
     unlink("lib/proc/$chip.S");
     unlink("lib/proc/$chip.o");
-    unlink("lib/proc/$chip-libpic32.o");
+    //unlink("lib/proc/$chip-libpic32.o");
 }
 
 function processFile($regfile, &$data, $keys = array()) {
