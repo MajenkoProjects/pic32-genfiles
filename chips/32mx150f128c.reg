@@ -47,6 +47,5 @@ INCLUDE peripherals/mx/cvref BASE=BF809800
 INCLUDE peripherals/mx/ctmu BASE=BF80A200
 INCLUDE peripherals/mx/pmd BASE=BF80F240
 INCLUDE peripherals/mx/devcfg BASE=BFC00BF0
-INCLUDE peripherals/mx/devid BASE=BF80F220
 INCLUDE peripherals/mx/system BASE=BF80F200
 
