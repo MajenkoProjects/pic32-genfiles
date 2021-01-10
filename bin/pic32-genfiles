@@ -103,6 +103,7 @@ function genfile($chip) {
         "vectors" => array(),
         "peripherals" => array(),
         "settings" => array(),
+        "defines" => array(),
         "features" => array(),
         "family" => "MX",
         "speed" => 0,
@@ -113,6 +114,8 @@ function genfile($chip) {
             "dram" => 0
         )
     );
+
+    $data['defines']['_CPU_NAME_'] = '"' . strtoupper($chip) . '"';
 
     processFile($regfile, $data);
 
@@ -154,6 +157,12 @@ function genfile($chip) {
     $header[] = "#define __" . strtoupper($chip) . "_H";
     $header[] = "";
     $header[] = "#define __PIC32" . $data['family'] . "__";
+
+    foreach ($data['defines'] as $key=>$val) {
+        $header[] = "#define " . $key . " " . $val;
+    }
+    $header[] = "";
+
     $header[] = "";
     $header[] = "#if defined(__LANGUAGE_C__) || defined(__LANGUAGE_C_PLUS_PLUS)";
     $header[] = "";
@@ -436,6 +445,14 @@ function processFile($regfile, &$data, $keys = array()) {
                     exit(10);
                 }
                 $data['settings'][$chunks[1]] = $chunks[2];
+                break;
+
+            case "DEFINE":
+                if (count($chunks) != 3) {
+                    print "Syntax error at line $lineno of $regfile\n";
+                    exit(10);
+                }
+                $data['defines'][$chunks[1]] = $chunks[2];
                 break;
 
             case "PERIPHERAL":

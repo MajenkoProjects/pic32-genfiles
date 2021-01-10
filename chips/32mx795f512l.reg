@@ -6,6 +6,8 @@ FAMILY MX
 FEATURES USB CAN1 CAN2 ETHERNET
 SET DMA 8
 
+DEFINE __PIC32_SRS__ 2
+
 INCLUDE pinmap/mx/100pin
 
 INCLUDE peripherals/mx/bmx              BASE=BF882000
