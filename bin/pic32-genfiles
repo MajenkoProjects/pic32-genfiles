@@ -178,22 +178,20 @@ function genfile($chip) {
         }
         $header[] = "extern volatile unsigned int $register __attribute__((section(\"sfrs\")));";
         if (array_key_exists("bits", $regdata)) {
-            $header[] = "typedef union {";
-            $header[] = "    struct {";
-            foreach ($regdata['bits'] as $pos=>$bit) {
 
-                $names = explode("/", $bit['name']);
-                if (count($names) == 1) {
-                    $header[] = "        unsigned " . $bit['name'] . ":" . $bit['size'] . ";";
-                } else {
-                    $header[] = "        union {";
-                    foreach ($names as $n) {
-                        $header[] = "            unsigned " . $n . ":" . $bit['size'] . ";";
+            $header[] = "typedef union {";
+            foreach ($regdata['bits'] as $layer) {
+                $header[] = "    struct {";
+                $bits = collapse($layer);
+                foreach ($bits as $bit) {
+                    if ($bit['name'] == 'UNUSED') {
+                        $header[] = "            unsigned :" . $bit['size'] . ";";
+                    } else {
+                        $header[] = "            unsigned " . $bit['name'] . ":" . $bit['size'] . ";";
                     }
-                    $header[] = "        };";
                 }
-            }        
-            $header[] = "    };";
+                $header[] = "    };";
+            }
             $header[] = "    struct {";
             $header[] = "        unsigned w:32;";
             $header[] = "    };";
@@ -217,14 +215,14 @@ function genfile($chip) {
 
     foreach ($data['registers'] as $register=>$regdata) {
         if (array_key_exists("bits", $regdata)) {
-            foreach ($regdata['bits'] as $pos=>$bit) {
-                if ($bit['name'] != "") {
-                    $names = explode("/", $bit['name']);
-                    foreach ($names as $n) {
+            foreach ($regdata['bits'] as $layer) {
+                $bits = collapse($layer);
+                foreach ($bits as $bit) {
+                    if ($bit['name'] != "UNUSED") {
                         $header[] = "";
-                        $header[] = "#define _" . $register . "_" . $n . "_POSITION 0x" . sprintf("%08X", $pos);
-                        $header[] = "#define _" . $register . "_" . $n . "_MASK     0x" . sprintf("%08X", ((1 << $bit['size']) - 1) << $pos);
-                        $header[] = "#define _" . $register . "_" . $n . "_LENGTH   0x" . sprintf("%08X", $bit['size']);
+                        $header[] = "#define _" . $register . "_" . $bit['name'] . "_POSITION 0x" . sprintf("%08X", $bit['pos']);
+                        $header[] = "#define _" . $register . "_" . $bit['name'] . "_MASK     0x" . sprintf("%08X", ((1 << $bit['size']) - 1) << $bit['pos']);
+                        $header[] = "#define _" . $register . "_" . $bit['name'] . "_LENGTH   0x" . sprintf("%08X", $bit['size']);
                     }
                 }
             }
@@ -520,7 +518,7 @@ function processFile($regfile, &$data, $keys = array()) {
                     $bits[1] = $bits[0];
                 }
 
-                if ($bits[1] > $bits[0]) {
+                if ($bits[1] < $bits[0]) {
                     $x = $bits[1];
                     $bits[1] = $bits[0];
                     $bits[0] = $x;
@@ -531,17 +529,18 @@ function processFile($regfile, &$data, $keys = array()) {
                     exit(10);
                 }
 
-                $size = $bits[0] - $bits[1] + 1;
-                $name = $chunks[2];
-                if ($name == "UNUSED") {
-                    $name = "";
+                $names = explode("/", $chunks[2]);
+                for ($layer = 0; $layer < count($names); $layer++) {
+                    if (!array_key_exists($layer, $data['registers'][$register]['bits'])) {
+                        $data['registers'][$register]['bits'][$layer] = array();
+                        for ($bit = 0; $bit < 32; $bit++) {
+                            $data['registers'][$register]['bits'][$layer][$bit] = "UNUSED";
+                        }
+                    }
+                    for ($bit = $bits[0]; $bit <= $bits[1]; $bit++) {
+                        $data['registers'][$register]['bits'][$layer][$bit] = $names[$layer];
+                    }
                 }
-
-                $data['registers'][$register]['bits'][$bits[1]] = array(
-                    "name" => $name,
-                    "size" => $size
-                );
-                ksort($data['registers'][$register]['bits']);
                 break;
             case "IRQ":
                 $data['interrupts'][$chunks[1]] = array(
@@ -559,4 +558,25 @@ function processFile($regfile, &$data, $keys = array()) {
                 exit(10);
         }
     }
+}
+
+function collapse($bits) {
+    $out = array();
+    $ent = -1;
+    $name = "";
+
+    for ($i = 31; $i >= 0; $i--) {
+        if ($name != $bits[$i]) {
+            $ent++;
+            $name = $bits[$i];
+            $out[$ent] = array(
+                "name" => $name,
+                "size" => 0,
+                "pos" => 0,
+            );
+        }
+        $out[$ent]['size']++;
+        $out[$ent]['pos'] = $i;
+    }
+    return $out;
 }
