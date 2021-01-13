@@ -1,0 +1,9 @@
+REG ${BASE} IPC${INDEX} CLR SET INV
+?{P1!=UNUSED,BIT 28-26       ${P1}IP,}
+?{P1!=UNUSED,BIT 25-24       ${P1}IS,}
+?{P2!=UNUSED,BIT 20-18       ${P2}IP,}
+?{P2!=UNUSED,BIT 17-16       ${P2}IS,}
+?{P3!=UNUSED,BIT 12-10       ${P3}IP,}
+?{P3!=UNUSED,BIT 9-8         ${P3}IS,}
+?{P4!=UNUSED,BIT 4-2         ${P4}IP,}
+?{P4!=UNUSED,BIT 1-0         ${P4}IS,}

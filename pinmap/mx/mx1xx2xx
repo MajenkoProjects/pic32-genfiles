@@ -3,7 +3,7 @@ DEFINE __PIC32_PINS__         ${PINS}
 
 PERIPHERAL BF80FA00 PPS
 
-?{USB==1:DEFINE __PIC32MX2XX__ 1:DEFINE __PIC32MX1XX__ 1}
+?{USB==1,DEFINE __PIC32MX2XX__ 1,DEFINE __PIC32MX1XX__ 1}
 
 INCLUDE peripherals/mx/pps_func OFFSET=0004 FUNCTION=INT1R
 INCLUDE peripherals/mx/pps_func OFFSET=0008 FUNCTION=INT2R
@@ -35,15 +35,15 @@ INCLUDE peripherals/mx/pps_pin OFFSET=0104 PIN=A1
 INCLUDE peripherals/mx/pps_pin OFFSET=0108 PIN=A2
 INCLUDE peripherals/mx/pps_pin OFFSET=010C PIN=A3
 INCLUDE peripherals/mx/pps_pin OFFSET=0110 PIN=A4
-?{PINS==44:INCLUDE peripherals/mx/pps_pin OFFSET=0120 PIN=A8:}
-?{PINS==44:INCLUDE peripherals/mx/pps_pin OFFSET=0124 PIN=A9:}
+?{PINS==44,INCLUDE peripherals/mx/pps_pin OFFSET=0120 PIN=A8,}
+?{PINS==44,INCLUDE peripherals/mx/pps_pin OFFSET=0124 PIN=A9,}
 INCLUDE peripherals/mx/pps_pin OFFSET=012C PIN=B0
 INCLUDE peripherals/mx/pps_pin OFFSET=0130 PIN=B1
 INCLUDE peripherals/mx/pps_pin OFFSET=0134 PIN=B2
 INCLUDE peripherals/mx/pps_pin OFFSET=0138 PIN=B3
 INCLUDE peripherals/mx/pps_pin OFFSET=013C PIN=B4
 INCLUDE peripherals/mx/pps_pin OFFSET=0140 PIN=B5
-?{USB==1::INCLUDE peripherals/mx/pps_pin OFFSET=0144 PIN=B6}
+?{USB==1,,INCLUDE peripherals/mx/pps_pin OFFSET=0144 PIN=B6}
 INCLUDE peripherals/mx/pps_pin OFFSET=0148 PIN=B7
 INCLUDE peripherals/mx/pps_pin OFFSET=014C PIN=B8
 INCLUDE peripherals/mx/pps_pin OFFSET=0150 PIN=B9
@@ -52,14 +52,14 @@ INCLUDE peripherals/mx/pps_pin OFFSET=0158 PIN=B11
 INCLUDE peripherals/mx/pps_pin OFFSET=0160 PIN=B13
 INCLUDE peripherals/mx/pps_pin OFFSET=0164 PIN=B14
 INCLUDE peripherals/mx/pps_pin OFFSET=0168 PIN=B15
-?{PINS>=36:INCLUDE peripherals/mx/pps_pin OFFSET=016C PIN=C0:}
-?{PINS>=36:INCLUDE peripherals/mx/pps_pin OFFSET=0170 PIN=C1:}
-?{PINS==44:INCLUDE peripherals/mx/pps_pin OFFSET=0174 PIN=C2:}
-?{PINS>=36:INCLUDE peripherals/mx/pps_pin OFFSET=0178 PIN=C3:}
-?{PINS==44:INCLUDE peripherals/mx/pps_pin OFFSET=017C PIN=C4:}
-?{PINS==44:INCLUDE peripherals/mx/pps_pin OFFSET=0180 PIN=C5:}
-?{PINS==44:INCLUDE peripherals/mx/pps_pin OFFSET=0184 PIN=C6:}
-?{PINS==44:INCLUDE peripherals/mx/pps_pin OFFSET=0188 PIN=C7:}
-?{PINS==44:INCLUDE peripherals/mx/pps_pin OFFSET=018C PIN=C8:}
-?{PINS>=36:INCLUDE peripherals/mx/pps_pin OFFSET=0190 PIN=C9:}
+?{PINS>=36,INCLUDE peripherals/mx/pps_pin OFFSET=016C PIN=C0,}
+?{PINS>=36,INCLUDE peripherals/mx/pps_pin OFFSET=0170 PIN=C1,}
+?{PINS==44,INCLUDE peripherals/mx/pps_pin OFFSET=0174 PIN=C2,}
+?{PINS>=36,INCLUDE peripherals/mx/pps_pin OFFSET=0178 PIN=C3,}
+?{PINS==44,INCLUDE peripherals/mx/pps_pin OFFSET=017C PIN=C4,}
+?{PINS==44,INCLUDE peripherals/mx/pps_pin OFFSET=0180 PIN=C5,}
+?{PINS==44,INCLUDE peripherals/mx/pps_pin OFFSET=0184 PIN=C6,}
+?{PINS==44,INCLUDE peripherals/mx/pps_pin OFFSET=0188 PIN=C7,}
+?{PINS==44,INCLUDE peripherals/mx/pps_pin OFFSET=018C PIN=C8,}
+?{PINS>=36,INCLUDE peripherals/mx/pps_pin OFFSET=0190 PIN=C9,}
 

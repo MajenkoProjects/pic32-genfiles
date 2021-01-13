@@ -1,0 +1,2 @@
+REG +{${BASE},*{%{INDEX},4}} OFF${INDEX}
+BIT 17-0        VOFF

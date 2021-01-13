@@ -1,0 +1,959 @@
+PERIPHERAL ${BASE} INTERRUPT
+
+REG ${BASE} INTCON CLR SET INV
+BIT 31-23   NMIKEY
+BIT 12      MVEC
+BIT 10-8    TPC
+BIT 4       INT4EP
+BIT 3       INT3EP
+BIT 2       INT2EP
+BIT 1       INT1EP
+BIT 0       INT0EP
+
+REG +{${BASE},10} PRISS CLR SET INV
+BIT 31-28   PRI7SS
+BIT 27-24   PRI6SS
+BIT 23-20   PRI5SS
+BIT 19-16   PRI4SS
+BIT 15-12   PRI3SS
+BIT 11-8    PRI2SS
+BIT 7-4     PRI1SS
+BIT 0       SS0
+
+REG +{${BASE},20} INTSTAT CLR SET INV
+BIT 10-8    SRIPL
+BIT 7-0     SIRQ
+
+REG +{${BASE},30} IPTMR WHOLE CLR SET INV
+
+REG +{${BASE},40} IFS0 CLR SET INV
+BIT 31      OC6IF
+BIT 30      IC6IF
+BIT 29      IC6EIF
+BIT 28      T6IF
+BIT 27      OC5IF
+BIT 26      IC5IF
+BIT 25      IC5EIF
+BIT 24      T5IF
+BIT 23      INT4IF
+BIT 22      OC4IF
+BIT 21      IC4IF
+BIT 20      IC4EIF
+BIT 19      T4IF
+BIT 18      INT3IF
+BIT 17      OC3IF
+BIT 16      IC3IF
+BIT 15      IC3EIF
+BIT 14      T3IF
+BIT 13      INT2IF
+BIT 12      OC2IF
+BIT 11      IC2IF
+BIT 10      IC2EIF
+BIT 9       T2IF
+BIT 8       INT1IF
+BIT 7       OC1IF
+BIT 6       IC1IF
+BIT 5       IC1EIF
+BIT 4       T1IF
+BIT 3       INT0IF
+BIT 2       CS1IF
+BIT 1       CS0IF
+BIT 0       CTIF
+
+REG +{${BASE},50} IFS1 CLR SET INV
+BIT 31      ADCD4IF
+BIT 30      ADCD3IF
+BIT 29      ADCD2IF
+BIT 28      ADCD1IF
+BIT 27      ADCD0IF
+BIT 26      ADCFLTIF
+BIT 25      ADCDF6IF
+BIT 24      ADCDF5IF
+BIT 23      ADCDF4IF
+BIT 22      ADCDF3IF
+BIT 21      ADCDF2IF
+BIT 20      ADCDF1IF
+BIT 19      ADCDC6IF
+BIT 18      ADCDC5IF
+BIT 17      ADCDC4IF
+BIT 16      ADCDC3IF
+BIT 15      ADCDC2IF
+BIT 14      ADCDC1IF
+BIT 13      ADCFIFOIF
+BIT 12      ADCIF
+BIT 11      OC9IF
+BIT 10      IC9IF
+BIT 9       IC9EIF
+BIT 8       T9IF
+BIT 7       OC8IF
+BIT 6       IC8IF
+BIT 5       IC8EIF
+BIT 4       T8IF
+BIT 3       OC7IF
+BIT 2       IC7IF
+BIT 1       IC7EIF
+BIT 0       T7IF
+
+REG +{${BASE},60} IFS2 CLR SET INV
+?{PINS>100,BIT 31      ADCD36IF,}
+?{PINS>100,BIT 30      ADCD35IF,}
+?{PINS>64,BIT 29      ADCD34IF,}
+?{PINS>64,BIT 28      ADCD33IF,}
+?{PINS>64,BIT 27      ADCD32IF,}
+?{PINS>64,BIT 26      ADCD31IF,}
+?{PINS>64,BIT 25      ADCD30IF,}
+?{PINS>64,BIT 24      ADCD29IF,}
+?{PINS>64,BIT 23      ADCD28IF,}
+?{PINS>64,BIT 22      ADCD27IF,}
+?{PINS>64,BIT 21      ADCD26IF,}
+?{PINS>64,BIT 20      ADCD25IF,}
+?{PINS>64,BIT 19      ADCD24IF,}
+?{PINS>64,BIT 18      ADCD23IF,}
+?{PINS>64,BIT 17      ADCD22IF,}
+?{PINS>64,BIT 16      ADCD21IF,}
+?{PINS>64,BIT 15      ADCD20IF,}
+?{PINS>64,BIT 14      ADCD19IF,}
+BIT 13      ADCD18IF
+BIT 12      ADCD17IF
+BIT 11      ADCD16IF
+BIT 10      ADCD15IF
+BIT 9       ADCD14IF
+BIT 8       ADCD13IF
+BIT 7       ADCD12IF
+BIT 6       ADCD11IF
+BIT 5       ADCD10IF
+BIT 4       ADCD9IF
+BIT 3       ADCD8IF
+BIT 2       ADCD7IF
+BIT 1       ADCD6IF
+BIT 0       ADCD5IF
+
+REG +{${BASE},70} IFS3 CLR SET INV
+?{PINS>124,BIT 31      CNKIF,}
+?{PINS>100,BIT 30      CNJIF,}
+?{PINS>100,BIT 29      CNHIF,}
+BIT 28      CNGIF
+BIT 27      CNFIF
+BIT 26      CNEIF
+BIT 25      CNDIF
+BIT 24      CNCIF
+BIT 23      CNBIF
+?{PINS>64,BIT 22      CNAIF,}
+BIT 21      I2C1MIF
+BIT 20      I2C1SIF
+BIT 19      I2C1BIF
+BIT 18      U1TXIF
+BIT 17      U1RXIF
+BIT 16      U1EIF
+BIT 15      SPI1TXIF
+BIT 14      SPI1RXIF
+BIT 13      SPI1EIF
+?{CRYPTO==1,BIT 11      CRPTIF,}
+BIT 10      SBIF
+BIT 9       CFDCIF
+BIT 8       CPCIF
+BIT 7       ADCD44IF
+BIT 6       ADCD43IF
+?{PINS>100,BIT 5       ADCD42IF,}
+?{PINS>100,BIT 4       ADCD41IF,}
+?{PINS>100,BIT 3       ADCD40IF,}
+?{PINS>100,BIT 2       ADCD39IF,}
+?{PINS>100,BIT 1       ADCD38IF,}
+?{PINS>100,BIT 0       ADCD37IF,}
+
+REG +{${BASE},80} IFS4 CLR SET INV
+BIT 31      U3TXIF
+BIT 30      U3RXIF
+BIT 29      U3EIF
+BIT 28      SPI3TXIF
+BIT 27      SPI3RXIF
+BIT 26      SPI3EIF
+BIT 25      ETHIF
+?{CAN==1,BIT 24      CAN2IF,}
+?{CAN==1,BIT 23      CAN1IF,}
+?{PINS>64,BIT 22      I2C2MIF,}
+?{PINS>64,BIT 21      I2C2SIF,}
+?{PINS>64,BIT 20      I2C2BIF,}
+BIT 19      U2TXIF
+BIT 18      U2RXIF
+BIT 17      U2EIF
+BIT 16      SPI2TXIF
+BIT 15      SPI2RXIF
+BIT 14      SPI2EIF
+BIT 13      DMA7IF
+BIT 12      DMA6IF
+BIT 11      DMA5IF
+BIT 10      DMA4IF
+BIT 9       DMA3IF
+BIT 8       DMA2IF
+BIT 7       DMA1IF
+BIT 6       DMA0IF
+BIT 5       USBDMAIF
+BIT 4       USBIF
+BIT 3       CMP2IF
+BIT 2       CMP1IF
+BIT 1       PMPEIF
+BIT 0       PMPIF
+
+REG +{${BASE},90} IFS5 CLR SET INV
+BIT 30      U6TXIF
+BIT 29      U6RXIF
+BIT 28      U6EIF
+?{PINS>64,BIT 27      SPI6TXIF,}
+?{PINS>64,BIT 26      SPI6RXIF,}
+?{PINS>64,BIT 25      SPI6EIF,}
+BIT 24      I2C5MIF
+BIT 23      I2C5SIF
+BIT 22      I2C5BIF
+BIT 21      U5TXIF
+BIT 20      U5RXIF
+BIT 19      U5EIF
+?{PINS>64,BIT 18      SPI5TXIF,}
+?{PINS>64,BIT 17      SPI5RXIF,}
+?{PINS>64,BIT 16      SPI5EIF,}
+BIT 15      I2C4MIF
+BIT 14      I2C4SIF
+BIT 13      I2C4BIF
+BIT 12      U4TXIF
+BIT 11      U4RXIF
+BIT 10      U4EIF
+BIT 9       SQI1IF
+BIT 8       PREIF
+BIT 7       FCEIF
+BIT 6       RTCCIF
+BIT 5       SPI4TXIF
+BIT 4       SPI4RXIF
+BIT 3       SPI4EIF
+BIT 2       I2C3MIF
+BIT 1       I2C3SIF
+BIT 0       I2C3BIF
+
+REG +{${BASE},A0} IFS6 CLR SET INV
+BIT 21      ADC7WIF
+BIT 18      ADC4WIF
+BIT 17      ADC3WIF
+BIT 16      ADC2WIF
+BIT 15      ADC1WIF
+BIT 14      ADC0WIF
+BIT 13      ADC7EIF
+BIT 10      ADC4EIF
+BIT 9       ADC3EIF
+BIT 8       ADC2EIF
+BIT 7       ADC1EIF
+BIT 6       ADC0EIF
+BIT 4       ADCGRPIF
+BIT 2       ADCURDYIF
+BIT 1       ADCARDYIF
+BIT 0       ADCEOSIF
+
+REG +{${BASE},C0} IEC0 CLR SET INV
+BIT 31      OC6IE
+BIT 30      IC6IE
+BIT 29      IC6EIE
+BIT 28      T6IE
+BIT 27      OC5IE
+BIT 26      IC5IE
+BIT 25      IC5EIE
+BIT 24      T5IE
+BIT 23      INT4IE
+BIT 22      OC4IE
+BIT 21      IC4IE
+BIT 20      IC4EIE
+BIT 19      T4IE
+BIT 18      INT3IE
+BIT 17      OC3IE
+BIT 16      IC3IE
+BIT 15      IC3EIE
+BIT 14      T3IE
+BIT 13      INT2IE
+BIT 12      OC2IE
+BIT 11      IC2IE
+BIT 10      IC2EIE
+BIT 9       T2IE
+BIT 8       INT1IE
+BIT 7       OC1IE
+BIT 6       IC1IE
+BIT 5       IC1EIE
+BIT 4       T1IE
+BIT 3       INT0IE
+BIT 2       CS1IE
+BIT 1       CS0IE
+BIT 0       CTIE
+
+REG +{${BASE},D0} IEC1 CLR SET INV
+BIT 31      ADCD4IE
+BIT 30      ADCD3IE
+BIT 29      ADCD2IE
+BIT 28      ADCD1IE
+BIT 27      ADCD0IE
+BIT 26      ADCFLTIE
+BIT 25      ADCDF6IE
+BIT 24      ADCDF5IE
+BIT 23      ADCDF4IE
+BIT 22      ADCDF3IE
+BIT 21      ADCDF2IE
+BIT 20      ADCDF1IE
+BIT 19      ADCDC6IE
+BIT 18      ADCDC5IE
+BIT 17      ADCDC4IE
+BIT 16      ADCDC3IE
+BIT 15      ADCDC2IE
+BIT 14      ADCDC1IE
+BIT 13      ADCFIFOIE
+BIT 12      ADCIE
+BIT 11      OC9IE
+BIT 10      IC9IE
+BIT 9       IC9EIE
+BIT 8       T9IE
+BIT 7       OC8IE
+BIT 6       IC8IE
+BIT 5       IC8EIE
+BIT 4       T8IE
+BIT 3       OC7IE
+BIT 2       IC7IE
+BIT 1       IC7EIE
+BIT 0       T7IE
+
+REG +{${BASE},E0} IEC2 CLR SET INV
+?{PINS>100,BIT 31      ADCD36IE,}
+?{PINS>100,BIT 30      ADCD35IE,}
+?{PINS>64,BIT 29      ADCD34IE,}
+?{PINS>64,BIT 28      ADCD33IE,}
+?{PINS>64,BIT 27      ADCD32IE,}
+?{PINS>64,BIT 26      ADCD31IE,}
+?{PINS>64,BIT 25      ADCD30IE,}
+?{PINS>64,BIT 24      ADCD29IE,}
+?{PINS>64,BIT 23      ADCD28IE,}
+?{PINS>64,BIT 22      ADCD27IE,}
+?{PINS>64,BIT 21      ADCD26IE,}
+?{PINS>64,BIT 20      ADCD25IE,}
+?{PINS>64,BIT 19      ADCD24IE,}
+?{PINS>64,BIT 18      ADCD23IE,}
+?{PINS>64,BIT 17      ADCD22IE,}
+?{PINS>64,BIT 16      ADCD21IE,}
+?{PINS>64,BIT 15      ADCD20IE,}
+?{PINS>64,BIT 14      ADCD19IE,}
+BIT 13      ADCD18IE
+BIT 12      ADCD17IE
+BIT 11      ADCD16IE
+BIT 10      ADCD15IE
+BIT 9       ADCD14IE
+BIT 8       ADCD13IE
+BIT 7       ADCD12IE
+BIT 6       ADCD11IE
+BIT 5       ADCD10IE
+BIT 4       ADCD9IE
+BIT 3       ADCD8IE
+BIT 2       ADCD7IE
+BIT 1       ADCD6IE
+BIT 0       ADCD5IE
+
+REG +{${BASE},F0} IEC3 CLR SET INV
+?{PINS>124,BIT 31      CNKIE,}
+?{PINS>100,BIT 30      CNJIE,}
+?{PINS>100,BIT 29      CNHIE,}
+BIT 28      CNGIE
+BIT 27      CNFIE
+BIT 26      CNEIE
+BIT 25      CNDIE
+BIT 24      CNCIE
+BIT 23      CNBIE
+?{PINS>64,BIT 22      CNAIE,}
+BIT 21      I2C1MIE
+BIT 20      I2C1SIE
+BIT 19      I2C1BIE
+BIT 18      U1TXIE
+BIT 17      U1RXIE
+BIT 16      U1EIE
+BIT 15      SPI1TXIE
+BIT 14      SPI1RXIE
+BIT 13      SPI1EIE
+?{CRYPTO==1,BIT 11      CRPTIE,}
+BIT 10      SBIE
+BIT 9       CFDCIE
+BIT 8       CPCIE
+BIT 7       ADCD44IE
+BIT 6       ADCD43IE
+?{PINS>100,BIT 5       ADCD42IE,}
+BIT 4       ADCD41IE
+BIT 3       ADCD40IE
+BIT 2       ADCD39IE
+BIT 1       ADCD38IE
+BIT 0       ADCD37IE
+
+REG +{${BASE},100} IEC4 CLR SET INV
+BIT 31      U3TXIE
+BIT 30      U3RXIE
+BIT 29      U3EIE
+BIT 28      SPI3TXIE
+BIT 27      SPI3RXIE
+BIT 26      SPI3EIE
+BIT 25      ETHIE
+?{CAN==1,BIT 24      CAN2IE,}
+?{CAN==1,BIT 23      CAN1IE,}
+?{PINS>64,BIT 22      I2C2MIE,}
+?{PINS>64,BIT 21      I2C2SIE,}
+?{PINS>64,BIT 20      I2C2BIE,}
+BIT 19      U2TXIE
+BIT 18      U2RXIE
+BIT 17      U2EIE
+BIT 16      SPI2TXIE
+BIT 15      SPI2RXIE
+BIT 14      SPI2EIE
+BIT 13      DMA7IE
+BIT 12      DMA6IE
+BIT 11      DMA5IE
+BIT 10      DMA4IE
+BIT 9       DMA3IE
+BIT 8       DMA2IE
+BIT 7       DMA1IE
+BIT 6       DMA0IE
+BIT 5       USBDMAIE
+BIT 4       USBIE
+BIT 3       CMP2IE
+BIT 2       CMP1IE
+BIT 1       PMPEIE
+BIT 0       PMPIE
+
+REG +{${BASE},110} IEC5 CLR SET INV
+BIT 30      U6TXIE
+BIT 29      U6RXIE
+BIT 28      U6EIE
+?{PINS>64,BIT 27      SPI6TXIE,}
+?{PINS>64,BIT 26      SPI6RXIE,}
+?{PINS>64,BIT 25      SPI6EIE,}
+BIT 24      I2C5MIE
+BIT 23      I2C5SIE
+BIT 22      I2C5BIE
+BIT 21      U5TXIE
+BIT 20      U5RXIE
+BIT 19      U5EIE
+?{PINS>64,BIT 18      SPI5TXIE,}
+?{PINS>64,BIT 17      SPI5RXIE,}
+?{PINS>64,BIT 16      SPI5EIE,}
+BIT 15      I2C4MIE
+BIT 14      I2C4SIE
+BIT 13      I2C4BIE
+BIT 12      U4TXIE
+BIT 11      U4RXIE
+BIT 10      U4EIE
+BIT 9       SQI1IE
+BIT 8       PREIE
+BIT 7       FCEIE
+BIT 6       RTCCIE
+BIT 5       SPI4TXIE
+BIT 4       SPI4RXIE
+BIT 3       SPI4EIE
+BIT 2       I2C3MIE
+BIT 1       I2C3SIE
+BIT 0       I2C3BIE
+
+REG +{${BASE},120} IEC6 CLR SET INV
+BIT 21      ADC7WIE
+BIT 18      ADC4WIE
+BIT 17      ADC3WIE
+BIT 16      ADC2WIE
+BIT 15      ADC1WIE
+BIT 14      ADC0WIE
+BIT 13      ADC7EIE
+BIT 10      ADC4EIE
+BIT 9       ADC3EIF
+BIT 8       ADC2EIE
+BIT 7       ADC1EIE
+BIT 6       ADC0EIE
+BIT 4       ADCGRPIE
+BIT 2       ADCURDYIE
+BIT 1       ADCARDYIE
+BIT 0       ADCEOSIE
+
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},140} INDEX=0 P1=INT0 P2=CS1 P3=CS0 P4=CT
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},150} INDEX=1 P1=OC1 P2=IC1 P3=IC1E P4=T1
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},160} INDEX=2 P1=IC2 P2=IC2E P3=T2 P4=INT1
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},170} INDEX=3 P1=IC3E P2=T3 P3=INT2 P4=OC2
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},180} INDEX=4 P1=T4 P2=INT3 P3=OC3 P4=IC3
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},190} INDEX=5 P1=INT4 P2=OC4 P3=IC4 P4=IC4E
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},1A0} INDEX=6 P1=OC5 P2=IC5 P3=IC5E P4=T5
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},1B0} INDEX=7 P1=OC6 P2=IC6 P3=IC6E P4=T6
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},1C0} INDEX=8 P1=OC7 P2=IC7 P3=IC7E P4=T7
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},1D0} INDEX=9 P1=OC8 P2=IC8 P3=IC8E P4=T8
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},1E0} INDEX=10 P1=OC9 P2=IC9 P3=IC9E P4=T9
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},1F0} INDEX=11 P1=ADCDC2 P2=ADCDC1 P3=ADCFIFO P4=ADC
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},200} INDEX=12 P1=ADCDC6 P2=ADCDC5 P3=ADCDC4 P4=ADCDC3
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},210} INDEX=13 P1=ADCDF4 P2=ADCDF3 P3=ADCDF2 P4=ADCDF1
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},220} INDEX=14 P1=ADCD0 P2=ADCDFLT P3=ADCDF6 P4=ADCDF1
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},230} INDEX=15 P1=ADCD4 P2=ADCD3 P3=ADCD2 P4=ADCD1
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},240} INDEX=16 P1=ADCD8 P2=ADCD7 P3=ADCD6 P4=ADCD5
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},250} INDEX=17 P1=ADCD12 P2=ADCD11 P3=ADCD10 P4=ADCD9
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},260} INDEX=18 P1=ADCD16 P2=ADCD15 P3=ADCD14 P4=ADCD13
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},270} INDEX=19 P1=?{PINS>64,ADCD20,UNUSED} P2=?{PINS>64,ADCD19,UNUSED} P3=ADCD18 P4=ADCD17
+?{PINS>64,INCLUDE peripherals/mz/ipc BASE=+{${BASE},280} INDEX=20 P1=ADCD24 P2=ADCD23 P3=ADCD22 P4=ADCD21,}
+?{PINS>64,INCLUDE peripherals/mz/ipc BASE=+{${BASE},290} INDEX=21 P1=ADCD28 P2=ADCD27 P3=ADCD26 P4=ADCD25,}
+?{PINS>64,INCLUDE peripherals/mz/ipc BASE=+{${BASE},2A0} INDEX=22 P1=ADCD32 P2=ADCD31 P3=ADCD30 P4=ADCD29,}
+?{PINS>64,INCLUDE peripherals/mz/ipc BASE=+{${BASE},2B0} INDEX=23 P1=?{PINS>100,ADCD36,UNUSED} P2=?{PINS>100,ADCD35,UNUSED} P3=ADCD34 P4=ADCD33,}
+?{PINS>100,INCLUDE peripherals/mz/ipc BASE=+{${BASE},2C0} INDEX=24 P1=ADCD40 P2=ADCD39 P3=ADCD38 P4=ADCD37,}
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},2D0} INDEX=25 P1=ADCD44 P2=ADCD43 P3=?{PINS>100,ADCD42,UNUSED} P4=?{PINS>100,ADCD41,UNUSED}
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},2E0} INDEX=26 P1=?{CRYPTO==1,CRPT,UNUSED} P2=SB P3=CFDC P4=CPC
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},2F0} INDEX=27 P1=SPI1TX P2=SPI1RX P3=SPI1E P4=UNUSED
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},300} INDEX=28 P1=I1C2B P2=U1TX P3=U1RX P4=U1E
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},310} INDEX=29 P1=CNB P2=CNA P3=I2C1M P4=I2C1S
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},320} INDEX=30 P1=CNF P2=CNE P3=CND P4=CNC
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},330} INDEX=31 P1=?{PINS>124,CNK,UNUSED} P2=?{PINS>100,CNJ,UNUSED} P3=?{PINS>100,CNH,UNUSED} P4=CNG
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},340} INDEX=32 P1=CMP2 P2=CMP1 P3=PMPE P4=PMP
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},350} INDEX=33 P1=DMA1 P2=DMA0 P3=USBDMA P4=USB
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},360} INDEX=34 P1=DMA5 P2=DMA4 P3=DMA3 P4=DMA2
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},370} INDEX=35 P1=SPI2RX P2=SPI2E P3=DMA7 P4=DMA6
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},380} INDEX=36 P1=U2TX P2=U2RX P3=U2EP P4=SPI2TX
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},390} INDEX=37 P1=?{CAN==1,CAN1,UNUSED} P2=?{PINS>64,I2C2M,UNUSED} P3=?{PINS>64,I2C2S,UNUSED} P4=?{PINS>64,I2C2B,UNUSED}
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},3A0} INDEX=38 P1=SPI3RX P2=SPI3E P3=ETH P4=CAN2
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},3B0} INDEX=39 P1=U3TX P2=U3RX P3=U3E P4=SPI3TX
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},3C0} INDEX=40 P1=SPI4E P2=I2C3M P3=I2C3S P4=I2C3B
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},3D0} INDEX=41 P1=FCE P2=RTCC P3=SPI4TX P4=SPI4RX
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},3E0} INDEX=42 P1=U4RX P2=U4E P3=SQI1 P4=PRE
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},3F0} INDEX=43 P1=I2C4M P2=I2C4S P3=I2C4B P4=U4TX
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},400} INDEX=44 P1=U4E P2=?{PINS>64,SPI5TX,UNUSED} P3=?{PINS>64,SPI5RX,UNUSED} P4=?{PINS>64,SPI5E,UNUSED}
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},410} INDEX=45 P1=I2C5S P2=I2C5B P3=U5TX P4=U5RX
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},420} INDEX=46 P1=?{PINS>64,SPI6TX,UNUSED} P2=?{PINS>64,SPI6RX,UNUSED} P3=?{PINS>64,SPI6E,UNUSED} P4=I2C5M
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},430} INDEX=47 P1=UNUSED P2=U6TX P3=U6RX P4=U6E
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},440} INDEX=48 P1=UNUSED P2=ADCURDY P3=ADCARDY P4=ADCEOS
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},450} INDEX=49 P1=ADC1E P2=ADC0E P3=UNUSED P4=ADCGRP
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},460} INDEX=50 P1=UNUSED P2=ADC4E P3=ADC3E P4=ADC2E
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},470} INDEX=51 P1=ADC1W P2=ADC0W P3=ADC7E P4=UNUSED
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},480} INDEX=52 P1=UNUSED P2=ADC4W P3=ADC3W P4=ADC2W
+INCLUDE peripherals/mz/ipc BASE=+{${BASE},490} INDEX=53 P1=UNUSED P2=UNUSED P3=ADC7W P4=UNUSED
+
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=000
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=001
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=002
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=003
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=004
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=005
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=006
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=007
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=008
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=009
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=010
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=011
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=012
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=013
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=014
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=015
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=016
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=017
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=018
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=019
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=020
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=021
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=022
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=023
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=024
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=025
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=026
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=027
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=028
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=029
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=030
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=031
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=032
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=033
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=034
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=035
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=036
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=037
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=038
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=039
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=040
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=041
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=042
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=043
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=044
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=045
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=046
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=047
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=048
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=049
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=050
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=051
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=052
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=053
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=054
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=055
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=056
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=057
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=058
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=059
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=060
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=061
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=062
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=063
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=064
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=065
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=066
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=067
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=068
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=069
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=070
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=071
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=072
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=073
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=074
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=075
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=076
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=077,}
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=078,}
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=079,}
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=080,}
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=081,}
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=082,}
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=083,}
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=084,}
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=085,}
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=086,}
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=087,}
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=088,}
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=089,}
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=090,}
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=091,}
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=092,}
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=093,}
+?{PINS>100,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=094,}
+?{PINS>100,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=095,}
+?{PINS>100,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=096,}
+?{PINS>100,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=097,}
+?{PINS>100,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=098,}
+?{PINS>100,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=099,}
+?{PINS>100,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=100,}
+?{PINS>100,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=101,}
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=102
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=103
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=104
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=105
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=106
+?{CRYPTO==1,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=107,}
+# INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=108
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=109
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=110
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=111
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=112
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=113
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=114
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=115
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=116
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=117
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=118,}
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=119
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=120
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=121
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=122
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=123
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=124
+?{PINS>100,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=125,}
+?{PINS>100,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=126,}
+?{PINS>124,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=127,}
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=128
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=129
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=130
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=131
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=132
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=133
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=134
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=135
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=136
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=137
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=138
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=139
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=140
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=141
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=142
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=143
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=144
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=145
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=146
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=147
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=148,}
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=149,}
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=150,}
+?{CAN==1,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=151,}
+?{CAN==1,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=152,}
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=153
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=154
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=155
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=156
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=157
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=158
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=159
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=160
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=161
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=162
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=163
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=164
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=165
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=166
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=167
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=168
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=169
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=170
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=171
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=172
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=173
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=174
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=175
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=176,}
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=177,}
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=178,}
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=179
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=180
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=181
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=182
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=183
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=184
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=185,}
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=186,}
+?{PINS>64,INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=187,}
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=188
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=189
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=190
+# INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=191
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=192
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=193
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=194
+# INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=195
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=196
+# INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=197
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=198
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=199
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=200
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=201
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=202
+# INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=203
+# INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=204
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=205
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=206
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=207
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=208
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=209
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=210
+# INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=211
+# INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=212
+INCLUDE peripherals/mz/off BASE=+{${BASE},540} INDEX=213
+
+
+
+
+
+
+
+
+VEC CORE_TIMER                           0
+VEC CORE_SOFTWARE_0                      1
+VEC CORE_SOFTWARE_1                      2
+VEC EXTERNAL_0                           3
+VEC TIMER_1                              4
+VEC INPUT_CAPTURE_1_ERROR                5
+VEC INPUT_CAPTURE_1                      6
+VEC OUTPUT_COMPARE_1                     7
+VEC EXTERNAL_1                           8
+VEC TIMER_2                              9
+VEC INPUT_CAPTURE_2_ERROR               10
+VEC INPUT_CAPTURE_2                     11
+VEC OUTPUT_COMPARE_2                    12
+VEC EXTERNAL_2                          13
+VEC TIMER_3                             14
+VEC INPUT_CAPTURE_3_ERROR               15
+VEC INPUT_CAPTURE_3                     16
+VEC OUTPUT_COMPARE_3                    17
+VEC EXTERNAL_3                          18
+VEC TIMER_4                             19
+VEC INPUT_CAPTURE_4_ERROR               20
+VEC INPUT_CAPTURE_4                     21
+VEC OUTPUT_COMPARE_4                    22
+VEC EXTERNAL_4                          23
+VEC TIMER_5                             24
+VEC INPUT_CAPTURE_5_ERROR               25
+VEC INPUT_CAPTURE_5                     26
+VEC OUTPUT_COMPARE_5                    27
+VEC TIMER_6                             28
+VEC INPUT_CAPTURE_6_ERROR               29
+VEC INPUT_CAPTURE_6                     30
+VEC OUTPUT_COMPARE_6                    31
+VEC TIMER_7                             32
+VEC INPUT_CAPTURE_7_ERROR               33
+VEC INPUT_CAPTURE_7                     34
+VEC OUTPUT_COMPARE_7                    35
+VEC TIMER_8                             36
+VEC INPUT_CAPTURE_8_ERROR               37
+VEC INPUT_CAPTURE_8                     38
+VEC OUTPUT_COMPARE_8                    39
+VEC TIMER_9                             40
+VEC INPUT_CAPTURE_9_ERROR               41
+VEC INPUT_CAPTURE_9                     42
+VEC OUTPUT_COMPARE_9                    43
+VEC ADC                                 44
+VEC ADC_FIFO                            45
+VEC ADC_DC1                             46
+VEC ADC_DC2                             47
+VEC ADC_DC3                             48
+VEC ADC_DC4                             49
+VEC ADC_DC5                             50
+VEC ADC_DC6                             51
+VEC ADC_DF1                             52
+VEC ADC_DF2                             53
+VEC ADC_DF3                             54
+VEC ADC_DF4                             55
+VEC ADC_DF5                             56
+VEC ADC_DF6                             57
+VEC ADC_FAULT                           58
+VEC ADC_DATA0                           59
+VEC ADC_DATA1                           60
+VEC ADC_DATA2                           61
+VEC ADC_DATA3                           62
+VEC ADC_DATA4                           63
+VEC ADC_DATA5                           64
+VEC ADC_DATA6                           65
+VEC ADC_DATA7                           66
+VEC ADC_DATA8                           67
+VEC ADC_DATA9                           68
+VEC ADC_DATA10                          69
+VEC ADC_DATA11                          70
+VEC ADC_DATA12                          71
+VEC ADC_DATA13                          72
+VEC ADC_DATA14                          73
+VEC ADC_DATA15                          74
+VEC ADC_DATA16                          75
+VEC ADC_DATA17                          76
+VEC ADC_DATA18                          77
+VEC ADC_DATA19                          78
+VEC ADC_DATA20                          79
+VEC ADC_DATA21                          80
+VEC ADC_DATA22                          81
+VEC ADC_DATA23                          82
+VEC ADC_DATA24                          83
+VEC ADC_DATA25                          84
+VEC ADC_DATA26                          85
+VEC ADC_DATA27                          86
+VEC ADC_DATA28                          87
+VEC ADC_DATA29                          88
+VEC ADC_DATA30                          89
+VEC ADC_DATA31                          90
+VEC ADC_DATA32                          91
+VEC ADC_DATA33                          92
+VEC ADC_DATA34                          93
+VEC ADC_DATA35                          94
+VEC ADC_DATA36                          95
+VEC ADC_DATA37                          96
+VEC ADC_DATA38                          97
+VEC ADC_DATA39                          98
+VEC ADC_DATA40                          99
+VEC ADC_DATA41                         100
+VEC ADC_DATA42                         101
+VEC ADC_DATA43                         102
+VEC ADC_DATA44                         103
+VEC CORE_PERF_COUNT                    104
+VEC CORE_FAST_DEBUG_CHAN               105
+VEC SYSTEM_BUS_PROTECTION              106
+VEC CRYPTO                             107
+
+VEC SPI1_FAULT                         109
+VEC SPI1_RX                            110
+VEC SPI1_TX                            111
+VEC UART1_FAULT                        112
+VEC UART1_RX                           113
+VEC UART1_TX                           114
+VEC I2C1_BUS                           115
+VEC I2C1_SLAVE                         116
+VEC I2C1_MASTER                        117
+VEC CHANGE_NOTICE_A                    118
+VEC CHANGE_NOTICE_B                    119
+VEC CHANGE_NOTICE_C                    120
+VEC CHANGE_NOTICE_D                    121
+VEC CHANGE_NOTICE_E                    122
+VEC CHANGE_NOTICE_F                    123
+VEC CHANGE_NOTICE_G                    124
+VEC CHANGE_NOTICE_H                    125
+VEC CHANGE_NOTICE_J                    126
+VEC CHANGE_NOTICE_K                    127
+VEC PMP                                128
+VEC PMP_ERROR                          129
+VEC COMPARATOR_1                       130
+VEC COMPARATOR_2                       131
+VEC USB1                               132
+VEC USB1_DMA                           133
+VEC DMA0                               134
+VEC DMA1                               135
+VEC DMA2                               136
+VEC DMA3                               137
+VEC DMA4                               138
+VEC DMA5                               139
+VEC DMA6                               140
+VEC DMA7                               141
+VEC SPI2_FAULT                         142
+VEC SPI2_RX                            143
+VEC SPI2_TX                            144
+VEC UART2_FAULT                        145
+VEC UART2_RX                           146
+VEC UART2_TX                           147
+VEC I2C2_BUS                           148
+VEC I2C2_SLAVE                         149
+VEC I2C2_MASTER                        150
+VEC CAN1                               151
+VEC CAN2                               152
+VEC ETHERNET                           153
+VEC SPI3_FAULT                         154
+VEC SPI3_RX                            155
+VEC SPI3_TX                            156
+VEC UART3_FAULT                        157
+VEC UART3_RX                           158
+VEC UART3_TX                           159
+VEC I2C3_BUS                           160
+VEC I2C3_SLAVE                         161
+VEC I2C3_MASTER                        162
+VEC SPI4_FAULT                         163
+VEC SPI4_RX                            164
+VEC SPI4_TX                            165
+VEC RTCC                               166
+VEC FLASH_CONTROL                      167
+VEC PREFETCH                           168
+VEC SQI1                               169
+VEC UART4_FAULT                        170
+VEC UART4_RX                           171
+VEC UART4_TX                           172
+VEC I2C4_BUS                           173
+VEC I2C4_SLAVE                         174
+VEC I2C4_MASTER                        175
+VEC SPI5_FAULT                         176
+VEC SPI5_RX                            177
+VEC SPI5_TX                            178
+VEC UART5_FAULT                        179
+VEC UART5_RX                           180
+VEC UART5_TX                           181
+VEC I2C5_BUS                           182
+VEC I2C5_SLAVE                         183
+VEC I2C5_MASTER                        184
+VEC SPI6_FAULT                         185
+VEC SPI6_RX                            186
+VEC SPI6_TX                            187
+VEC UART6_FAULT                        188
+VEC UART6_RX                           189
+VEC UART6_TX                           190
+
+VEC ADC_EOS                            192
+VEC ADC_ARDY                           193
+VEC ADC_URDY                           194
+
+VEC ADC_EARLY                          196
+
+VEC ADC0_EARLY                         198
+VEC ADC1_EARLY                         199
+VEC ADC2_EARLY                         200
+VEC ADC2_EARLY                         201
+VEC ADC4_EARLY                         202
+
+
+VEC ADC7_EARLY                         205
+VEC ADC0_WARM                          206
+VEC ADC1_WARM                          207
+VEC ADC2_WARM                          208
+VEC ADC3_WARM                          209
+VEC ADC4_WARM                          210
+
+
+VEC ADC7_WARM                          213

@@ -312,12 +312,9 @@ function genfile($chip) {
 
     file_put_contents("lib/proc/$chip.S", implode("\n", $ld) . "\n");
     system("mipsel-pic32-elf-gcc $flags -c lib/proc/$chip.S -o lib/proc/$chip.o");
-    //system("mipsel-pic32-elf-gcc $flags -c src/libpic32.c -o lib/proc/$chip-libpic32.o");
-    //system("mipsel-pic32-elf-ar rcs lib/proc/lib$chip.a lib/proc/$chip.o lib/proc/$chip-libpic32.o");
     system("mipsel-pic32-elf-ar rcs lib/proc/lib$chip.a lib/proc/$chip.o");
     unlink("lib/proc/$chip.S");
     unlink("lib/proc/$chip.o");
-    //unlink("lib/proc/$chip-libpic32.o");
 }
 
 function processFile($regfile, &$data, $keys = array()) {
@@ -335,78 +332,114 @@ function processFile($regfile, &$data, $keys = array()) {
 
         $tokens = array_merge($data['settings'], $keys);
 
-        while (preg_match("/^(.*)([\?\$]){([^}]+)}(.*)$/", $line, $m)) {
+        while (preg_match("/^(.*)(.){([^}]+)}(.*)$/", $line, $m)) {
             $start = $m[1];
             $operation = $m[2];
             $inner = $m[3];
             $end = $m[4];
 
-            if ($operation == "$") {
-                $bits = explode("+", $inner);
-                if (!array_key_exists($bits[0], $tokens)) {
-                    print "Error: Token $inner not found in $regfile line $lineno\n";
-                    exit(10);
-                }
-                if (count($bits) == 2) {
-                    $base = hexdec($tokens[$bits[0]]);
-                    $offset = hexdec($bits[1]);
-                    $address = sprintf("%08X", $base + $offset);
-                    $line = $start . $address . $end;
-                } else {
-                    $line = $start . $tokens[$bits[0]] . $end;
-                }
-            } else if ($operation == "?") {
+            $bits = explode(",", $inner);
 
-                $bits = explode(":", $inner);
-
-                $condition = $bits[0];
-                $true = $bits[1];
-                $false = $bits[2];
-
-                if (preg_match("/^([^!><=]+)([!><=]+)([^!><=]+)$/", $condition, $m)) {
-                    $l = $m[1];
-                    $op = $m[2];
-                    $r = $m[3];
-
-                    $truth = false;
-
-                    if (array_key_exists($l, $tokens)) {
-                        $l = $tokens[$l];
+            switch ($operation) {
+                case "%":
+                    if (!array_key_exists($inner, $tokens)) {
+                        error("Token $inner not found", $regfile, $lineno);
                     }
+                    $line = $start . dechex($tokens[$inner]) . $end;
+                    break;
 
-                    if (array_key_exists($r, $tokens)) {
-                        $r = $tokens[$r];
+                case "$":
+                    if (!array_key_exists($inner, $tokens)) {
+                        error("Token $inner not found", $regfile, $lineno);
                     }
-                
-                    if ($op == "=" || $op == "==") {
-                        $truth = ($l == $r);
-                    } else if ($op == ">") {
-                        $truth = ($l > $r);
-                    } else if ($op == ">=") {
-                        $truth = ($l >= $r);
-                    } else if ($op == "<") {
-                        $truth = ($l < $r);
-                    } else if ($op == "<=") {
+                    $line = $start . $tokens[$inner] . $end;
+                    break;
+
+                case "+":
+                    $tot = hexdec(array_shift($bits));
+                    foreach ($bits as $bit) {
+                        $val = hexdec($bit);
+                        $tot += $val;
+                    }
+                    $line = $start . dechex($tot) . $end;
+                    break;
+
+                case "-":
+                    $tot = hexdec(array_shift($bits));
+                    foreach ($bits as $bit) {
+                        $val = hexdec($bit);
+                        $tot -= $val;
+                    }
+                    $line = $start . dechex($tot) . $end;
+                    break;
+
+                case "*":
+                    $tot = hexdec(array_shift($bits));
+                    foreach ($bits as $bit) {
+                        $val = hexdec($bit);
+                        $tot *= $val;
+                    }
+                    $line = $start . dechex($tot) . $end;
+                    break;
+
+                case "/":
+                    $tot = hexdec(array_shift($bits));
+                    $tot = 0;
+                    foreach ($bits as $bit) {
+                        $val = hexdec($bit);
+                        $tot /= $val;
+                    }
+                    $line = $start . dechex($tot) . $end;
+                    break;
+
+                case "?":
+                    
+                    $condition = $bits[0];
+                    $true = $bits[1];
+                    $false = $bits[2];
+
+                    if (preg_match("/^([^!><=]+)([!><=]+)([^!><=]+)$/", $condition, $m)) {
+                        $l = $m[1];
+                        $op = $m[2];
+                        $r = $m[3];
+
+                        $truth = false;
+
+                        if (array_key_exists($l, $tokens)) {
+                            $l = $tokens[$l];
+                        }
+
+                        if (array_key_exists($r, $tokens)) {
+                            $r = $tokens[$r];
+                        }
+                    
+                        if ($op == "=" || $op == "==") {
+                            $truth = ($l == $r);
+                        } else if ($op == ">") {
+                            $truth = ($l > $r);
+                        } else if ($op == ">=") {
+                            $truth = ($l >= $r);
+                        } else if ($op == "<") {
+                            $truth = ($l < $r);
+                        } else if ($op == "<=") {
                         $truth = ($l <= $r);
-                    } else if ($op == "!=") {
-                        $truth = ($l != $r);
-                    } else {
-                        print "Error: unknown operator in ternary in $regfile line $lineno\n";
-                        exit(10);
-                    }
+                        } else if ($op == "!=") {
+                            $truth = ($l != $r);
+                        } else {
+                            error("Unknown operator in ternary", $regfile, $lineno);
+                        }
 
-                    if ($truth) {
-                        $line = $start . $true . $end;
+                        if ($truth) {
+                            $line = $start . $true . $end;
+                        } else {
+                            $line = $start . $false . $end;
+                        }
+            
                     } else {
-                        $line = $start . $false . $end;
+                        error("Syntax error in ternary condition", $regfile, $lineno);
                     }
-        
-                } else {
-                    print "Error: syntax error in ternary condition in $regfile line $lineno\n";
-                    exit(10);
-                }
+                    break;
             }
-
         }
 
         $line = trim($line);
@@ -419,8 +452,7 @@ function processFile($regfile, &$data, $keys = array()) {
             case "INCLUDE":
                 $filename = $chunks[1];
                 if (!file_exists($filename)) {
-                    print "Error: File $filename not found in INCLUDE at $regfile line $lineno\n";
-                    exit(10);
+                    error("File $filename not found in INCLUDE", $regfile, $lineno);
                 }
                 $args = $data['settings'];
                 for ($i = 2; $i < count($chunks); $i++) {
@@ -439,16 +471,14 @@ function processFile($regfile, &$data, $keys = array()) {
 
             case "SET":
                 if (count($chunks) != 3) {
-                    print "Syntax error at line $lineno of $regfile\n";
-                    exit(10);
+                    error("Syntax error", $regfile, $lineno);
                 }
                 $data['settings'][$chunks[1]] = $chunks[2];
                 break;
 
             case "DEFINE":
                 if (count($chunks) != 3) {
-                    print "Syntax error at line $lineno of $regfile\n";
-                    exit(10);
+                    error("Syntax error", $regfile, $lineno);
                 }
                 $data['defines'][$chunks[1]] = $chunks[2];
                 break;
@@ -499,10 +529,23 @@ function processFile($regfile, &$data, $keys = array()) {
             case "REG":
                 $register = $chunks[2];
                 $address = hexdec("0x" . $chunks[1]);
+                if (array_key_exists($register, $data['registers'])) {
+                    error("Duplicate register $register", $regfile, $lineno);
+                }
                 $data['registers'][$register] = array(
                     "address" => $address,
                     "bits" => array()
                 );
+
+                $whole = array_search("WHOLE", $chunks);
+                if ($whole !== false) {
+                    unset($chunks[$whole]);
+                    $chunks = array_values($chunks);
+                    $data['registers'][$register]['bits'][0] = array();
+                    for ($i = 0; $i < 32; $i++) {
+                        $data['registers'][$register]['bits'][0][$i] = $register;
+                    }
+                }
 
                 for ($i = 3; $i < count($chunks); $i++) {
                     $address += 0x4;
@@ -525,8 +568,7 @@ function processFile($regfile, &$data, $keys = array()) {
                 }
 
                 if (!is_numeric($bits[0]) || !is_numeric($bits[1])) {
-                    print "Bad bit span at line $lineno\n";
-                    exit(10);
+                    error("Bad bit span", $regfile, $lineno);
                 }
 
                 $names = explode("/", $chunks[2]);
@@ -538,6 +580,9 @@ function processFile($regfile, &$data, $keys = array()) {
                         }
                     }
                     for ($bit = $bits[0]; $bit <= $bits[1]; $bit++) {
+                        if ($data['registers'][$register]['bits'][$layer][$bit] != "UNUSED") {
+                            error("Overlapping bitmap", $regfile, $lineno);
+                        }
                         $data['registers'][$register]['bits'][$layer][$bit] = $names[$layer];
                     }
                 }
@@ -553,8 +598,7 @@ function processFile($regfile, &$data, $keys = array()) {
                 );
                 break;
             default:
-                print "Syntax error at line " . $lineno . " of $regfile\n";
-                print "$line\n";
+                error("Syntax error", $regfile, $lineno, $line);
                 exit(10);
         }
     }
@@ -579,4 +623,10 @@ function collapse($bits) {
         $out[$ent]['pos'] = $i;
     }
     return $out;
+}
+
+function error($message, $file, $line, $data = false) {
+    print "Error: $message in $file at line $line\n";
+    if ($data) print ">> $data\n";
+    exit(10);
 }
