@@ -603,9 +603,16 @@ function processFile($regfile, &$data, $keys = array()) {
                     "vector" => $chunks[2]
                 );
                 break;
+            case "ABORT":
+                array_pop($chunks);
+                error(implode(" ", $chunks));
+                break;
+
+            case "RETURN":
+                return;
+            
             default:
                 error("Syntax error", $regfile, $lineno, $line);
-                exit(10);
         }
     }
 }

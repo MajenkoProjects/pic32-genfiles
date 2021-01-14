@@ -80,6 +80,12 @@ Create a new (or update an existing) replacement token.
 Include another file at this point. Any `key=val` pairs added after the filename are
 overlaid on the token replacement list for processing this file. See *tokens* below.
 
+* ABORT <message>
+Terminate all processing with the specified error
+
+* RETURN
+Stop processing the current file and drop back to where you came from
+
 Tokens
 ------
 
@@ -87,6 +93,7 @@ Token replacement and query replacement is where the real power of the system be
 apparant. Certain directives create or update internal tokens and these tokens can be
 inserted into files at any point. Simple if-then-else constructs can be created using
 query replacements, which are akin to ternary operators in C and other languages.
+Simple mathematics can be performed with mathematical directives.
 
 The basic format of a replacement is:
 
@@ -94,8 +101,7 @@ The basic format of a replacement is:
 <operator>{<token construct>}
 ```
 
-The `operator` can be either `$` for a token replacement or `?` for a query replacement.
-The `token construct` varies depending on the type of replacement.
+There are many types of token each with its own token construct format.
 
 Token Replacements
 ------------------
@@ -103,11 +109,7 @@ Token Replacements
 A basic token replacement simply uses the `token construct` as a name and looks it up
 in the database. The associated value is then replaced verbatim in the file.
 
-However if a `+` is included in the `token construct` it is split into two parts - the
-leftmost being the name used in the lookup, and the rightmost a value which is added to
-the returned value. 
-
-For example if BASE is set to bf880000 then ${BASE+1000} is replaced with bf881000.
+For example if BASE is set to bf880000 then ${BASE} is replaced with bf880000.
 
 Query Replacements
 ------------------
@@ -116,7 +118,7 @@ A query replacement peforms a simple logical check on two values and selects one
 possible strings to replace with.  The format is:
 
 ```
-?{query:true:false}
+?{query,true,false}
 
 If `query` is logically true then the whole block is replaced with `true`, otherwise
 it's replaced with `false`.
@@ -125,8 +127,23 @@ Queries can be `==`, `!=`, `>`, `>=`, `<` or `<=`.
 
 For example, if USB is set to 1 then:
 ```
-?{USB==1:HAS_USB:DOESNT_HAVE_USB}`
+?{USB==1,HAS_USB,DOESNT_HAVE_USB}`
 ```
 is replaced with `HAS_USB`.
 
+Decimal Conversion
+------------------
 
+All numbers are hexadecimal. However it is possible to convert a decimal number to hexadeximal
+using the `%` operator.  Simply enclose the decimal number in `%{...}` and it will be replaced
+with the hexadecimal equibalent.  For example `%{10}` will be replaced by `A`.
+
+Mathematics
+-----------
+
+Simple mathematics operations can be performed with the `+`, `-`, `/` and `*` operators. The
+brackets contains a list of numbers (hexadecimal as noted above) separated by commas, and the
+specified operator is performed on each one. The first number is taken as the starting point for
+all operations.
+
+So `+{4,5}` is equivalent to 4+5, and `-{8,4}` is equivalent to 8-4.
