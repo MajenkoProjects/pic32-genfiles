@@ -7,6 +7,8 @@ $xc[] = "#ifndef __XC_H";
 $xc[] = "#define __XC_H";
 $xc[] = "";
 
+$opts = getopt("d");
+
 $first = true;
 
 $dir = opendir("chips");
@@ -84,6 +86,7 @@ $xc[] = "#endif";
 file_put_contents("include/xc.h", implode("\n", $xc) . "\n");
 
 function genfile($chip) {
+    global $opts;
 
     $regfile = "chips/$chip.reg";
     if (!file_exists($regfile)) {
@@ -313,8 +316,10 @@ function genfile($chip) {
     file_put_contents("lib/proc/$chip.S", implode("\n", $ld) . "\n");
     system("mipsel-pic32-elf-gcc $flags -c lib/proc/$chip.S -o lib/proc/$chip.o");
     system("mipsel-pic32-elf-ar rcs lib/proc/lib$chip.a lib/proc/$chip.o");
-    unlink("lib/proc/$chip.S");
-    unlink("lib/proc/$chip.o");
+    if (!array_key_exists("d", $opts)) {
+        unlink("lib/proc/$chip.S");
+        unlink("lib/proc/$chip.o");
+    }
 }
 
 function processFile($regfile, &$data, $keys = array()) {
@@ -491,6 +496,7 @@ function processFile($regfile, &$data, $keys = array()) {
                 break;
             case "FAMILY":
                 $data['family'] = $chunks[1];
+                $data['settings']['FAMILY'] = strtoupper($chunks[1]);
                 break;
 
             case "SPEED":

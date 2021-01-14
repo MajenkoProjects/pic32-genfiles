@@ -1,0 +1,51 @@
+PERIPHERAL ${BASE} OSCILLATOR
+
+REG ${BASE} OSCCON CLR SET INV
+BIT 26-24   FRCDIV
+BIT 23      DRMEN
+BIT 21      SLP2SPD
+BIT 14-12   COSC
+BIT 10-8    NOSC
+BIT 7       CLKLOCK
+BIT 4       SLPEN
+BIT 3       CF
+BIT 1       SOSCEN
+BIT 0       OSWEN
+
+REG +{${BASE},10} OSCTUN CLR SET INV
+BIT 5-0     TUN
+
+REG +{${BASE},20 SPLLCON CLR SET INV
+BIT 26-24   PLLODIV
+BIT 22-16   PLLMULT
+BIT 10-8    PLLIDIV
+BIT 7       PLLICLK
+BIT 2-0     PLLRANGE
+
+INCLUDE peripherals/mz/refo BASE=+{${BASE},80} INDEX=1
+INCLUDE peripherals/mz/refo BASE=+{${BASE},A0} INDEX=2
+INCLUDE peripherals/mz/refo BASE=+{${BASE},C0} INDEX=3
+INCLUDE peripherals/mz/refo BASE=+{${BASE},E0} INDEX=4
+
+INCLUDE peripherals/mz/pbdiv BASE=+{${BASE},100} INDEX=1
+INCLUDE peripherals/mz/pbdiv BASE=+{${BASE},110} INDEX=2
+INCLUDE peripherals/mz/pbdiv BASE=+{${BASE},120} INDEX=3
+INCLUDE peripherals/mz/pbdiv BASE=+{${BASE},130} INDEX=4
+INCLUDE peripherals/mz/pbdiv BASE=+{${BASE},140} INDEX=5
+# INCLUDE peripherals/mz/pbdiv BASE=+{${BASE},150} INDEX=6
+INCLUDE peripherals/mz/pbdiv BASE=+{${BASE},160} INDEX=7
+INCLUDE peripherals/mz/pbdiv BASE=+{${BASE},170} INDEX=8
+
+REG +{${BASE},1C0} SLEWCON CLR SET INV
+BIT 19-16   SYSDIV
+BIT 10-8    SLWDIV
+BIT 2       UPEN
+BIT 1       DNEN
+BIT 0       BUSY
+
+REG +{${BASE},1D0} CLKSTAT CLR SET INV
+BIT 5       LPRCRDY
+BIT 4       SOSCRDY
+BIT 2       POSCRDY
+BIT 1       SPLLDIVRDY
+BIT 0       FRCRDY

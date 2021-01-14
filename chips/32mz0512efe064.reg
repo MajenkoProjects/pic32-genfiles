@@ -4,12 +4,18 @@ BOOT 163840
 SPEED 200000000
 FAMILY MZ
 
+SET DMA 8
+
 INCLUDE pinmap/mz/064ef
 
 INCLUDE peripherals/mz/nvm BASE=BF800600
 INCLUDE peripherals/mz/reset BASE=BF801240
 INCLUDE peripherals/mzef/interrupt BASE=BF810000
+INCLUDE peripherals/mz/oscillator BASE=BF801200
+INCLUDE peripherals/mz/prefetch BASE=BF8E0000
+INCLUDE peripherals/common/dma BASE=BF811000
+INCLUDE peripherals/mz/usb BASE=BF8E3000
 
-
-
-
+INCLUDE peripherals/mz/portb BASE=BF860100
+INCLUDE peripherals/mz/portc BASE=BF860200
+INCLUDE peripherals/mz/portd BASE=BF860300
