@@ -19,3 +19,6 @@ INCLUDE peripherals/mz/usb BASE=BF8E3000
 INCLUDE peripherals/mz/portb BASE=BF860100
 INCLUDE peripherals/mz/portc BASE=BF860200
 INCLUDE peripherals/mz/portd BASE=BF860300
+INCLUDE peripherals/mz/porte BASE=BF860400
+INCLUDE peripherals/mz/portf BASE=BF860500
+INCLUDE peripherals/mz/portg BASE=BF860600
