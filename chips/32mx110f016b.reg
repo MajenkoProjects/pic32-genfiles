@@ -16,30 +16,30 @@ INCLUDE peripherals/mx/refosc BASE=BF80F020
 INCLUDE peripherals/common/dma BASE=BF883000
 INCLUDE peripherals/mx12/porta BASE=BF886000
 INCLUDE peripherals/mx12/portb BASE=BF886100
-INCLUDE peripherals/mx/timera BASE=BF800600 INDEX=1
-INCLUDE peripherals/mx/timerb BASE=BF800800 INDEX=2
-INCLUDE peripherals/mx/timerb BASE=BF800A00 INDEX=3
-INCLUDE peripherals/mx/timerb BASE=BF800C00 INDEX=4
-INCLUDE peripherals/mx/timerb BASE=BF800E00 INDEX=5
+INCLUDE peripherals/common/timera BASE=BF800600 INDEX=1
+INCLUDE peripherals/common/timerb BASE=BF800800 INDEX=2
+INCLUDE peripherals/common/timerb BASE=BF800A00 INDEX=3
+INCLUDE peripherals/common/timerb BASE=BF800C00 INDEX=4
+INCLUDE peripherals/common/timerb BASE=BF800E00 INDEX=5
 INCLUDE peripherals/mx/watchdog BASE=BF800000
-INCLUDE peripherals/mx/ic BASE=BF802000 INDEX=1
-INCLUDE peripherals/mx/ic BASE=BF802200 INDEX=2
-INCLUDE peripherals/mx/ic BASE=BF802400 INDEX=3
-INCLUDE peripherals/mx/ic BASE=BF802600 INDEX=4
-INCLUDE peripherals/mx/ic BASE=BF802800 INDEX=5
-INCLUDE peripherals/mx/oc BASE=BF803000 INDEX=1
-INCLUDE peripherals/mx/oc BASE=BF803200 INDEX=2
-INCLUDE peripherals/mx/oc BASE=BF803400 INDEX=3
-INCLUDE peripherals/mx/oc BASE=BF803600 INDEX=4
-INCLUDE peripherals/mx/oc BASE=BF803800 INDEX=5
-INCLUDE peripherals/mx/spi BASE=BF805800 INDEX=1
-INCLUDE peripherals/mx/spi BASE=BF805A00 INDEX=2
-INCLUDE peripherals/mx/i2c BASE=BF805000 INDEX=1
-INCLUDE peripherals/mx/i2c BASE=BF805100 INDEX=2
-INCLUDE peripherals/mx/uart BASE=BF806000 INDEX=1
-INCLUDE peripherals/mx/uart BASE=BF806200 INDEX=2
+INCLUDE peripherals/common/ic BASE=BF802000 INDEX=1
+INCLUDE peripherals/common/ic BASE=BF802200 INDEX=2
+INCLUDE peripherals/common/ic BASE=BF802400 INDEX=3
+INCLUDE peripherals/common/ic BASE=BF802600 INDEX=4
+INCLUDE peripherals/common/ic BASE=BF802800 INDEX=5
+INCLUDE peripherals/common/oc BASE=BF803000 INDEX=1
+INCLUDE peripherals/common/oc BASE=BF803200 INDEX=2
+INCLUDE peripherals/common/oc BASE=BF803400 INDEX=3
+INCLUDE peripherals/common/oc BASE=BF803600 INDEX=4
+INCLUDE peripherals/common/oc BASE=BF803800 INDEX=5
+INCLUDE peripherals/common/spi BASE=BF805800 INDEX=1
+INCLUDE peripherals/common/spi BASE=BF805A00 INDEX=2
+INCLUDE peripherals/common/i2c BASE=BF805000 INDEX=1
+INCLUDE peripherals/common/i2c BASE=BF805100 INDEX=2
+INCLUDE peripherals/common/uart BASE=BF806000 INDEX=1
+INCLUDE peripherals/common/uart BASE=BF806200 INDEX=2
 INCLUDE peripherals/mx/pmp BASE=BF807000
-INCLUDE peripherals/mx/rtcc BASE=BF800200
+INCLUDE peripherals/common/rtcc BASE=BF800200
 INCLUDE peripherals/mx/adc BASE=BF809000
 INCLUDE peripherals/mx/cmp BASE=BF80A000 COUNT=3
 INCLUDE peripherals/mx/cvref BASE=BF809800
