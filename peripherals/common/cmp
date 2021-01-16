@@ -1,0 +1,14 @@
+
+PERIPHERAL ${BASE} CMP
+
+?{COUNT>=1,INCLUDE peripherals/common/cmpcon BASE=${BASE} INDEX=1,}
+?{COUNT>=2,INCLUDE peripherals/common/cmpcon BASE=+{${BASE},10} INDEX=2,}
+?{COUNT>=3,INCLUDE peripherals/common/cmpcon BASE=+{${BASE},20} INDEX=3,}
+
+REG +{${BASE},60} CMSTAT CLR SET INV
+?{FAMILY!=MZ,BIT 13      SIDL}
+BIT 2       ?{COUNT>=2,C3OUT,UNUSED}
+BIT 1       ?{COUNT>=2,C2OUT,UNUSED}
+BIT 0       ?{COUNT>=1,C1OUT,UNUSED}
+
+

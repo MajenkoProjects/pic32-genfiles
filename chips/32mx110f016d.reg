@@ -41,8 +41,8 @@ INCLUDE peripherals/common/uart BASE=BF806200 INDEX=2
 INCLUDE peripherals/mx/pmp BASE=BF807000
 INCLUDE peripherals/common/rtcc BASE=BF800200
 INCLUDE peripherals/mx/adc BASE=BF809000
-INCLUDE peripherals/mx/cmp BASE=BF80A000 COUNT=3
-INCLUDE peripherals/mx/cvref BASE=BF809800
+INCLUDE peripherals/common/cmp BASE=BF80A000 COUNT=3
+INCLUDE peripherals/common/cvref BASE=BF809800
 INCLUDE peripherals/mx/ctmu BASE=BF80A200
 INCLUDE peripherals/mx/pmd BASE=BF80F240
 INCLUDE peripherals/mx/devcfg BASE=BFC00BF0

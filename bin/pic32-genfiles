@@ -105,7 +105,9 @@ function genfile($chip) {
         "interrupts" => array(),
         "vectors" => array(),
         "peripherals" => array(),
-        "settings" => array(),
+        "settings" => array(
+            "PREFIX" => ""
+        ),
         "defines" => array(),
         "features" => array(),
         "family" => "MX",
@@ -328,8 +330,6 @@ function processFile($regfile, &$data, $keys = array()) {
     $lines = explode("\n", $in);
     $lineno = 0;
 
-    $prefix = "";
-
     foreach ($lines as $line) {
         $lineno++;
         $line = trim($line);
@@ -402,6 +402,9 @@ function processFile($regfile, &$data, $keys = array()) {
                 case "?":
                     
                     $condition = $bits[0];
+                    if (count($bits) < 3) {
+                        $bits[2] = "";
+                    }
                     $true = $bits[1];
                     $false = $bits[2];
 
@@ -457,11 +460,11 @@ function processFile($regfile, &$data, $keys = array()) {
         switch ($chunks[0]) {
 
             case "PREFIX":
-                $prefix = $chunks[1];
+                $data['settings']['PREFIX'] = $chunks[1];
                 break;
     
             case "NOPREFIX":
-                $prefix = "";
+                $data['settings']['PREFIX'] = "";
                 break;
 
             case "INCLUDE":
@@ -545,10 +548,10 @@ function processFile($regfile, &$data, $keys = array()) {
             case "REG":
                 $register = $chunks[2];
                 $address = hexdec("0x" . $chunks[1]);
-                if (array_key_exists($prefix . $register, $data['registers'])) {
-                    error("Duplicate register $prefix$register", $regfile, $lineno);
+                if (array_key_exists($data['settings']['PREFIX'] . $register, $data['registers'])) {
+                    error("Duplicate register " . $data['settings']['PREFIX'] . $register, $regfile, $lineno);
                 }
-                $data['registers'][$prefix . $register] = array(
+                $data['registers'][$data['settings']['PREFIX'] . $register] = array(
                     "address" => $address,
                     "bits" => array()
                 );
@@ -557,15 +560,15 @@ function processFile($regfile, &$data, $keys = array()) {
                 if ($whole !== false) {
                     unset($chunks[$whole]);
                     $chunks = array_values($chunks);
-                    $data['registers'][$prefix . $register]['bits'][0] = array();
+                    $data['registers'][$data['settings']['PREFIX'] . $register]['bits'][0] = array();
                     for ($i = 0; $i < 32; $i++) {
-                        $data['registers'][$prefix . $register]['bits'][0][$i] = $register;
+                        $data['registers'][$data['settings']['PREFIX'] . $register]['bits'][0][$i] = $register;
                     }
                 }
 
                 for ($i = 3; $i < count($chunks); $i++) {
                     $address += 0x4;
-                    $data['registers'][$prefix . $register . $chunks[$i]] = array(
+                    $data['registers'][$data['settings']['PREFIX'] . $register . $chunks[$i]] = array(
                         "address" => $address
                     );
                 }
@@ -589,17 +592,17 @@ function processFile($regfile, &$data, $keys = array()) {
 
                 $names = explode("/", $chunks[2]);
                 for ($layer = 0; $layer < count($names); $layer++) {
-                    if (!array_key_exists($layer, $data['registers'][$prefix . $register]['bits'])) {
-                        $data['registers'][$prefix . $register]['bits'][$layer] = array();
+                    if (!array_key_exists($layer, $data['registers'][$data['settings']['PREFIX'] . $register]['bits'])) {
+                        $data['registers'][$data['settings']['PREFIX'] . $register]['bits'][$layer] = array();
                         for ($bit = 0; $bit < 32; $bit++) {
-                            $data['registers'][$prefix . $register]['bits'][$layer][$bit] = "UNUSED";
+                            $data['registers'][$data['settings']['PREFIX'] . $register]['bits'][$layer][$bit] = "UNUSED";
                         }
                     }
                     for ($bit = $bits[0]; $bit <= $bits[1]; $bit++) {
-                        if ($data['registers'][$prefix . $register]['bits'][$layer][$bit] != "UNUSED") {
+                        if ($data['registers'][$data['settings']['PREFIX'] . $register]['bits'][$layer][$bit] != "UNUSED") {
                             error("Overlapping bitmap", $regfile, $lineno);
                         }
-                        $data['registers'][$prefix . $register]['bits'][$layer][$bit] = $names[$layer];
+                        $data['registers'][$data['settings']['PREFIX'] . $register]['bits'][$layer][$bit] = $names[$layer];
                     }
                 }
                 break;
@@ -652,9 +655,9 @@ function error($message, $file, $line, $data = false) {
     print "Error: $message in $file at line $line\n";
     if ($data) print ">> $data\n";
 
-    print "\n\n";
-    foreach (debug_backtrace() as $dbg) {
-        print $dbg['line'] . ": " . $dbg['function'] . "\n";
-    }
+//    print "\n\n";
+//    foreach (debug_backtrace() as $dbg) {
+//        print $dbg['line'] . ": " . $dbg['function'] . "\n";
+//    }
     exit(10);
 }

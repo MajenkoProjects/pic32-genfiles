@@ -5,6 +5,7 @@ SPEED 200000000
 FAMILY MZ
 
 SET DMA 8
+SET CAN 1
 
 INCLUDE pinmap/mz/064ef
 
@@ -86,3 +87,28 @@ INCLUDE peripherals/mz/ebi BASE=BF8E1000
 INCLUDE peripherals/common/rtcc BASE=BF800C00
 
 INCLUDE peripherals/mz/crypto BASE=BF8E5000
+INCLUDE peripherals/mz/rng BASE=BF8E6000
+
+INCLUDE peripherals/mz/adc-sar12 BASE=BF84B000
+
+INCLUDE peripherals/common/can BASE=BF880000 INDEX=1
+INCLUDE peripherals/common/can BASE=BF881000 INDEX=2
+
+INCLUDE peripherals/common/ethernet BASE=BF882000
+
+INCLUDE peripherals/common/cmp BASE=BF84C000 COUNT=2
+
+INCLUDE peripherals/common/cvref BASE=BF800E00 VREFSEL=0
+
+INCLUDE peripherals/mz/pmd BASE=BF800000
+
+
+INCLUDE peripherals/mz/devcfg BASE=BFC0FFC0
+PREFIX A
+INCLUDE peripherals/mz/devcfg BASE=BFC0FF40
+NOPREFIX
+
+
+INCLUDE peripherals/mz/devid BASE=BF800000
+INCLUDE peripherals/mz/devsn BASE=BFC54020
+INCLUDE peripherals/mz/adccal BASE=BFC54000
