@@ -1,6 +1,6 @@
-FLASH 524288
-SRAM  131072
-BOOT 163840
+FLASH 2M
+SRAM  512k
+BOOT 160k
 SPEED 200000000
 FAMILY MZ
 FEATURES USB PPS CRYPTO FPU
@@ -10,7 +10,7 @@ DEFINE __PIC32MZXX__ 1
 SET DMA 8
 SET CAN 1
 
-INCLUDE pinmap/mz/064ef
+INCLUDE pinmap/mz/100ef
 
 INCLUDE peripherals/mz/nvm BASE=BF800600
 INCLUDE peripherals/mz/reset BASE=BF801240
@@ -20,6 +20,7 @@ INCLUDE peripherals/mz/prefetch BASE=BF8E0000
 INCLUDE peripherals/common/dma BASE=BF811000
 INCLUDE peripherals/mz/usb BASE=BF8E3000
 
+INCLUDE peripherals/mz/porta BASE=BF860000
 INCLUDE peripherals/mz/portb BASE=BF860100
 INCLUDE peripherals/mz/portc BASE=BF860200
 INCLUDE peripherals/mz/portd BASE=BF860300
@@ -66,8 +67,8 @@ INCLUDE peripherals/common/spi BASE=BF821000 INDEX=1
 INCLUDE peripherals/common/spi BASE=BF821200 INDEX=2
 INCLUDE peripherals/common/spi BASE=BF821400 INDEX=3
 INCLUDE peripherals/common/spi BASE=BF821600 INDEX=4
-#INCLUDE peripherals/common/spi BASE=BF821800 INDEX=5
-#INCLUDE peripherals/common/spi BASE=BF821A00 INDEX=6
+INCLUDE peripherals/common/spi BASE=BF821800 INDEX=5
+INCLUDE peripherals/common/spi BASE=BF821A00 INDEX=6
 
 INCLUDE peripherals/mz/sqi BASE=BF8E2000
 

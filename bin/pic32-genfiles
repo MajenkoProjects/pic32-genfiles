@@ -311,6 +311,8 @@ function genfile($chip) {
     $flags[] = "-march=mips32r2";
     if (!array_key_exists("FPU", $data['features'])) {
         $flags[] = "-msoft-float";
+    } else {
+        $flags[] = "-mnan=legacy";
     }
 
     $flags = implode(" ", $flags);
@@ -333,9 +335,19 @@ function processFile($regfile, &$data, $keys = array()) {
     foreach ($lines as $line) {
         $lineno++;
         $line = trim($line);
+
+        $d = explode("#", $line);
+        $line = trim($d[0]);
         if ($line == "") continue;
-        if (substr($line, 0, 1) == "#") continue;
-        if (substr($line, 0, 1) == ";") continue;
+
+        $line = preg_replace_callback('/\s+(\d+)([BkMG])/', function ($m) {
+            switch ($m[2]) {
+                case 'B': return " " . ($m[1] - 0);
+                case 'k': return " " . (($m[1] - 0) * 1024);
+                case 'M': return " " . (($m[1] - 0) * 1024 * 1024);
+                case 'G': return " " . (($m[1] - 0) * 1024 * 1024 * 1024);
+            } 
+        }, $line);
 
         $tokens = array_merge($data['settings'], $keys);
 

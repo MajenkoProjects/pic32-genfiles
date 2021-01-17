@@ -875,8 +875,8 @@ VEC PMP                                128
 VEC PMP_ERROR                          129
 VEC COMPARATOR_1                       130
 VEC COMPARATOR_2                       131
-VEC USB1                               132
-VEC USB1_DMA                           133
+VEC USB                                132
+VEC USB_DMA                            133
 VEC DMA0                               134
 VEC DMA1                               135
 VEC DMA2                               136
