@@ -72,3 +72,4 @@ INCLUDE peripherals/mx/system           BASE=BF80F200
 
 
 
+INCLUDE src/core.lib

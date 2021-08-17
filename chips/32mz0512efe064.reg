@@ -115,3 +115,4 @@ NOPREFIX
 INCLUDE peripherals/mz/devid BASE=BF800000
 INCLUDE peripherals/mz/devsn BASE=BFC54020
 INCLUDE peripherals/mz/adccal BASE=BFC54000
+INCLUDE src/core.lib

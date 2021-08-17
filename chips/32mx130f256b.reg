@@ -48,3 +48,4 @@ INCLUDE peripherals/mx/pmd BASE=BF80F240
 INCLUDE peripherals/mx/devcfg BASE=BFC00BF0
 INCLUDE peripherals/mx/system BASE=BF80F200
 
+INCLUDE src/core.lib

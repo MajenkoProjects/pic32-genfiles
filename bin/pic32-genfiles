@@ -112,6 +112,7 @@ function genfile($chip) {
         "features" => array(),
         "family" => "MX",
         "speed" => 0,
+        "lib" => array(),
         "memory" => array(
             "flash" => 0,
             "sram" => 0,
@@ -308,6 +309,7 @@ function genfile($chip) {
     }
 
     $flags = array();
+    $flags[] = "-Isrc";
     $flags[] = "-march=mips32r2";
     if (!array_key_exists("FPU", $data['features'])) {
         $flags[] = "-msoft-float";
@@ -318,11 +320,26 @@ function genfile($chip) {
     $flags = implode(" ", $flags);
 
     file_put_contents("lib/proc/$chip.S", implode("\n", $ld) . "\n");
-    system("mipsel-pic32-elf-gcc $flags -c lib/proc/$chip.S -o lib/proc/$chip.o");
-    system("mipsel-pic32-elf-ar rcs lib/proc/lib$chip.a lib/proc/$chip.o");
+
+    $data['lib'][] = "lib/proc/$chip.S";
+
+    foreach ($data['lib'] as $src) {
+        $out = "";
+        if ((substr($src, -2, 2) == ".S") || (substr($src, -2, 2) == ".c")) {
+            $out = substr($src, 0, -1) . "o";
+            print "Compiling $src to $out\n";
+            system("mipsel-pic32-elf-gcc $flags -c $src -o $out");
+            system("mipsel-pic32-elf-ar rcs lib/proc/lib$chip.a $out");
+            if (!array_key_exists("d", $opts)) {
+                unlink($out);
+            }
+        } else {
+            print "Unsupported source: $src\n";
+        }
+            
+    }
     if (!array_key_exists("d", $opts)) {
         unlink("lib/proc/$chip.S");
-        unlink("lib/proc/$chip.o");
     }
 }
 
@@ -470,6 +487,10 @@ function processFile($regfile, &$data, $keys = array()) {
         $chunks = preg_split("/\s+/", $line);
 
         switch ($chunks[0]) {
+
+            case "LIB":
+                $data['lib'][] = $chunks[1];
+                break;
 
             case "PREFIX":
                 $data['settings']['PREFIX'] = $chunks[1];
