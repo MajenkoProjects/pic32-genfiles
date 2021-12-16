@@ -98,7 +98,7 @@ Simple mathematics can be performed with mathematical directives.
 The basic format of a replacement is:
 
 ```
-<operator>{<token construct>}
+${<token construct>}
 ```
 
 There are many types of token each with its own token construct format.
@@ -111,39 +111,41 @@ in the database. The associated value is then replaced verbatim in the file.
 
 For example if BASE is set to bf880000 then ${BASE} is replaced with bf880000.
 
-Query Replacements
+Command Replacements
 ------------------
 
-A query replacement peforms a simple logical check on two values and selects one of two
-possible strings to replace with.  The format is:
+A command replacement executes a specific function and replaces the content with the
+result of that function. 
 
 ```
-?{query,true,false}
-
-If `query` is logically true then the whole block is replaced with `true`, otherwise
-it's replaced with `false`.
-
-Queries can be `==`, `!=`, `>`, `>=`, `<` or `<=`.
-
-For example, if USB is set to 1 then:
+${if <vali1> <comparison> <val2> ? <true value> : <false value>
 ```
-?{USB==1,HAS_USB,DOESNT_HAVE_USB}`
+
+if the `comparison` between `val1` and `val2` is true `true value` is used, otherwise
+`false value` is used. Possible comparisons are: `==`, `!=`, `>=`, `>`, `<=`, `<`
+
 ```
-is replaced with `HAS_USB`.
+${tohex <value>}
+```
 
-Decimal Conversion
-------------------
+Simply converts the given value to hexadecimal. It does *not* prefix the value with 0x.
+If you need that prefix it is your job to manuall add it.  For example: `0x${tohex 69}`
 
-All numbers are hexadecimal. However it is possible to convert a decimal number to hexadeximal
-using the `%` operator.  Simply enclose the decimal number in `%{...}` and it will be replaced
-with the hexadecimal equibalent.  For example `%{10}` will be replaced by `A`.
+```
+${fromhex <value>}
+```
 
-Mathematics
------------
+Interprets `value` as a hexadecimal value and returns the decimal equivalent.
 
-Simple mathematics operations can be performed with the `+`, `-`, `/` and `*` operators. The
-brackets contains a list of numbers (hexadecimal as noted above) separated by commas, and the
-specified operator is performed on each one. The first number is taken as the starting point for
-all operations.
+```
+${rpn ...}
+```
 
-So `+{4,5}` is equivalent to 4+5, and `-{8,4}` is equivalent to 8-4.
+Performs mathematics using a simple Reverse Polish Notation.  Provide a sequence of values
+(which are pushed to the stack) and operators (which pop values from the stack, operate on
+them, and push the result back to the stack). The last value pushed to the stack is taken as
+the result.  Possible operations are `+`, `-`, `/` and `*`.
+
+Example: `${rpn ${BASE} 0x10 +}`  - will add 16 to the `BASE` value
+
+Example: `${rpn ${INDEX} 4 * ${BASE} +}` - Will multiply `INDEX` by 4 then add it to the `BASE` value.
