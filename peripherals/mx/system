@@ -1,25 +1,25 @@
-?{PPS==1,REG ${BASE} CFGCON,}
-?{PPS==1,BIT 31-14   UNUSED,}
-?{PPS==1,BIT 13      IOLOCK,}
-?{PPS==1,BIT 12      PMDLOCK,}
-?{PPS==1,BIT 11-4    UNUSED,}
-?{PPS==1,BIT 3       JTAGEN,}
-?{PPS==1,BIT 2-1     UNUSED,}
-?{PPS==1,BIT 0       TDOEN,}
+${if ${PPS} == 1 ? REG ${BASE} CFGCON : }
+${if ${PPS} == 1 ? BIT 31-14   UNUSED : }
+${if ${PPS} == 1 ? BIT 13      IOLOCK : }
+${if ${PPS} == 1 ? BIT 12      PMDLOCK : }
+${if ${PPS} == 1 ? BIT 11-4    UNUSED : }
+${if ${PPS} == 1 ? BIT 3       JTAGEN : }
+${if ${PPS} == 1 ? BIT 2-1     UNUSED : }
+${if ${PPS} == 1 ? BIT 0       TDOEN : }
 
-?{PPS!=1,REG ${BASE} DDPCON,}
-?{PPS!=1,BIT 31-4    UNUSED,}
-?{PPS!=1,BIT 3       JTAGEN,}
-?{PPS!=1,BIT 2       TROEN,}
-?{PPS!=1,BIT 1       UNUSED,}
-?{PPS!=1,BIT 0       TDOEN,}
+${if ${PPS} != 1 ? REG ${BASE} DDPCON : }
+${if ${PPS} != 1 ? BIT 31-4    UNUSED : }
+${if ${PPS} != 1 ? BIT 3       JTAGEN : }
+${if ${PPS} != 1 ? BIT 2       TROEN : }
+${if ${PPS} != 1 ? BIT 1       UNUSED : }
+${if ${PPS} != 1 ? BIT 0       TDOEN : }
 
 
-REG +{${BASE},20} DEVID
+REG ${rpn ${BASE} 0x20 +} DEVID
 BIT 31-28   VER
 BIT 27-0    DEVID
 
 
-REG +{${BASE},30} SYSKEY
+REG ${rpn ${BASE} 0x30 +} SYSKEY
 BIT 31-0    SYSKEY
 

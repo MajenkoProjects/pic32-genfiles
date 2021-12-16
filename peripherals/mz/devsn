@@ -2,6 +2,6 @@ PERIPHERAL ${BASE} DEVSN
 
 # These might need renaming to DEVSN in the bits
 REG ${BASE} DEVSN0 WHOLE
-REG +{${BASE},4} DEVSN1 WHOLE
-REG +{${BASE},8} DEVSN2 WHOLE
-REG +{${BASE},C} DEVSN3 WHOLE
+REG ${rpn ${BASE} 0x4 +} DEVSN1 WHOLE
+REG ${rpn ${BASE} 0x8 +} DEVSN2 WHOLE
+REG ${rpn ${BASE} 0xC +} DEVSN3 WHOLE

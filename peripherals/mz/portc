@@ -1,111 +1,111 @@
 PERIPHERAL ${BASE} PORTC
 
 REG ${BASE} ANSELC CLR SET INV
-?{PINS>64,BIT 4       ANSC4,}
-?{PINS>64,BIT 3       ANSC3,}
-?{PINS>64,BIT 2       ANSC2,}
-?{PINS>64,BIT 1       ANSC1,}
+${if ${PINS} > 64 ? BIT 4       ANSC4 : }
+${if ${PINS} > 64 ? BIT 3       ANSC3 : }
+${if ${PINS} > 64 ? BIT 2       ANSC2 : }
+${if ${PINS} > 64 ? BIT 1       ANSC1 : }
 
-REG +{${BASE},10} TRISC CLR SET INV
+REG ${rpn ${BASE} 0x10 +} TRISC CLR SET INV
 BIT 15      TRISC15
 BIT 14      TRISC14
 BIT 13      TRISC13
 BIT 12      TRISC12
-?{PINS>64,BIT 4       TRISC4,}
-?{PINS>64,BIT 3       TRISC3,}
-?{PINS>64,BIT 2       TRISC2,}
-?{PINS>64,BIT 1       TRISC1,}
+${if ${PINS} > 64 ? BIT 4       TRISC4 : }
+${if ${PINS} > 64 ? BIT 3       TRISC3 : }
+${if ${PINS} > 64 ? BIT 2       TRISC2 : }
+${if ${PINS} > 64 ? BIT 1       TRISC1 : }
 
-REG +{${BASE},20} PORTC CLR SET INV
+REG ${rpn ${BASE} 0x20 +} PORTC CLR SET INV
 BIT 15      PORTC15
 BIT 14      PORTC14
 BIT 13      PORTC13
 BIT 12      PORTC12
-?{PINS>64,BIT 4       PORTC4,}
-?{PINS>64,BIT 3       PORTC3,}
-?{PINS>64,BIT 2       PORTC2,}
-?{PINS>64,BIT 1       PORTC1,}
+${if ${PINS} > 64 ? BIT 4       PORTC4 : }
+${if ${PINS} > 64 ? BIT 3       PORTC3 : }
+${if ${PINS} > 64 ? BIT 2       PORTC2 : }
+${if ${PINS} > 64 ? BIT 1       PORTC1 : }
 
-REG +{${BASE},30} LATC CLR SET INV
+REG ${rpn ${BASE} 0x30 +} LATC CLR SET INV
 BIT 15      LATC15
 BIT 14      LATC14
 BIT 13      LATC13
 BIT 12      LATC12
-?{PINS>64,BIT 4       LATC4,}
-?{PINS>64,BIT 3       LATC3,}
-?{PINS>64,BIT 2       LATC2,}
-?{PINS>64,BIT 1       LATC1,}
+${if ${PINS} > 64 ? BIT 4       LATC4 : }
+${if ${PINS} > 64 ? BIT 3       LATC3 : }
+${if ${PINS} > 64 ? BIT 2       LATC2 : }
+${if ${PINS} > 64 ? BIT 1       LATC1 : }
 
-REG +{${BASE},40} ODCC CLR SET INV
+REG ${rpn ${BASE} 0x40 +} ODCC CLR SET INV
 BIT 15      ODCC15
 BIT 14      ODCC14
 BIT 13      ODCC13
 BIT 12      ODCC12
-?{PINS>64,BIT 4       ODCC4,}
-?{PINS>64,BIT 3       ODCC3,}
-?{PINS>64,BIT 2       ODCC2,}
-?{PINS>64,BIT 1       ODCC1,}
+${if ${PINS} > 64 ? BIT 4       ODCC4 : }
+${if ${PINS} > 64 ? BIT 3       ODCC3 : }
+${if ${PINS} > 64 ? BIT 2       ODCC2 : }
+${if ${PINS} > 64 ? BIT 1       ODCC1 : }
 
-REG +{${BASE},50} CNPUC CLR SET INV
+REG ${rpn ${BASE} 0x50 +} CNPUC CLR SET INV
 BIT 15      CNPUC15
 BIT 14      CNPUC14
 BIT 13      CNPUC13
 BIT 12      CNPUC12
-?{PINS>64,BIT 4       CNPUC4,}
-?{PINS>64,BIT 3       CNPUC3,}
-?{PINS>64,BIT 2       CNPUC2,}
-?{PINS>64,BIT 1       CNPUC1,}
+${if ${PINS} > 64 ? BIT 4       CNPUC4 : }
+${if ${PINS} > 64 ? BIT 3       CNPUC3 : }
+${if ${PINS} > 64 ? BIT 2       CNPUC2 : }
+${if ${PINS} > 64 ? BIT 1       CNPUC1 : }
 
-REG +{${BASE},60} CNPDC CLR SET INV
+REG ${rpn ${BASE} 0x60 +} CNPDC CLR SET INV
 BIT 15      CNPDC15
 BIT 14      CNPDC14
 BIT 13      CNPDC13
 BIT 12      CNPDC12
-?{PINS>64,BIT 4       CNPDC4,}
-?{PINS>64,BIT 3       CNPDC3,}
-?{PINS>64,BIT 2       CNPDC2,}
-?{PINS>64,BIT 1       CNPDC1,}
+${if ${PINS} > 64 ? BIT 4       CNPDC4 : }
+${if ${PINS} > 64 ? BIT 3       CNPDC3 : }
+${if ${PINS} > 64 ? BIT 2       CNPDC2 : }
+${if ${PINS} > 64 ? BIT 1       CNPDC1 : }
 
-REG +{${BASE},70} CNCONC CLR SET INV
+REG ${rpn ${BASE} 0x70 +} CNCONC CLR SET INV
 BIT 15      ON
 BIT 11      EDGEDETECT
 
-REG +{${BASE},80} CNENC CLR SET INV
+REG ${rpn ${BASE} 0x80 +} CNENC CLR SET INV
 BIT 15      CNENC15
 BIT 14      CNENC14
 BIT 13      CNENC13
 BIT 12      CNENC12
-?{PINS>64,BIT 4       CNENC4,}
-?{PINS>64,BIT 3       CNENC3,}
-?{PINS>64,BIT 2       CNENC2,}
-?{PINS>64,BIT 1       CNENC1,}
+${if ${PINS} > 64 ? BIT 4       CNENC4 : }
+${if ${PINS} > 64 ? BIT 3       CNENC3 : }
+${if ${PINS} > 64 ? BIT 2       CNENC2 : }
+${if ${PINS} > 64 ? BIT 1       CNENC1 : }
 
-REG +{${BASE},90} CNSTATC CLR SET INV
+REG ${rpn ${BASE} 0x90 +} CNSTATC CLR SET INV
 BIT 15      CNSTATC15
 BIT 14      CNSTATC14
 BIT 13      CNSTATC13
 BIT 12      CNSTATC12
-?{PINS>64,BIT 4       CNSTATC4,}
-?{PINS>64,BIT 3       CNSTATC3,}
-?{PINS>64,BIT 2       CNSTATC2,}
-?{PINS>64,BIT 1       CNSTATC1,}
+${if ${PINS} > 64 ? BIT 4       CNSTATC4 : }
+${if ${PINS} > 64 ? BIT 3       CNSTATC3 : }
+${if ${PINS} > 64 ? BIT 2       CNSTATC2 : }
+${if ${PINS} > 64 ? BIT 1       CNSTATC1 : }
 
-REG +{${BASE},A0} CNNEAC CLR SET INV
+REG ${rpn ${BASE} 0xA0 +} CNNEAC CLR SET INV
 BIT 15      CNNEAC15
 BIT 14      CNNEAC14
 BIT 13      CNNEAC13
 BIT 12      CNNEAC12
-?{PINS>64,BIT 4       CNNEAC4,}
-?{PINS>64,BIT 3       CNNEAC3,}
-?{PINS>64,BIT 2       CNNEAC2,}
-?{PINS>64,BIT 1       CNNEAC1,}
+${if ${PINS} > 64 ? BIT 4       CNNEAC4 : }
+${if ${PINS} > 64 ? BIT 3       CNNEAC3 : }
+${if ${PINS} > 64 ? BIT 2       CNNEAC2 : }
+${if ${PINS} > 64 ? BIT 1       CNNEAC1 : }
 
-REG +{${BASE},B0} CNFC CLR SET INV
+REG ${rpn ${BASE} 0xB0 +} CNFC CLR SET INV
 BIT 15      CNFC15
 BIT 14      CNFC14
 BIT 13      CNFC13
 BIT 12      CNFC12
-?{PINS>64,BIT 4       CNFC4,}
-?{PINS>64,BIT 3       CNFC3,}
-?{PINS>64,BIT 2       CNFC2,}
-?{PINS>64,BIT 1       CNFC1,}
+${if ${PINS} > 64 ? BIT 4       CNFC4 : }
+${if ${PINS} > 64 ? BIT 3       CNFC3 : }
+${if ${PINS} > 64 ? BIT 2       CNFC2 : }
+${if ${PINS} > 64 ? BIT 1       CNFC1 : }

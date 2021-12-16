@@ -19,7 +19,7 @@ BIT 9       SUSPMODE
 BIT 8       SUSPEN
 BIT 6-0     FUNC
 
-REG +{${BASE},4} USBCSR1
+REG ${rpn ${BASE} 0x4 +} USBCSR1
 BIT 23      EP7TXIE
 BIT 22      EP6TXIE
 BIT 21      EP5TXIE
@@ -36,7 +36,7 @@ BIT 3       EP3RXIF
 BIT 2       EP2RXIF
 BIT 1       EP1RXIF
 
-REG +{${BASE},8} USBCSR2
+REG ${rpn ${BASE} 0x8 +} USBCSR2
 BIT 31      VBUSERRIE
 BIT 30      SESSRQIE
 BIT 29      DISCONIE
@@ -61,7 +61,7 @@ BIT 3       EP3RXIE
 BIT 2       EP2RXIE
 BIT 1       EP1RXIE
 
-REG +{${BASE},C} USBCSR3
+REG ${rpn ${BASE} 0xC +} USBCSR3
 BIT 31      FORCEHST
 BIT 30      FIFOACC
 BIT 29      FORCEFS
@@ -73,7 +73,7 @@ BIT 24      NAK
 BIT 19-16   ENDPOINT
 BIT 10-0    RFRMNUM
 
-REG +{${BASE},10} USBIE0CSR0
+REG ${rpn ${BASE} 0x10 +} USBIE0CSR0
 BIT 26      DTWE
 BIT 25      DT
 BIT 24      FLUSH
@@ -87,12 +87,12 @@ BIT 17      TXRDY
 BIT 16      RXRDY
 BIT 10-0    TXMAXP
 
-REG +{${BASE},18} USBIE0CSR2
+REG ${rpn ${BASE} 0x18 +} USBIE0CSR2
 BIT 28-24   NAKLIM
 BIT 23-22   SPEED
 BIT 6-0     RXCNT
 
-REG +{${BASE},1C} USBIE0CSR3
+REG ${rpn ${BASE} 0x1C +} USBIE0CSR3
 BIT 31      MPRXEN
 BIT 30      MPTXEN
 BIT 29      BIGEND
@@ -103,7 +103,7 @@ BIT 25      SOFTCONE
 BIT 24      UTMIDWID
 
 
-REG +{${BASE},10} USBIENCSR0
+REG ${rpn ${BASE} 0x10 +} USBIENCSR0
 BIT 31      AUTOSET
 BIT 30      ISO
 BIT 29      MODE
@@ -123,7 +123,7 @@ BIT 16      TXPKTRDY
 BIT 15-11   MULT
 BIT 10-0    TXMAXP
 
-REG +{${BASE},14} USBIENCSR1
+REG ${rpn ${BASE} 0x14 +} USBIENCSR1
 BIT 31      AUTOCLR
 BIT 30      ISO/AUTORQ
 BIT 29      DMAREQEN
@@ -143,14 +143,14 @@ BIT 16      RXPKTRDY
 BIT 15-11   MULT
 BIT 10-0    RXMAXP
 
-REG +{${BASE},18} USBIENCSR2
+REG ${rpn ${BASE} 0x18 +} USBIENCSR2
 BIT 31-24   TXINTERV
 BIT 23-22   SPEED
 BIT 21-20   PROTOCOL
 BIT 19-16   TEP
 BIT 13-0    RXCNT
 
-REG +{${BASE},1C} USBIENCSR3
+REG ${rpn ${BASE} 0x1C +} USBIENCSR3
 BIT 31-28   RXFIFOSZ
 BIT 26-24   TXFIFOSZ
 BIT 15-8    RXINTERV
@@ -158,31 +158,31 @@ BIT 7-6     SPEED
 BIT 5-4     PROTOCOL
 BIT 3-0     TEP
 
-REG +{${BASE},20} USBFIFO0
+REG ${rpn ${BASE} 0x20 +} USBFIFO0
 BIT 31-0    DATA
 
-REG +{${BASE},24} USBFIFO1
+REG ${rpn ${BASE} 0x24 +} USBFIFO1
 BIT 31-0    DATA
 
-REG +{${BASE},28} USBFIFO2
+REG ${rpn ${BASE} 0x28 +} USBFIFO2
 BIT 31-0    DATA
 
-REG +{${BASE},2C} USBFIFO3
+REG ${rpn ${BASE} 0x2C +} USBFIFO3
 BIT 31-0    DATA
 
-REG +{${BASE},30} USBFIFO4
+REG ${rpn ${BASE} 0x30 +} USBFIFO4
 BIT 31-0    DATA
 
-REG +{${BASE},34} USBFIFO5
+REG ${rpn ${BASE} 0x34 +} USBFIFO5
 BIT 31-0    DATA
 
-REG +{${BASE},38} USBFIFO6
+REG ${rpn ${BASE} 0x38 +} USBFIFO6
 BIT 31-0    DATA
 
-REG +{${BASE},3C} USBFIFO7
+REG ${rpn ${BASE} 0x3C +} USBFIFO7
 BIT 31-0    DATA
 
-REG +{${BASE},60} USBOTG
+REG ${rpn ${BASE} 0x60 +} USBOTG
 BIT 28      RXDPB
 BIT 27-24   RXFIFOSZ
 BIT 20      TXDPB
@@ -197,16 +197,16 @@ BIT 2       HOSTMODE
 BIT 1       HOSTREQ
 BIT 0       SESSION
 
-REG +{${BASE},64} USBFIFOA
+REG ${rpn ${BASE} 0x64 +} USBFIFOA
 BIT 28-16   RXFIFOAD
 BIT 12-0    TXFIFOAD
 
-REG +{${BASE},6C} USBHWVER
+REG ${rpn ${BASE} 0x6C +} USBHWVER
 BIT 15      RC
 BIT 14-10   VERMAJOR
 BIT 9-0     VERMINOR
 
-REG +{${BASE},78} USBINFO
+REG ${rpn ${BASE} 0x78 +} USBINFO
 BIT 31-24   VPLEN
 BIT 23-20   WTCON
 BIT 19-16   WTID
@@ -215,23 +215,23 @@ BIT 11-8    RAMBITS
 BIT 7-4     RXENDPTS
 BIT 3-0     TXENDPTS
 
-REG +{${BASE},7C} USBEOFRST
+REG ${rpn ${BASE} 0x7C +} USBEOFRST
 BIT 25      NRSTX
 BIT 24      NRST
 BIT 23-16   LSEOF
 BIT 15-8    FSEOF
 BIT 7-0     HSEOF
 
-INCLUDE peripherals/mz/usb-epa BASE=+{${BASE},80} INDEX=0
-INCLUDE peripherals/mz/usb-epa BASE=+{${BASE},88} INDEX=1
-INCLUDE peripherals/mz/usb-epa BASE=+{${BASE},90} INDEX=2
-INCLUDE peripherals/mz/usb-epa BASE=+{${BASE},98} INDEX=3
-INCLUDE peripherals/mz/usb-epa BASE=+{${BASE},A0} INDEX=4
-INCLUDE peripherals/mz/usb-epa BASE=+{${BASE},A8} INDEX=5
-INCLUDE peripherals/mz/usb-epa BASE=+{${BASE},B0} INDEX=6
-INCLUDE peripherals/mz/usb-epa BASE=+{${BASE},B8} INDEX=7
+INCLUDE peripherals/mz/usb-epa BASE=${rpn ${BASE} 0x80 +} INDEX=0
+INCLUDE peripherals/mz/usb-epa BASE=${rpn ${BASE} 0x88 +} INDEX=1
+INCLUDE peripherals/mz/usb-epa BASE=${rpn ${BASE} 0x90 +} INDEX=2
+INCLUDE peripherals/mz/usb-epa BASE=${rpn ${BASE} 0x98 +} INDEX=3
+INCLUDE peripherals/mz/usb-epa BASE=${rpn ${BASE} 0xA0 +} INDEX=4
+INCLUDE peripherals/mz/usb-epa BASE=${rpn ${BASE} 0xA8 +} INDEX=5
+INCLUDE peripherals/mz/usb-epa BASE=${rpn ${BASE} 0xB0 +} INDEX=6
+INCLUDE peripherals/mz/usb-epa BASE=${rpn ${BASE} 0xB8 +} INDEX=7
 
-REG +{${BASE},100} USBE0CSR0
+REG ${rpn ${BASE} 0x100 +} USBE0CSR0
 BIT 26      DTWE
 BIT 25      DT
 BIT 24      FLUSH
@@ -245,12 +245,12 @@ BIT 17      TXRDY
 BIT 16      RXRDY
 BIT 10-0    TXMAXP
 
-REG +{${BASE},108} USBE0CSR2
+REG ${rpn ${BASE} 0x108 +} USBE0CSR2
 BIT 28-24   NAKLIM
 BIT 23-22   SPEED
 BIT 6-0     RXCNT
 
-REG +{${BASE},10C} USBE0CSR3
+REG ${rpn ${BASE} 0x10C +} USBE0CSR3
 BIT 31      MPRXEN
 BIT 30      MPTXEN
 BIT 29      BIGEND
@@ -261,15 +261,15 @@ BIT 25      SOFTCONE
 BIT 24      UTMIDWID
 
 
-INCLUDE peripherals/mz/usb-csr BASE=+{${BASE},110} INDEX=1
-INCLUDE peripherals/mz/usb-csr BASE=+{${BASE},120} INDEX=2
-INCLUDE peripherals/mz/usb-csr BASE=+{${BASE},130} INDEX=3
-INCLUDE peripherals/mz/usb-csr BASE=+{${BASE},140} INDEX=4
-INCLUDE peripherals/mz/usb-csr BASE=+{${BASE},150} INDEX=5
-INCLUDE peripherals/mz/usb-csr BASE=+{${BASE},160} INDEX=6
-INCLUDE peripherals/mz/usb-csr BASE=+{${BASE},170} INDEX=7
+INCLUDE peripherals/mz/usb-csr BASE=${rpn ${BASE} 0x110 +} INDEX=1
+INCLUDE peripherals/mz/usb-csr BASE=${rpn ${BASE} 0x120 +} INDEX=2
+INCLUDE peripherals/mz/usb-csr BASE=${rpn ${BASE} 0x130 +} INDEX=3
+INCLUDE peripherals/mz/usb-csr BASE=${rpn ${BASE} 0x140 +} INDEX=4
+INCLUDE peripherals/mz/usb-csr BASE=${rpn ${BASE} 0x150 +} INDEX=5
+INCLUDE peripherals/mz/usb-csr BASE=${rpn ${BASE} 0x160 +} INDEX=6
+INCLUDE peripherals/mz/usb-csr BASE=${rpn ${BASE} 0x170 +} INDEX=7
 
-REG +{${BASE},200} USBDMAINT
+REG ${rpn ${BASE} 0x200 +} USBDMAINT
 BIT 7       DMA8IF
 BIT 6       DMA7IF
 BIT 5       DMA6IF
@@ -279,24 +279,24 @@ BIT 2       DMA3IF
 BIT 1       DMA2IF
 BIT 0       DMA1IF
 
-INCLUDE peripherals/mz/usb-dma BASE=+{${BASE},204} INDEX=1
-INCLUDE peripherals/mz/usb-dma BASE=+{${BASE},214} INDEX=2
-INCLUDE peripherals/mz/usb-dma BASE=+{${BASE},224} INDEX=3
-INCLUDE peripherals/mz/usb-dma BASE=+{${BASE},234} INDEX=4
-INCLUDE peripherals/mz/usb-dma BASE=+{${BASE},244} INDEX=5
-INCLUDE peripherals/mz/usb-dma BASE=+{${BASE},254} INDEX=6
-INCLUDE peripherals/mz/usb-dma BASE=+{${BASE},264} INDEX=7
-INCLUDE peripherals/mz/usb-dma BASE=+{${BASE},274} INDEX=8
+INCLUDE peripherals/mz/usb-dma BASE=${rpn ${BASE} 0x204 +} INDEX=1
+INCLUDE peripherals/mz/usb-dma BASE=${rpn ${BASE} 0x214 +} INDEX=2
+INCLUDE peripherals/mz/usb-dma BASE=${rpn ${BASE} 0x224 +} INDEX=3
+INCLUDE peripherals/mz/usb-dma BASE=${rpn ${BASE} 0x234 +} INDEX=4
+INCLUDE peripherals/mz/usb-dma BASE=${rpn ${BASE} 0x244 +} INDEX=5
+INCLUDE peripherals/mz/usb-dma BASE=${rpn ${BASE} 0x254 +} INDEX=6
+INCLUDE peripherals/mz/usb-dma BASE=${rpn ${BASE} 0x264 +} INDEX=7
+INCLUDE peripherals/mz/usb-dma BASE=${rpn ${BASE} 0x274 +} INDEX=8
 
-INCLUDE peripherals/mz/usb-rpc BASE=+{${BASE},304} INDEX=1
-INCLUDE peripherals/mz/usb-rpc BASE=+{${BASE},308} INDEX=2
-INCLUDE peripherals/mz/usb-rpc BASE=+{${BASE},30C} INDEX=3
-INCLUDE peripherals/mz/usb-rpc BASE=+{${BASE},310} INDEX=4
-INCLUDE peripherals/mz/usb-rpc BASE=+{${BASE},314} INDEX=5
-INCLUDE peripherals/mz/usb-rpc BASE=+{${BASE},318} INDEX=6
-INCLUDE peripherals/mz/usb-rpc BASE=+{${BASE},31C} INDEX=7
+INCLUDE peripherals/mz/usb-rpc BASE=${rpn ${BASE} 0x304 +} INDEX=1
+INCLUDE peripherals/mz/usb-rpc BASE=${rpn ${BASE} 0x308 +} INDEX=2
+INCLUDE peripherals/mz/usb-rpc BASE=${rpn ${BASE} 0x30C +} INDEX=3
+INCLUDE peripherals/mz/usb-rpc BASE=${rpn ${BASE} 0x310 +} INDEX=4
+INCLUDE peripherals/mz/usb-rpc BASE=${rpn ${BASE} 0x314 +} INDEX=5
+INCLUDE peripherals/mz/usb-rpc BASE=${rpn ${BASE} 0x318 +} INDEX=6
+INCLUDE peripherals/mz/usb-rpc BASE=${rpn ${BASE} 0x31C +} INDEX=7
 
-REG +{${BASE},340} USBDPBFD
+REG ${rpn ${BASE} 0x340 +} USBDPBFD
 BIT 23      EP7TXD
 BIT 22      EP6TXD
 BIT 21      EP5TXD
@@ -312,14 +312,14 @@ BIT 3       EP3RXD
 BIT 2       EP2RXD
 BIT 1       EP1RXD
 
-REG +{${BASE},344} USBTMCON1
+REG ${rpn ${BASE} 0x344 +} USBTMCON1
 BIT 31-16   THHSRTN
 BIT 15-0    TUCH
 
-REG +{${BASE},348} USBTMCON2
+REG ${rpn ${BASE} 0x348 +} USBTMCON2
 BIT 3-0     THSBT
 
-REG +{${BASE},360} USBLPMR1
+REG ${rpn ${BASE} 0x360 +} USBLPMR1
 BIT 29      LPMERRIE
 BIT 28      LPMRESIE
 BIT 27      LPMACKIE
@@ -335,7 +335,7 @@ BIT 8       RMTWAK
 BIT 7-4     HIRD
 BIT 3-0     LNKSTATE
 
-REG +{${BASE},364} USBLPMR2
+REG ${rpn ${BASE} 0x364 +} USBLPMR2
 BIT 14-8    LPMFADDR
 BIT 5       LPMERR
 BIT 4       LPMRES
@@ -344,7 +344,7 @@ BIT 2       LPMACK
 BIT 1       LPMNY
 BIT 0       LPMST
 
-REG +{${BASE},1000} USBCRCON
+REG ${rpn ${BASE} 0x1000 +} USBCRCON
 BIT 26      USBIF
 BIT 25      USBRF
 BIT 24      USBWKUP

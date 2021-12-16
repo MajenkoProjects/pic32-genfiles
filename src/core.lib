@@ -1,2 +1,3 @@
 LIB src/core/pic32_init_cache.S
 LIB src/core/pic32_init_tlb_ebi_sqi.S
+LIB src/libpic32.c

@@ -1,16 +1,16 @@
 PERIPHERAL ${BASE} PORTE
 
 REG ${BASE} ANSELE CLR SET INV
-?{PINS>64,BIT 9       ANSE9,}
-?{PINS>64,BIT 8       ANSE8,}
+${if ${PINS} > 64 ? BIT 9       ANSE9 : }
+${if ${PINS} > 64 ? BIT 8       ANSE8 : }
 BIT 7       ANSE7
 BIT 6       ANSE6
 BIT 5       ANSE5
 BIT 4       ANSE4
 
-REG +{${BASE},10} TRISE CLR SET INV
-?{PINS>64,BIT 9       TRISE9,}
-?{PINS>64,BIT 8       TRISE8,}
+REG ${rpn ${BASE} 0x10 +} TRISE CLR SET INV
+${if ${PINS} > 64 ? BIT 9       TRISE9 : }
+${if ${PINS} > 64 ? BIT 8       TRISE8 : }
 BIT 7       TRISE7
 BIT 6       TRISE6
 BIT 5       TRISE5
@@ -20,9 +20,9 @@ BIT 2       TRISE2
 BIT 1       TRISE1
 BIT 0       TRISE0
 
-REG +{${BASE},20} PORTE CLR SET INV
-?{PINS>64,BIT 9       PORTE9,}
-?{PINS>64,BIT 8       PORTE8,}
+REG ${rpn ${BASE} 0x20 +} PORTE CLR SET INV
+${if ${PINS} > 64 ? BIT 9       PORTE9 : }
+${if ${PINS} > 64 ? BIT 8       PORTE8 : }
 BIT 7       PORTE7
 BIT 6       PORTE6
 BIT 5       PORTE5
@@ -32,9 +32,9 @@ BIT 2       PORTE2
 BIT 1       PORTE1
 BIT 0       PORTE0
 
-REG +{${BASE},30} LATE CLR SET INV
-?{PINS>64,BIT 9       LATE9,}
-?{PINS>64,BIT 8       LATE8,}
+REG ${rpn ${BASE} 0x30 +} LATE CLR SET INV
+${if ${PINS} > 64 ? BIT 9       LATE9 : }
+${if ${PINS} > 64 ? BIT 8       LATE8 : }
 BIT 7       LATE7
 BIT 6       LATE6
 BIT 5       LATE5
@@ -44,9 +44,9 @@ BIT 2       LATE2
 BIT 1       LATE1
 BIT 0       LATE0
 
-REG +{${BASE},40} ODCE CLR SET INV
-?{PINS>64,BIT 9       ODCE9,}
-?{PINS>64,BIT 8       ODCE8,}
+REG ${rpn ${BASE} 0x40 +} ODCE CLR SET INV
+${if ${PINS} > 64 ? BIT 9       ODCE9 : }
+${if ${PINS} > 64 ? BIT 8       ODCE8 : }
 BIT 7       ODCE7
 BIT 6       ODCE6
 BIT 5       ODCE5
@@ -56,9 +56,9 @@ BIT 2       ODCE2
 BIT 1       ODCE1
 BIT 0       ODCE0
 
-REG +{${BASE},50} CNPUE CLR SET INV
-?{PINS>64,BIT 9       CNPUE9,}
-?{PINS>64,BIT 8       CNPUE8,}
+REG ${rpn ${BASE} 0x50 +} CNPUE CLR SET INV
+${if ${PINS} > 64 ? BIT 9       CNPUE9 : }
+${if ${PINS} > 64 ? BIT 8       CNPUE8 : }
 BIT 7       CNPUE7
 BIT 6       CNPUE6
 BIT 5       CNPUE5
@@ -68,9 +68,9 @@ BIT 2       CNPUE2
 BIT 1       CNPUE1
 BIT 0       CNPUE0
 
-REG +{${BASE},60} CNPDE CLR SET INV
-?{PINS>64,BIT 9       CNPDE9,}
-?{PINS>64,BIT 8       CNPDE8,}
+REG ${rpn ${BASE} 0x60 +} CNPDE CLR SET INV
+${if ${PINS} > 64 ? BIT 9       CNPDE9 : }
+${if ${PINS} > 64 ? BIT 8       CNPDE8 : }
 BIT 7       CNPDE7
 BIT 6       CNPDE6
 BIT 5       CNPDE5
@@ -80,13 +80,13 @@ BIT 2       CNPDE2
 BIT 1       CNPDE1
 BIT 0       CNPDE0
 
-REG +{${BASE},70} CNCONE CLR SET INV
+REG ${rpn ${BASE} 0x70 +} CNCONE CLR SET INV
 BIT 15      ON
 BIT 11      EDGEDETECT
 
-REG +{${BASE},80} CNENE CLR SET INV
-?{PINS>64,BIT 9       CNENE9,}
-?{PINS>64,BIT 8       CNENE8,}
+REG ${rpn ${BASE} 0x80 +} CNENE CLR SET INV
+${if ${PINS} > 64 ? BIT 9       CNENE9 : }
+${if ${PINS} > 64 ? BIT 8       CNENE8 : }
 BIT 7       CNENE7
 BIT 6       CNENE6
 BIT 5       CNENE5
@@ -96,9 +96,9 @@ BIT 2       CNENE2
 BIT 1       CNENE1
 BIT 0       CNENE0
 
-REG +{${BASE},90} CNSTATE CLR SET INV
-?{PINS>64,BIT 9       CNSTATE9,}
-?{PINS>64,BIT 8       CNSTATE8,}
+REG ${rpn ${BASE} 0x90 +} CNSTATE CLR SET INV
+${if ${PINS} > 64 ? BIT 9       CNSTATE9 : }
+${if ${PINS} > 64 ? BIT 8       CNSTATE8 : }
 BIT 7       CNSTATE7
 BIT 6       CNSTATE6
 BIT 5       CNSTATE5
@@ -108,9 +108,9 @@ BIT 2       CNSTATE2
 BIT 1       CNSTATE1
 BIT 0       CNSTATE0
 
-REG +{${BASE},A0} CNNEAE CLR SET INV
-?{PINS>64,BIT 9       CNNEAE9,}
-?{PINS>64,BIT 8       CNNEAE8,}
+REG ${rpn ${BASE} 0xA0 +} CNNEAE CLR SET INV
+${if ${PINS} > 64 ? BIT 9       CNNEAE9 : }
+${if ${PINS} > 64 ? BIT 8       CNNEAE8 : }
 BIT 7       CNNEAE7
 BIT 6       CNNEAE6
 BIT 5       CNNEAE5
@@ -120,9 +120,9 @@ BIT 2       CNNEAE2
 BIT 1       CNNEAE1
 BIT 0       CNNEAE0
 
-REG +{${BASE},B0} CNFE CLR SET INV
-?{PINS>64,BIT 9       CNFE9,}
-?{PINS>64,BIT 8       CNFE8,}
+REG ${rpn ${BASE} 0xB0 +} CNFE CLR SET INV
+${if ${PINS} > 64 ? BIT 9       CNFE9 : }
+${if ${PINS} > 64 ? BIT 8       CNFE8 : }
 BIT 7       CNFE7
 BIT 6       CNFE6
 BIT 5       CNFE5
@@ -132,13 +132,13 @@ BIT 2       CNFE2
 BIT 1       CNFE1
 BIT 0       CNFE0
 
-REG +{${BASE},C0} SRCON0E CLR SET INV
+REG ${rpn ${BASE} 0xC0 +} SRCON0E CLR SET INV
 BIT 3       SR0E3
 BIT 2       SR0E2
 BIT 1       SR0E1
 BIT 0       SR0E0
 
-REG +{${BASE},D0} SRCON1E CLR SET INV
+REG ${rpn ${BASE} 0xD0 +} SRCON1E CLR SET INV
 BIT 3       SR1E3
 BIT 2       SR1E2
 BIT 1       SR1E1

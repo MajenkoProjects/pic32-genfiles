@@ -6,46 +6,51 @@ FAMILY MX
 FEATURES PPS
 SET DMA 4
 
+LD ld/mx-app.ld app 
+LD ld/mx-raw.ld raw 
+LD ld/mx-boot.ld boot
+
+
 INCLUDE pinmap/mx/1xxd
-INCLUDE peripherals/mx/bmx BASE=BF882000
-INCLUDE peripherals/mx/nvm BASE=BF80F400
-INCLUDE peripherals/mx/rcon BASE=BF80F600
-INCLUDE peripherals/mx12/interrupts BASE=BF881000
-INCLUDE peripherals/mx/osc BASE=BF80F000
-INCLUDE peripherals/mx/refosc BASE=BF80F020
-INCLUDE peripherals/common/dma BASE=BF883000
-INCLUDE peripherals/mx12/portb BASE=BF886100
-INCLUDE peripherals/mx12/portc BASE=BF886200
-INCLUDE peripherals/common/timera BASE=BF800600 INDEX=1
-INCLUDE peripherals/common/timerb BASE=BF800800 INDEX=2
-INCLUDE peripherals/common/timerb BASE=BF800A00 INDEX=3
-INCLUDE peripherals/common/timerb BASE=BF800C00 INDEX=4
-INCLUDE peripherals/common/timerb BASE=BF800E00 INDEX=5
-INCLUDE peripherals/mx/watchdog BASE=BF800000
-INCLUDE peripherals/common/ic BASE=BF802000 INDEX=1
-INCLUDE peripherals/common/ic BASE=BF802200 INDEX=2
-INCLUDE peripherals/common/ic BASE=BF802400 INDEX=3
-INCLUDE peripherals/common/ic BASE=BF802600 INDEX=4
-INCLUDE peripherals/common/ic BASE=BF802800 INDEX=5
-INCLUDE peripherals/common/oc BASE=BF803000 INDEX=1
-INCLUDE peripherals/common/oc BASE=BF803200 INDEX=2
-INCLUDE peripherals/common/oc BASE=BF803400 INDEX=3
-INCLUDE peripherals/common/oc BASE=BF803600 INDEX=4
-INCLUDE peripherals/common/oc BASE=BF803800 INDEX=5
-INCLUDE peripherals/common/spi BASE=BF805800 INDEX=1
-INCLUDE peripherals/common/spi BASE=BF805A00 INDEX=2
-INCLUDE peripherals/common/i2c BASE=BF805000 INDEX=1
-INCLUDE peripherals/common/i2c BASE=BF805100 INDEX=2
-INCLUDE peripherals/common/uart BASE=BF806000 INDEX=1
-INCLUDE peripherals/common/uart BASE=BF806200 INDEX=2
-INCLUDE peripherals/mx/pmp BASE=BF807000
-INCLUDE peripherals/common/rtcc BASE=BF800200
-INCLUDE peripherals/mx/adc BASE=BF809000
-INCLUDE peripherals/common/cmp BASE=BF80A000 COUNT=3
-INCLUDE peripherals/common/cvref BASE=BF809800
-INCLUDE peripherals/mx/ctmu BASE=BF80A200
-INCLUDE peripherals/mx/pmd BASE=BF80F240
-INCLUDE peripherals/mx/devcfg BASE=BFC00BF0
-INCLUDE peripherals/mx/system BASE=BF80F200
+INCLUDE peripherals/mx/bmx BASE=0xBF882000
+INCLUDE peripherals/mx/nvm BASE=0xBF80F400
+INCLUDE peripherals/mx/rcon BASE=0xBF80F600
+INCLUDE peripherals/mx12/interrupts BASE=0xBF881000
+INCLUDE peripherals/mx/osc BASE=0xBF80F000
+INCLUDE peripherals/mx/refosc BASE=0xBF80F020
+INCLUDE peripherals/common/dma BASE=0xBF883000
+INCLUDE peripherals/mx12/portb BASE=0xBF886100
+INCLUDE peripherals/mx12/portc BASE=0xBF886200
+INCLUDE peripherals/common/timera BASE=0xBF800600 INDEX=1
+INCLUDE peripherals/common/timerb BASE=0xBF800800 INDEX=2
+INCLUDE peripherals/common/timerb BASE=0xBF800A00 INDEX=3
+INCLUDE peripherals/common/timerb BASE=0xBF800C00 INDEX=4
+INCLUDE peripherals/common/timerb BASE=0xBF800E00 INDEX=5
+INCLUDE peripherals/mx/watchdog BASE=0xBF800000
+INCLUDE peripherals/common/ic BASE=0xBF802000 INDEX=1
+INCLUDE peripherals/common/ic BASE=0xBF802200 INDEX=2
+INCLUDE peripherals/common/ic BASE=0xBF802400 INDEX=3
+INCLUDE peripherals/common/ic BASE=0xBF802600 INDEX=4
+INCLUDE peripherals/common/ic BASE=0xBF802800 INDEX=5
+INCLUDE peripherals/common/oc BASE=0xBF803000 INDEX=1
+INCLUDE peripherals/common/oc BASE=0xBF803200 INDEX=2
+INCLUDE peripherals/common/oc BASE=0xBF803400 INDEX=3
+INCLUDE peripherals/common/oc BASE=0xBF803600 INDEX=4
+INCLUDE peripherals/common/oc BASE=0xBF803800 INDEX=5
+INCLUDE peripherals/common/spi BASE=0xBF805800 INDEX=1
+INCLUDE peripherals/common/spi BASE=0xBF805A00 INDEX=2
+INCLUDE peripherals/common/i2c BASE=0xBF805000 INDEX=1
+INCLUDE peripherals/common/i2c BASE=0xBF805100 INDEX=2
+INCLUDE peripherals/common/uart BASE=0xBF806000 INDEX=1
+INCLUDE peripherals/common/uart BASE=0xBF806200 INDEX=2
+INCLUDE peripherals/mx/pmp BASE=0xBF807000
+INCLUDE peripherals/common/rtcc BASE=0xBF800200
+INCLUDE peripherals/mx/adc BASE=0xBF809000
+INCLUDE peripherals/common/cmp BASE=0xBF80A000 COUNT=3
+INCLUDE peripherals/common/cvref BASE=0xBF809800
+INCLUDE peripherals/mx/ctmu BASE=0xBF80A200
+INCLUDE peripherals/mx/pmd BASE=0xBF80F240
+INCLUDE peripherals/mx/devcfg BASE=0xBFC00BF0
+INCLUDE peripherals/mx/system BASE=0xBF80F200
 
 INCLUDE src/core.lib

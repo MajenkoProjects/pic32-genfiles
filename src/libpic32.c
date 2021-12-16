@@ -27,6 +27,13 @@ void *sbrk(int nbytes) {
 
 void __cxa_pure_virtual() { while (1); }
 
+void __attribute__((weak)) _nmi_handler() {
+}
+
+void __attribute__((weak)) _on_reset() {
+}
+
+
 void __attribute__((weak)) _exit(int rc) {
     asm volatile("di");
     while(1);
@@ -239,3 +246,5 @@ char * dtostrf(double number, signed char width, unsigned char prec, char *s) {
     return s;
 }
 
+void __attribute__((weak)) on_bootstrap() {
+}

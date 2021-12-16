@@ -5,186 +5,186 @@ BIT 11      ANSJ11
 BIT 9       ANSJ9
 BIT 8       ANSJ8
 
-REG +{${BASE},10} TRISJ CLR SET INV
-?{PINS>124,BIT 15      TRISJ15,}
-?{PINS>124,BIT 14      TRISJ14,}
-?{PINS>124,BIT 13      TRISJ13,}
-?{PINS>124,BIT 12      TRISJ12,}
+REG ${rpn ${BASE} 0x10 +} TRISJ CLR SET INV
+${if ${PINS} > 124 ? BIT 15      TRISJ15 : }
+${if ${PINS} > 124 ? BIT 14      TRISJ14 : }
+${if ${PINS} > 124 ? BIT 13      TRISJ13 : }
+${if ${PINS} > 124 ? BIT 12      TRISJ12 : }
 BIT 11      TRISJ11
-?{PINS>124,BIT 10      TRISJ10,}
+${if ${PINS} > 124 ? BIT 10      TRISJ10 : }
 BIT 9       TRISJ9
 BIT 8       TRISJ8
-?{PINS>124,BIT 7       TRISJ7,}
-?{PINS>124,BIT 6       TRISJ6,}
-?{PINS>124,BIT 5       TRISJ5,}
+${if ${PINS} > 124 ? BIT 7       TRISJ7 : }
+${if ${PINS} > 124 ? BIT 6       TRISJ6 : }
+${if ${PINS} > 124 ? BIT 5       TRISJ5 : }
 BIT 4       TRISJ4
-?{PINS>124,BIT 3       TRISJ3,}
+${if ${PINS} > 124 ? BIT 3       TRISJ3 : }
 BIT 2       TRISJ2
 BIT 1       TRISJ1
 BIT 0       TRISJ0
 
-REG +{${BASE},20} PORTJ CLR SET INV
-?{PINS>124,BIT 15      PORTJ15,}
-?{PINS>124,BIT 14      PORTJ14,}
-?{PINS>124,BIT 13      PORTJ13,}
-?{PINS>124,BIT 12      PORTJ12,}
+REG ${rpn ${BASE} 0x20 +} PORTJ CLR SET INV
+${if ${PINS} > 124 ? BIT 15      PORTJ15 : }
+${if ${PINS} > 124 ? BIT 14      PORTJ14 : }
+${if ${PINS} > 124 ? BIT 13      PORTJ13 : }
+${if ${PINS} > 124 ? BIT 12      PORTJ12 : }
 BIT 11      PORTJ11
-?{PINS>124,BIT 10      PORTJ10,}
+${if ${PINS} > 124 ? BIT 10      PORTJ10 : }
 BIT 9       PORTJ9
 BIT 8       PORTJ8
-?{PINS>124,BIT 7       PORTJ7,}
-?{PINS>124,BIT 6       PORTJ6,}
-?{PINS>124,BIT 5       PORTJ5,}
+${if ${PINS} > 124 ? BIT 7       PORTJ7 : }
+${if ${PINS} > 124 ? BIT 6       PORTJ6 : }
+${if ${PINS} > 124 ? BIT 5       PORTJ5 : }
 BIT 4       PORTJ4
-?{PINS>124,BIT 3       PORTJ3,}
+${if ${PINS} > 124 ? BIT 3       PORTJ3 : }
 BIT 2       PORTJ2
 BIT 1       PORTJ1
 BIT 0       PORTJ0
 
-REG +{${BASE},30} LATJ CLR SET INV
-?{PINS>124,BIT 15      LATJ15,}
-?{PINS>124,BIT 14      LATJ14,}
-?{PINS>124,BIT 13      LATJ13,}
-?{PINS>124,BIT 12      LATJ12,}
+REG ${rpn ${BASE} 0x30 +} LATJ CLR SET INV
+${if ${PINS} > 124 ? BIT 15      LATJ15 : }
+${if ${PINS} > 124 ? BIT 14      LATJ14 : }
+${if ${PINS} > 124 ? BIT 13      LATJ13 : }
+${if ${PINS} > 124 ? BIT 12      LATJ12 : }
 BIT 11      LATJ11
-?{PINS>124,BIT 10      LATJ10,}
+${if ${PINS} > 124 ? BIT 10      LATJ10 : }
 BIT 9       LATJ9
 BIT 8       LATJ8
-?{PINS>124,BIT 7       LATJ7,}
-?{PINS>124,BIT 6       LATJ6,}
-?{PINS>124,BIT 5       LATJ5,}
+${if ${PINS} > 124 ? BIT 7       LATJ7 : }
+${if ${PINS} > 124 ? BIT 6       LATJ6 : }
+${if ${PINS} > 124 ? BIT 5       LATJ5 : }
 BIT 4       LATJ4
-?{PINS>124,BIT 3       LATJ3,}
+${if ${PINS} > 124 ? BIT 3       LATJ3 : }
 BIT 2       LATJ2
 BIT 1       LATJ1
 BIT 0       LATJ0
 
-REG +{${BASE},40} ODCJ CLR SET INV
-?{PINS>124,BIT 15      ODCJ15,}
-?{PINS>124,BIT 14      ODCJ14,}
-?{PINS>124,BIT 13      ODCJ13,}
-?{PINS>124,BIT 12      ODCJ12,}
+REG ${rpn ${BASE} 0x40 +} ODCJ CLR SET INV
+${if ${PINS} > 124 ? BIT 15      ODCJ15 : }
+${if ${PINS} > 124 ? BIT 14      ODCJ14 : }
+${if ${PINS} > 124 ? BIT 13      ODCJ13 : }
+${if ${PINS} > 124 ? BIT 12      ODCJ12 : }
 BIT 11      ODCJ11
-?{PINS>124,BIT 10      ODCJ10,}
+${if ${PINS} > 124 ? BIT 10      ODCJ10 : }
 BIT 9       ODCJ9
 BIT 8       ODCJ8
-?{PINS>124,BIT 7       ODCJ7,}
-?{PINS>124,BIT 6       ODCJ6,}
-?{PINS>124,BIT 5       ODCJ5,}
+${if ${PINS} > 124 ? BIT 7       ODCJ7 : }
+${if ${PINS} > 124 ? BIT 6       ODCJ6 : }
+${if ${PINS} > 124 ? BIT 5       ODCJ5 : }
 BIT 4       ODCJ4
-?{PINS>124,BIT 3       ODCJ3,}
+${if ${PINS} > 124 ? BIT 3       ODCJ3 : }
 BIT 2       ODCJ2
 BIT 1       ODCJ1
 BIT 0       ODCJ0
 
-REG +{${BASE},50} CNPUJ CLR SET INV
-?{PINS>124,BIT 15      CNPUJ15,}
-?{PINS>124,BIT 14      CNPUJ14,}
-?{PINS>124,BIT 13      CNPUJ13,}
-?{PINS>124,BIT 12      CNPUJ12,}
+REG ${rpn ${BASE} 0x50 +} CNPUJ CLR SET INV
+${if ${PINS} > 124 ? BIT 15      CNPUJ15 : }
+${if ${PINS} > 124 ? BIT 14      CNPUJ14 : }
+${if ${PINS} > 124 ? BIT 13      CNPUJ13 : }
+${if ${PINS} > 124 ? BIT 12      CNPUJ12 : }
 BIT 11      CNPUJ11
-?{PINS>124,BIT 10      CNPUJ10,}
+${if ${PINS} > 124 ? BIT 10      CNPUJ10 : }
 BIT 9       CNPUJ9
 BIT 8       CNPUJ8
-?{PINS>124,BIT 7       CNPUJ7,}
-?{PINS>124,BIT 6       CNPUJ6,}
-?{PINS>124,BIT 5       CNPUJ5,}
+${if ${PINS} > 124 ? BIT 7       CNPUJ7 : }
+${if ${PINS} > 124 ? BIT 6       CNPUJ6 : }
+${if ${PINS} > 124 ? BIT 5       CNPUJ5 : }
 BIT 4       CNPUJ4
-?{PINS>124,BIT 3       CNPUJ3,}
+${if ${PINS} > 124 ? BIT 3       CNPUJ3 : }
 BIT 2       CNPUJ2
 BIT 1       CNPUJ1
 BIT 0       CNPUJ0
 
-REG +{${BASE},60} CNPDJ CLR SET INV
-?{PINS>124,BIT 15      CNPDJ15,}
-?{PINS>124,BIT 14      CNPDJ14,}
-?{PINS>124,BIT 13      CNPDJ13,}
-?{PINS>124,BIT 12      CNPDJ12,}
+REG ${rpn ${BASE} 0x60 +} CNPDJ CLR SET INV
+${if ${PINS} > 124 ? BIT 15      CNPDJ15 : }
+${if ${PINS} > 124 ? BIT 14      CNPDJ14 : }
+${if ${PINS} > 124 ? BIT 13      CNPDJ13 : }
+${if ${PINS} > 124 ? BIT 12      CNPDJ12 : }
 BIT 11      CNPDJ11
-?{PINS>124,BIT 10      CNPDJ10,}
+${if ${PINS} > 124 ? BIT 10      CNPDJ10 : }
 BIT 9       CNPDJ9
 BIT 8       CNPDJ8
-?{PINS>124,BIT 7       CNPDJ7,}
-?{PINS>124,BIT 6       CNPDJ6,}
-?{PINS>124,BIT 5       CNPDJ5,}
+${if ${PINS} > 124 ? BIT 7       CNPDJ7 : }
+${if ${PINS} > 124 ? BIT 6       CNPDJ6 : }
+${if ${PINS} > 124 ? BIT 5       CNPDJ5 : }
 BIT 4       CNPDJ4
-?{PINS>124,BIT 3       CNPDJ3,}
+${if ${PINS} > 124 ? BIT 3       CNPDJ3 : }
 BIT 2       CNPDJ2
 BIT 1       CNPDJ1
 BIT 0       CNPDJ0
 
-REG +{${BASE},70} CNCONJ CLR SET INV
+REG ${rpn ${BASE} 0x70 +} CNCONJ CLR SET INV
 BIT 15      ON
 BIT 11      EDGEDETECT
 
-REG +{${BASE},80} CNENJ CLR SET INV
-?{PINS>124,BIT 15      CNENJ15,}
-?{PINS>124,BIT 14      CNENJ14,}
-?{PINS>124,BIT 13      CNENJ13,}
-?{PINS>124,BIT 12      CNENJ12,}
+REG ${rpn ${BASE} 0x80 +} CNENJ CLR SET INV
+${if ${PINS} > 124 ? BIT 15      CNENJ15 : }
+${if ${PINS} > 124 ? BIT 14      CNENJ14 : }
+${if ${PINS} > 124 ? BIT 13      CNENJ13 : }
+${if ${PINS} > 124 ? BIT 12      CNENJ12 : }
 BIT 11      CNENJ11
-?{PINS>124,BIT 10      CNENJ10,}
+${if ${PINS} > 124 ? BIT 10      CNENJ10 : }
 BIT 9       CNENJ9
 BIT 8       CNENJ8
-?{PINS>124,BIT 7       CNENJ7,}
-?{PINS>124,BIT 6       CNENJ6,}
-?{PINS>124,BIT 5       CNENJ5,}
+${if ${PINS} > 124 ? BIT 7       CNENJ7 : }
+${if ${PINS} > 124 ? BIT 6       CNENJ6 : }
+${if ${PINS} > 124 ? BIT 5       CNENJ5 : }
 BIT 4       CNENJ4
-?{PINS>124,BIT 3       CNENJ3,}
+${if ${PINS} > 124 ? BIT 3       CNENJ3 : }
 BIT 2       CNENJ2
 BIT 1       CNENJ1
 BIT 0       CNENJ0
 
-REG +{${BASE},90} CNSTATJ CLR SET INV
-?{PINS>124,BIT 15      CNSTATJ15,}
-?{PINS>124,BIT 14      CNSTATJ14,}
-?{PINS>124,BIT 13      CNSTATJ13,}
-?{PINS>124,BIT 12      CNSTATJ12,}
+REG ${rpn ${BASE} 0x90 +} CNSTATJ CLR SET INV
+${if ${PINS} > 124 ? BIT 15      CNSTATJ15 : }
+${if ${PINS} > 124 ? BIT 14      CNSTATJ14 : }
+${if ${PINS} > 124 ? BIT 13      CNSTATJ13 : }
+${if ${PINS} > 124 ? BIT 12      CNSTATJ12 : }
 BIT 11      CNSTATJ11
-?{PINS>124,BIT 10      CNSTATJ10,}
+${if ${PINS} > 124 ? BIT 10      CNSTATJ10 : }
 BIT 9       CNSTATJ9
 BIT 8       CNSTATJ8
-?{PINS>124,BIT 7       CNSTATJ7,}
-?{PINS>124,BIT 6       CNSTATJ6,}
-?{PINS>124,BIT 5       CNSTATJ5,}
+${if ${PINS} > 124 ? BIT 7       CNSTATJ7 : }
+${if ${PINS} > 124 ? BIT 6       CNSTATJ6 : }
+${if ${PINS} > 124 ? BIT 5       CNSTATJ5 : }
 BIT 4       CNSTATJ4
-?{PINS>124,BIT 3       CNSTATJ3,}
+${if ${PINS} > 124 ? BIT 3       CNSTATJ3 : }
 BIT 2       CNSTATJ2
 BIT 1       CNSTATJ1
 BIT 0       CNSTATJ0
 
-REG +{${BASE},A0} CNNEAJ CLR SET INV
-?{PINS>124,BIT 15      CNNEAJ15,}
-?{PINS>124,BIT 14      CNNEAJ14,}
-?{PINS>124,BIT 13      CNNEAJ13,}
-?{PINS>124,BIT 12      CNNEAJ12,}
+REG ${rpn ${BASE} 0xA0 +} CNNEAJ CLR SET INV
+${if ${PINS} > 124 ? BIT 15      CNNEAJ15 : }
+${if ${PINS} > 124 ? BIT 14      CNNEAJ14 : }
+${if ${PINS} > 124 ? BIT 13      CNNEAJ13 : }
+${if ${PINS} > 124 ? BIT 12      CNNEAJ12 : }
 BIT 11      CNNEAJ11
-?{PINS>124,BIT 10      CNNEAJ10,}
+${if ${PINS} > 124 ? BIT 10      CNNEAJ10 : }
 BIT 9       CNNEAJ9
 BIT 8       CNNEAJ8
-?{PINS>124,BIT 7       CNNEAJ7,}
-?{PINS>124,BIT 6       CNNEAJ6,}
-?{PINS>124,BIT 5       CNNEAJ5,}
+${if ${PINS} > 124 ? BIT 7       CNNEAJ7 : }
+${if ${PINS} > 124 ? BIT 6       CNNEAJ6 : }
+${if ${PINS} > 124 ? BIT 5       CNNEAJ5 : }
 BIT 4       CNNEAJ4
-?{PINS>124,BIT 3       CNNEAJ3,}
+${if ${PINS} > 124 ? BIT 3       CNNEAJ3 : }
 BIT 2       CNNEAJ2
 BIT 1       CNNEAJ1
 BIT 0       CNNEAJ0
 
-REG +{${BASE},B0} CNFJ CLR SET INV
-?{PINS>124,BIT 15      CNFJ15,}
-?{PINS>124,BIT 14      CNFJ14,}
-?{PINS>124,BIT 13      CNFJ13,}
-?{PINS>124,BIT 12      CNFJ12,}
+REG ${rpn ${BASE} 0xB0 +} CNFJ CLR SET INV
+${if ${PINS} > 124 ? BIT 15      CNFJ15 : }
+${if ${PINS} > 124 ? BIT 14      CNFJ14 : }
+${if ${PINS} > 124 ? BIT 13      CNFJ13 : }
+${if ${PINS} > 124 ? BIT 12      CNFJ12 : }
 BIT 11      CNFJ11
-?{PINS>124,BIT 10      CNFJ10,}
+${if ${PINS} > 124 ? BIT 10      CNFJ10 : }
 BIT 9       CNFJ9
 BIT 8       CNFJ8
-?{PINS>124,BIT 7       CNFJ7,}
-?{PINS>124,BIT 6       CNFJ6,}
-?{PINS>124,BIT 5       CNFJ5,}
+${if ${PINS} > 124 ? BIT 7       CNFJ7 : }
+${if ${PINS} > 124 ? BIT 6       CNFJ6 : }
+${if ${PINS} > 124 ? BIT 5       CNFJ5 : }
 BIT 4       CNFJ4
-?{PINS>124,BIT 3       CNFJ3,}
+${if ${PINS} > 124 ? BIT 3       CNFJ3 : }
 BIT 2       CNFJ2
 BIT 1       CNFJ1
 BIT 0       CNFJ0

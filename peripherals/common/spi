@@ -7,7 +7,7 @@ BIT 29      FRMPOL
 BIT 28      MSSEN
 BIT 27      FRMSYPW
 BIT 26-24   FRMCNT
-BIT 23      ?{PPS==1,MCLKSEL,UNUSED}
+BIT 23      ${if ${PPS} == 1 ? MCLKSEL : UNUSED}
 BIT 17      SPIFE
 BIT 16      ENHBUF
 BIT 15      ON
@@ -20,14 +20,14 @@ BIT 8       CKE
 BIT 7       SSEN
 BIT 6       CKP
 BIT 5       MSTEN
-BIT 4       ?{PPS==1,DISSDI,UNUSED}
+BIT 4       ${if ${PPS} == 1 ? DISSDI : UNUSED}
 BIT 3-2     STXISEL
 BIT 1-0     SRXISEL
 
-REG +{${BASE},10} SPI${INDEX}STAT CLR SET INV
+REG ${rpn ${BASE} 0x10 +} SPI${INDEX}STAT CLR SET INV
 BIT 28-24   RXBUFELM
 BIT 20-16   TXBUFELM
-BIT 12      ?{PPS==1,FRMERR,UNUSED}
+BIT 12      ${if ${PPS} == 1 ? FRMERR : UNUSED}
 BIT 11      SPIBUSY
 BIT 8       SPITUR
 BIT 7       SRMT
@@ -37,20 +37,20 @@ BIT 3       SPITBE
 BIT 1       SPITBF
 BIT 0       SPIRBF
 
-REG +{${BASE},20} SPI${INDEX}BUF
+REG ${rpn ${BASE} 0x20 +} SPI${INDEX}BUF
 BIT 31-0    DATA
 
-REG +{${BASE},30} SPI${INDEX}BRG CLR SET INV
+REG ${rpn ${BASE} 0x30 +} SPI${INDEX}BRG CLR SET INV
 BIT 12-0    BRG
 
-?{PPS==1,REG +{${BASE},40} SPI${INDEX}CON2 CLR SET INV,}
-?{PPS==1,BIT 15      SPISGNEXT,}
-?{PPS==1,BIT 12      FRMERREN,}
-?{PPS==1,BIT 11      SPIROVEN,}
-?{PPS==1,BIT 10      SPITUREN,}
-?{PPS==1,BIT 9       IGNROV,}
-?{PPS==1,BIT 8       IGNTUR,}
-?{PPS==1,BIT 7       AUDEN,}
-?{PPS==1,BIT 3       AUDMONO,}
-?{PPS==1,BIT 1-0     AUDMOD,}
+${if ${PPS} == 1 ? REG ${rpn ${BASE} 0x40 +} SPI${INDEX}CON2 CLR SET INV,}
+${if ${PPS} == 1 ? BIT 15      SPISGNEXT}
+${if ${PPS} == 1 ? BIT 12      FRMERREN}
+${if ${PPS} == 1 ? BIT 11      SPIROVEN}
+${if ${PPS} == 1 ? BIT 10      SPITUREN}
+${if ${PPS} == 1 ? BIT 9       IGNROV}
+${if ${PPS} == 1 ? BIT 8       IGNTUR}
+${if ${PPS} == 1 ? BIT 7       AUDEN}
+${if ${PPS} == 1 ? BIT 3       AUDMONO}
+${if ${PPS} == 1 ? BIT 1-0     AUDMOD}
 

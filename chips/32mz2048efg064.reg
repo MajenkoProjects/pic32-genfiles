@@ -1,0 +1,119 @@
+FLASH 2M
+SRAM  512k
+BOOT 163840
+SPEED 200000000
+FAMILY MZ
+FEATURES USB PPS CRYPTO FPU
+
+DEFINE __PIC32MZXX__ 1
+DEFINE __PIC32_HAS_MMU_MZ_FIXED 1
+
+SET DMA 8
+SET CAN 1
+
+INCLUDE pinmap/mz/064ef
+
+INCLUDE peripherals/mz/nvm BASE=0xBF800600
+INCLUDE peripherals/mz/reset BASE=0xBF801240
+INCLUDE peripherals/mzef/interrupt BASE=0xBF810000
+INCLUDE peripherals/mz/oscillator BASE=0xBF801200
+INCLUDE peripherals/mz/prefetch BASE=0xBF8E0000
+INCLUDE peripherals/common/dma BASE=0xBF811000
+INCLUDE peripherals/mz/usb BASE=0xBF8E3000
+
+INCLUDE peripherals/mz/portb BASE=0xBF860100
+INCLUDE peripherals/mz/portc BASE=0xBF860200
+INCLUDE peripherals/mz/portd BASE=0xBF860300
+INCLUDE peripherals/mz/porte BASE=0xBF860400
+INCLUDE peripherals/mz/portf BASE=0xBF860500
+INCLUDE peripherals/mz/portg BASE=0xBF860600
+
+INCLUDE peripherals/mz/pps BASE=0xBF801400
+
+INCLUDE peripherals/common/timera BASE=0xBF840000 INDEX=1
+INCLUDE peripherals/common/timerb BASE=0xBF840200 INDEX=2
+INCLUDE peripherals/common/timerb BASE=0xBF840400 INDEX=3
+INCLUDE peripherals/common/timerb BASE=0xBF840600 INDEX=4
+INCLUDE peripherals/common/timerb BASE=0xBF840800 INDEX=5
+INCLUDE peripherals/common/timerb BASE=0xBF840A00 INDEX=6
+INCLUDE peripherals/common/timerb BASE=0xBF840C00 INDEX=7
+INCLUDE peripherals/common/timerb BASE=0xBF840E00 INDEX=8
+INCLUDE peripherals/common/timerb BASE=0xBF841000 INDEX=9
+
+INCLUDE peripherals/mz/deadman BASE=0xBF800A00
+INCLUDE peripherals/mz/watchdog BASE=0xBF800800
+
+INCLUDE peripherals/common/ic BASE=0xBF842000 INDEX=1
+INCLUDE peripherals/common/ic BASE=0xBF842200 INDEX=2
+INCLUDE peripherals/common/ic BASE=0xBF842400 INDEX=3
+INCLUDE peripherals/common/ic BASE=0xBF842600 INDEX=4
+INCLUDE peripherals/common/ic BASE=0xBF842800 INDEX=5
+INCLUDE peripherals/common/ic BASE=0xBF842A00 INDEX=6
+INCLUDE peripherals/common/ic BASE=0xBF842C00 INDEX=7
+INCLUDE peripherals/common/ic BASE=0xBF842E00 INDEX=8
+INCLUDE peripherals/common/ic BASE=0xBF843000 INDEX=9
+
+INCLUDE peripherals/common/oc BASE=0xBF844000 INDEX=1
+INCLUDE peripherals/common/oc BASE=0xBF844200 INDEX=2
+INCLUDE peripherals/common/oc BASE=0xBF844400 INDEX=3
+INCLUDE peripherals/common/oc BASE=0xBF844600 INDEX=4
+INCLUDE peripherals/common/oc BASE=0xBF844800 INDEX=5
+INCLUDE peripherals/common/oc BASE=0xBF844A00 INDEX=6
+INCLUDE peripherals/common/oc BASE=0xBF844C00 INDEX=7
+INCLUDE peripherals/common/oc BASE=0xBF844E00 INDEX=8
+INCLUDE peripherals/common/oc BASE=0xBF845000 INDEX=9
+
+INCLUDE peripherals/common/spi BASE=0xBF821000 INDEX=1
+INCLUDE peripherals/common/spi BASE=0xBF821200 INDEX=2
+INCLUDE peripherals/common/spi BASE=0xBF821400 INDEX=3
+INCLUDE peripherals/common/spi BASE=0xBF821600 INDEX=4
+#INCLUDE peripherals/common/spi BASE=0xBF821800 INDEX=5
+#INCLUDE peripherals/common/spi BASE=0xBF821A00 INDEX=6
+
+INCLUDE peripherals/mz/sqi BASE=0xBF8E2000
+
+INCLUDE peripherals/common/i2c BASE=0xBF820000 INDEX=1
+INCLUDE peripherals/common/i2c BASE=0xBF820200 INDEX=2
+INCLUDE peripherals/common/i2c BASE=0xBF820400 INDEX=3
+INCLUDE peripherals/common/i2c BASE=0xBF820600 INDEX=4
+INCLUDE peripherals/common/i2c BASE=0xBF820800 INDEX=5
+
+INCLUDE peripherals/common/uart BASE=0xBF822000 INDEX=1
+INCLUDE peripherals/common/uart BASE=0xBF822200 INDEX=2
+INCLUDE peripherals/common/uart BASE=0xBF822400 INDEX=3
+INCLUDE peripherals/common/uart BASE=0xBF822600 INDEX=4
+INCLUDE peripherals/common/uart BASE=0xBF822800 INDEX=5
+INCLUDE peripherals/common/uart BASE=0xBF822A00 INDEX=6
+
+INCLUDE peripherals/mz/pmp BASE=0xBF82E000
+INCLUDE peripherals/mz/ebi BASE=0xBF8E1000
+
+INCLUDE peripherals/common/rtcc BASE=0xBF800C00
+
+INCLUDE peripherals/mz/crypto BASE=0xBF8E5000
+INCLUDE peripherals/mz/rng BASE=0xBF8E6000
+
+INCLUDE peripherals/mz/adc-sar12 BASE=0xBF84B000
+
+INCLUDE peripherals/common/can BASE=0xBF880000 INDEX=1
+INCLUDE peripherals/common/can BASE=0xBF881000 INDEX=2
+
+INCLUDE peripherals/common/ethernet BASE=0xBF882000
+
+INCLUDE peripherals/common/cmp BASE=0xBF84C000 COUNT=2
+
+INCLUDE peripherals/common/cvref BASE=0xBF800E00 VREFSEL=0
+
+INCLUDE peripherals/mz/pmd BASE=0xBF800000
+
+
+INCLUDE peripherals/mz/devcfg BASE=0xBFC0FFC0
+PREFIX A
+INCLUDE peripherals/mz/devcfg BASE=0xBFC0FF40
+NOPREFIX
+
+
+INCLUDE peripherals/mz/devid BASE=0xBF800000
+INCLUDE peripherals/mz/devsn BASE=0xBFC54020
+INCLUDE peripherals/mz/adccal BASE=0xBFC54000
+INCLUDE src/core.lib

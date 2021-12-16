@@ -1,2 +1,2 @@
-REG +{${BASE},*{%{INDEX},4}} OFF${INDEX}
+REG ${rpn ${INDEX} 4 * ${BASE} +} OFF${INDEX}
 BIT 17-0        VOFF
