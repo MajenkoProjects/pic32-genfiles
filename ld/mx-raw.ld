@@ -9,11 +9,11 @@ INPUT(lib${CHIP}.a)
 MEMORY
 {
   exception_mem              : ORIGIN = 0x9D000000, LENGTH = 0x1000
-  kseg0_program_mem    (rx)  : ORIGIN = 0x9D001000, LENGTH = 0x${tohex ${rpn ${FLASH} 0x2000 - ${SPLIT} -}}
-  kseg0_eeprom_mem           : ORIGIN = 0x${tohex ${rpn 0x9D000000 ${FLASH} + ${SPLIT} - 0x1000 -}}, LENGTH = 0x1000
-  kseg0_boot_mem             : ORIGIN = 0x9FC00490, LENGTH = 0
-  kseg1_boot_mem             : ORIGIN = 0xBFC00000, LENGTH = 0 
-  debug_exec_mem             : ORIGIN = 0xBFC02000, LENGTH = 0
+  kseg0_program_mem    (rx)  : ORIGIN = 0x9D001000, LENGTH = 0x${tohex ${rpn ${FLASH} 0x2000 -}}
+  kseg0_eeprom_mem           : ORIGIN = 0x${tohex ${rpn 0x9D000000 ${FLASH} + 0x1000 -}}, LENGTH = 0x1000
+  kseg0_boot_mem             : ORIGIN = 0x9FC00490, LENGTH = 0x970
+  kseg1_boot_mem             : ORIGIN = 0xBFC00000, LENGTH = 0x490
+  debug_exec_mem             : ORIGIN = 0xBFC02000, LENGTH = 0xFF0
   config3                    : ORIGIN = 0xBFC02FF0, LENGTH = 4 
   config2                    : ORIGIN = 0xBFC02FF4, LENGTH = 4
   config1                    : ORIGIN = 0xBFC02FF8, LENGTH = 4
@@ -23,11 +23,12 @@ MEMORY
   configsfrs                 : ORIGIN = 0xBFC02FF0, LENGTH = 0x10
 }
 
+
 _ebase_address  	    = ORIGIN(exception_mem);
 _IMAGE_PTR_TABLE       	= _ebase_address + 0x0F8;
 _IMAGE_HEADER_ADDR      = _ebase_address + 0x0FC;
 _GEN_EXCPT_ADDR         = _ebase_address + 0x180;
-_RESET_ADDR             = ORIGIN(kseg0_program_mem);
+_RESET_ADDR             = ORIGIN(kseg1_boot_mem);
 _EEPROM_ADDR            = ORIGIN(kseg0_eeprom_mem);
 _BEV_EXCPT_ADDR         = 0xBFC00380;
 _DBG_EXCPT_ADDR         = 0xBFC00480;
@@ -49,12 +50,28 @@ _imageExecutionJumpToFirstInFlash   = 0x02000000 ;
  _IMAGE_FLASH_SIZE      = LENGTH(exception_mem) + LENGTH(kseg0_program_mem);
  _JUMP_ADDR             = _RESET_ADDR;
 
+
 SECTIONS
 {
+  .bev_excpt _BEV_EXCPT_ADDR :
+  {
+    KEEP(*(.bev_handler))
+  } > kseg1_boot_mem
+
+  .dbg_excpt _DBG_EXCPT_ADDR (NOLOAD) :
+  {
+    . += (DEFINED (_DEBUGGER) ? 0x8 : 0x0);
+  } > kseg1_boot_mem
+
+  .dbg_code _DBG_CODE_ADDR (NOLOAD) :
+  {
+    . += (DEFINED (_DEBUGGER) ? LENGTH(debug_exec_mem) : 0x0);
+  } > debug_exec_mem
+
   /* Boot Sections */
   .reset _RESET_ADDR :
   {
     KEEP(*(.reset))
-  } > kseg0_program_mem
+  } > kseg1_boot_mem
 }
 

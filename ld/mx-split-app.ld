@@ -4,13 +4,13 @@ EXTERN (_min_stack_size _min_heap_size)
 PROVIDE(_min_stack_size = 0x800) ;
 PROVIDE(_min_heap_size = 0x800) ;
 
-INPUT(lib${CHIP}.a)
+INPUT(lib32mx795f512l.a)
 
 MEMORY
 {
   exception_mem              : ORIGIN = 0x9D000000, LENGTH = 0x1000
   kseg0_program_mem    (rx)  : ORIGIN = 0x9D001000, LENGTH = 0x${tohex ${rpn ${FLASH} 0x2000 - ${SPLIT} -}}
-  kseg0_eeprom_mem           : ORIGIN = 0x${tohex ${rpn 0x9D000000 ${FLASH} + ${SPLIT} - 0x1000 -}}, LENGTH = 0x1000
+  kseg0_eeprom_mem           : ORIGIN = 0x9D07F000, LENGTH = 0x1000
   kseg0_boot_mem             : ORIGIN = 0x9FC00490, LENGTH = 0
   kseg1_boot_mem             : ORIGIN = 0xBFC00000, LENGTH = 0 
   debug_exec_mem             : ORIGIN = 0xBFC02000, LENGTH = 0

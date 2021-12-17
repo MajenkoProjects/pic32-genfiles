@@ -109,7 +109,8 @@ function genfile($chip) {
         "vectors" => array(),
         "peripherals" => array(),
         "settings" => array(
-            "PREFIX" => ""
+            "PREFIX" => "",
+            "CHIP" => $chip,
         ),
         "defines" => array(),
         "features" => array(),
@@ -355,7 +356,7 @@ function genfile($chip) {
 $verbose = 0;
 
 function cmd_tohex($args) {
-    return dechex($args[1]);
+    return dechex(intval($args[1], 0));
 }
 
 function cmd_fromhex($args) {
@@ -427,8 +428,8 @@ function cmd_if($args) {
         $true = false;
     
         $cmp = $m[1];
-        $t = $m[2];
-        $f = $m[3];
+        $t = trim($m[2]);
+        $f = trim($m[3]);
 
         if (preg_match('/^(.*)==(.*)$/', $cmp, $m)) {
             $a = trim($m[1]);
@@ -476,10 +477,10 @@ function cmd_if($args) {
                 
 function parseLine($line, $data, $keys = array()) {
     global $verbose;
-    $line = trim($line);
+    //$line = trim($line);
     $d = explode("#", $line);
-    $line = trim($d[0]);
-    if ($line == "") {
+    $line = $d[0];
+    if (trim($line) == "") {
         return $line;
     }
 
@@ -519,11 +520,11 @@ function parseLine($line, $data, $keys = array()) {
         $line = $left . "?ERR?" . $right;
     }
 
-    $line = trim($line);
     return $line;
 }
 
 function processFile($regfile, &$data, $keys = array()) {
+
     $in = loadFile($regfile);
     $register = "";
     $lines = explode("\n", $in);
@@ -537,11 +538,12 @@ function processFile($regfile, &$data, $keys = array()) {
         if ($line === false) {
             error("Syntax error", $regfile, $lineno);
         }
+        $line = trim($line);
         if ($line == "") continue;
 
         $chunks = preg_split("/\s+/", $line);
 
-        switch ($chunks[0]) {
+        switch (trim($chunks[0])) {
 
             case "LD":
                 $data['ld'][$chunks[2]] = $chunks[1];
@@ -638,7 +640,7 @@ function processFile($regfile, &$data, $keys = array()) {
                 break;
 
             case "REG":
-                $register = $chunks[2];
+                $register = trim($chunks[2]);
                 $address = intval($chunks[1], 0);
                 if (array_key_exists($data['settings']['PREFIX'] . $register, $data['registers'])) {
                     error("Duplicate register " . $data['settings']['PREFIX'] . $register, $regfile, $lineno);

@@ -6,6 +6,8 @@ FAMILY MX
 FEATURES USB PPS
 SET DMA 4
 
+SET SPLIT 0x1000
+
 LD ld/mx-app.ld app 
 LD ld/mx-raw.ld raw 
 LD ld/mx-boot.ld boot
