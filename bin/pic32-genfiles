@@ -11,6 +11,11 @@ $opts = getopt("d");
 
 $first = true;
 
+@mkdir("include");
+@mkdir("include/proc");
+@mkdir("lib");
+@mkdir("lib/proc");
+
 //genfile("32mx795f512l");
 
 $dir = opendir("chips");
@@ -91,699 +96,736 @@ file_put_contents("include/xc.h", implode("\n", $xc) . "\n");
 function genfile($chip) {
     global $opts;
 
-    $regfile = "chips/$chip.reg";
-    if (!file_exists($regfile)) {
-        print "Unknown chip: $chip\n";
-        exit(10);
-    }
+    $c = new Chip($chip);
+    $c->generateHeader("include/proc/p$chip.h");
+    $c->generateRegSource("lib/proc/$chip.S");
+    $c->addLibraryFile("lib/proc/$chip.S");
+    $c->compileLibrary("lib/proc/lib$chip.a");
 
-    @mkdir("include");
-    @mkdir("include/proc");
-    @mkdir("lib");
-    @mkdir("lib/proc");
-
-
-    $data = array(
-        "registers" => array(),
-        "interrupts" => array(),
-        "vectors" => array(),
-        "peripherals" => array(),
-        "settings" => array(
-            "PREFIX" => "",
-            "CHIP" => $chip,
-        ),
-        "defines" => array(),
-        "features" => array(),
-        "family" => "MX",
-        "speed" => 0,
-        "lib" => array(),
-        "memory" => array(
-            "flash" => 0,
-            "sram" => 0,
-            "boot" => 0,
-            "dram" => 0
-        ),
-        "ld" => array(),
-    );
-
-    $data['defines']['_CPU_NAME_'] = '"' . strtoupper($chip) . '"';
-
-    processFile($regfile, $data);
-
-    $header = array();
-    $header[] = "/*";
-    $header[] = " * $chip.h header file";
-    $header[] = " * Auto-generated " . date("r");
-    $header[] = " *";
-    $header[] = " * Copyright (c) " . date("Y") . ", Majenko Technologies";
-    $header[] = " * All rights reserved.";
-    $header[] = " *";
-    $header[] = " * Redistribution and use in source and binary forms, with or without modification,";
-    $header[] = " * are permitted provided that the following conditions are met:";
-    $header[] = " *";
-    $header[] = " * * Redistributions of source code must retain the above copyright notice, this";
-    $header[] = " *   list of conditions and the following disclaimer.";
-    $header[] = " *";
-    $header[] = " * * Redistributions in binary form must reproduce the above copyright notice, this";
-    $header[] = " *   list of conditions and the following disclaimer in the documentation and/or";
-    $header[] = " *   other materials provided with the distribution.";
-    $header[] = " *";
-    $header[] = " * * Neither the name of Majenko Technologies nor the names of its";
-    $header[] = " *   contributors may be used to endorse or promote products derived from";
-    $header[] = " *   this software without specific prior written permission.";
-    $header[] = " *";
-    $header[] = " * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND";
-    $header[] = " * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED";
-    $header[] = " * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE";
-    $header[] = " * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR";
-    $header[] = " * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES";
-    $header[] = " * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;";
-    $header[] = " * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON";
-    $header[] = " * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT";
-    $header[] = " * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS";
-    $header[] = " * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.";
-    $header[] = " */";
-    $header[] = "";
-    $header[] = "#ifndef __" . strtoupper($chip) . "_H";
-    $header[] = "#define __" . strtoupper($chip) . "_H";
-    $header[] = "";
-    $header[] = "#define __PIC32" . $data['family'] . "__";
-
-    foreach ($data['defines'] as $key=>$val) {
-        $header[] = "#define " . $key . " " . $val;
-    }
-    $header[] = "";
-
-    $header[] = "";
-    $header[] = "#if defined(__LANGUAGE_C__) || defined(__LANGUAGE_C_PLUS_PLUS)";
-    $header[] = "";
-    $header[] = "#ifdef __cplusplus";
-    $header[] = "extern \"C\" {";
-    $header[] = "#endif // __cplusplus";
-    $header[] = "";
-
-    foreach ($data['registers'] as $register=>$regdata) {
-        if (array_key_exists("bits", $regdata)) {
-            $header[] = "";
-            $header[] = "#define $register $register";
-        }
-        $header[] = "extern volatile unsigned int $register __attribute__((section(\"sfrs\")));";
-        if (array_key_exists("bits", $regdata)) {
-
-            $header[] = "typedef union {";
-            foreach ($regdata['bits'] as $layer) {
-                $header[] = "    struct {";
-                $bits = collapse($layer);
-                foreach ($bits as $bit) {
-                    if ($bit['name'] == 'UNUSED') {
-                        $header[] = "        unsigned :" . $bit['size'] . ";";
-                    } else {
-                        $header[] = "        unsigned " . $bit['name'] . ":" . $bit['size'] . ";";
-                    }
-                }
-                $header[] = "    };";
-            }
-            $header[] = "    struct {";
-            $header[] = "        unsigned w:32;";
-            $header[] = "    };";
-            $header[] = "} __" . $register . "bits_t;";
-            $header[] = "extern volatile __" . $register . "bits_t " . $register . "bits __asm__ (\"$register\") __attribute__((section(\"sfrs\")));";
-        }
-    }
-
-    $header[] = "";
-    $header[] = "#ifdef __cplusplus";
-    $header[] = "}";
-    $header[] = "#endif // __cplusplus";
-    $header[] = "";
-    $header[] = "#elif defined(__LANGUAGE_ASSEMBLY__)";
-    foreach ($data['registers'] as $register=>$regdata) {
-        $header[] = "    .extern $register";
-    }
-
-    $header[] = "";
-    $header[] = "#endif // defined(__LANGUAGE_C__) || defined(__LANGUAGE_C_PLUS_PLUS)";
-
-    foreach ($data['registers'] as $register=>$regdata) {
-        if (array_key_exists("bits", $regdata)) {
-            foreach ($regdata['bits'] as $layer) {
-                $bits = collapse($layer);
-                foreach ($bits as $bit) {
-                    if ($bit['name'] != "UNUSED") {
-                        $header[] = "";
-                        $header[] = "#define _" . $register . "_" . $bit['name'] . "_POSITION 0x" . sprintf("%08X", $bit['pos']);
-                        $header[] = "#define _" . $register . "_" . $bit['name'] . "_MASK     0x" . sprintf("%08X", ((1 << $bit['size']) - 1) << $bit['pos']);
-                        $header[] = "#define _" . $register . "_" . $bit['name'] . "_LENGTH   0x" . sprintf("%08X", $bit['size']);
-                    }
-                }
-            }
-        }
-    }
-
-    $header[] = "";
-    foreach ($data['peripherals'] as $perif=>$pdat) {
-        $header[] = "#define _" . $perif . "_BASE_ADDRESS " . sprintf("0x%08X", $pdat['base']);
-    }
-
-    $header[] = "";
-    foreach ($data['interrupts'] as $interrupt=>$intdata) {
-        $header[] = "#define _" . $interrupt . "_IRQ " . $intdata['irq'];
-    }
-
-    $header[] = "";
-    foreach ($data['vectors'] as $vector=>$vecdata) {
-        $header[] = "#define _" . $vector . "_VECTOR " . $vecdata['vector'];
-    }
-
-    $header[] = "";
-    foreach ($data['peripherals'] as $perif=>$pdat) {
-        $header[] = "#define _" . $perif;
-    }
-
-    $header[] = "";
-
-    $header[] = "#define __PIC32_HAS_L1CACHE 1";
-    $header[] = "#define __PIC32" . $data['family'] . "__ 1";
-    $header[] = "#define __CTYPE_NEWLIB";
-    //$header[] = "#define _NEED_REVERSE";
-    //$header[] = "#define _NEED_LTOA";
-    //$header[] = "#define _NEED_ULTOA";
-    //$header[] = "#define _NEED_DTOSTRF";
-    $header[] = "#endif // __" . strtoupper($chip) . "_H";
-
-    file_put_contents("include/proc/p$chip.h", implode("\n", $header) . "\n");
-
-    $ld = array();
-
-    $ld[] = "/*";
-    $ld[] = " * $chip.S register definition file";
-    $ld[] = " * Auto-generated " . date("r");
-    $ld[] = " *";
-    $ld[] = " * Copyright (c) " . date("Y") . ", Majenko Technologies";
-    $ld[] = " * All rights reserved.";
-    $ld[] = " *";
-    $ld[] = " * Redistribution and use in source and binary forms, with or without modification,";
-    $ld[] = " * are permitted provided that the following conditions are met:";
-    $ld[] = " *";
-    $ld[] = " * * Redistributions of source code must retain the above copyright notice, this";
-    $ld[] = " *   list of conditions and the following disclaimer.";
-    $ld[] = " *";
-    $ld[] = " * * Redistributions in binary form must reproduce the above copyright notice, this";
-    $ld[] = " *   list of conditions and the following disclaimer in the documentation and/or";
-    $ld[] = " *   other materials provided with the distribution.";
-    $ld[] = " *";
-    $ld[] = " * * Neither the name of Majenko Technologies nor the names of its";
-    $ld[] = " *   contributors may be used to endorse or promote products derived from";
-    $ld[] = " *   this software without specific prior written permission.";
-    $ld[] = " *";
-    $ld[] = " * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND";
-    $ld[] = " * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED";
-    $ld[] = " * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE";
-    $ld[] = " * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR";
-    $ld[] = " * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES";
-    $ld[] = " * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;";
-    $ld[] = " * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON";
-    $ld[] = " * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT";
-    $ld[] = " * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS";
-    $ld[] = " * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.";
-    $ld[] = " */";
-    $ld[] = "";
-    foreach ($data['registers'] as $register=>$regdata) {
-        $ld[] = "$register = 0x" . sprintf("%08X", $regdata['address']);
-        $ld[] = "    .global $register";
-    }
-
-    $flags = array();
-    $flags[] = "-Isrc";
-    $flags[] = "-march=mips32r2";
-    if (!array_key_exists("FPU", $data['features'])) {
-        $flags[] = "-msoft-float";
-    } else {
-        $flags[] = "-mnan=legacy";
-    }
-
-    $flags = implode(" ", $flags);
-
-    file_put_contents("lib/proc/$chip.S", implode("\n", $ld) . "\n");
-
-    $data['lib'][] = "lib/proc/$chip.S";
-
-    foreach ($data['lib'] as $src) {
-        $out = "";
-        if ((substr($src, -2, 2) == ".S") || (substr($src, -2, 2) == ".c")) {
-            $out = substr($src, 0, -1) . "o";
-            print "Compiling $src to $out\n";
-            system("mipsel-pic32-elf-gcc $flags -c $src -o $out");
-            system("mipsel-pic32-elf-ar rcs lib/proc/lib$chip.a $out");
-            if (!array_key_exists("d", $opts)) {
-                unlink($out);
-            }
-        } else {
-            print "Unsupported source: $src\n";
-        }
-            
-    }
     if (!array_key_exists("d", $opts)) {
         unlink("lib/proc/$chip.S");
     }
 
-    foreach ($data['ld'] as $type=>$src) {
-        $out = "lib/proc/" . $chip . "-" . $type . ".ld";
-        processDataFile($src, $out, $data);
-    }
-}
-
-$verbose = 0;
-
-function cmd_tohex($args) {
-    return dechex(intval($args[1], 0));
-}
-
-function cmd_fromhex($args) {
-    return hexdec($args[1]);
-}
-
-function parseNumber($n) {
-    $n = "" . trim($n);
-    $mult = 1;
-    if (substr($n, -1, 1) == "k") {
-        $n = substr($n, 0, -1);
-        $mult = 1024;
-    } else if (substr($n, -1, 1) == "M") {
-        $n = substr($n, 0, -1);
-        $mult = 1024 * 1024;
-    } else if (substr($n, -1, 1) == "G") {
-        $n = substr($n, 0, -1);
-        $mult = 1024 * 1024 * 1024;
-    }
-
-    $n = intval($n, 0);
-
-    return $n * $mult;
-}
-
-function cmd_rpn($args) {
-    $stack = array();
-    array_shift($args);
-    foreach ($args as $arg) {
-        switch ($arg) {
-            case "+":
-                $a = array_pop($stack);
-                $b = array_pop($stack);
-                array_push($stack, $b + $a);
-                break;
-            case "-":
-                $a = array_pop($stack);
-                $b = array_pop($stack);
-                array_push($stack, $b - $a);
-                break;
-            case "/":
-                $a = array_pop($stack);
-                $b = array_pop($stack);
-                array_push($stack, $b / $a);
-                break;
-            case "*":
-                $a = array_pop($stack);
-                $b = array_pop($stack);
-                array_push($stack, $b * $a);
-                break;
-            default:
-                $arg = parseNumber($arg);
-                array_push($stack, $arg);
-        }
-    }
-    $res = array_pop($stack);
-    return $res;
-}
-
-
-// ${if a == b ? blah blah blah : blah blah blah}
-function cmd_if($args) {
-    array_shift($args);
-
-    $line = implode(" ", $args);
-
-    if (preg_match('/^(.*)\?(.*):(.*)$/', $line, $m)) {
-
-        $true = false;
-    
-        $cmp = $m[1];
-        $t = trim($m[2]);
-        $f = trim($m[3]);
-
-        if (preg_match('/^(.*)==(.*)$/', $cmp, $m)) {
-            $a = trim($m[1]);
-            $b = trim($m[2]);
-            if ($a == $b) return $t;
-            return $f;
-        }
-
-        if (preg_match('/^(.*)!=(.*)$/', $cmp, $m)) {
-            $a = trim($m[1]);
-            $b = trim($m[2]);
-            if ($a != $b) return $t;
-            return $f;
-        }
-
-        if (preg_match('/^(.*)>=(.*)$/', $cmp, $m)) {
-            $a = trim($m[1]);
-            $b = trim($m[2]);
-            if ($a >= $b) return $t;
-            return $f;
-        }
-        if (preg_match('/^(.*)<=(.*)$/', $cmp, $m)) {
-            $a = trim($m[1]);
-            $b = trim($m[2]);
-            if ($a <= $b) return $t;
-            return $f;
-        }
-        if (preg_match('/^(.*)>(.*)$/', $cmp, $m)) {
-            $a = trim($m[1]);
-            $b = trim($m[2]);
-            if ($a > $b) return $t;
-            return $f;
-        }
-        if (preg_match('/^(.*)<(.*)$/', $cmp, $m)) {
-            $a = trim($m[1]);
-            $b = trim($m[2]);
-            if ($a < $b) return $t;
-            return $f;
-        }
-    
-    }
-
-    return "";
-}
-                
-function parseLine($line, $data, $keys = array()) {
-    global $verbose;
-    //$line = trim($line);
-    $d = explode("#", $line);
-    $line = $d[0];
-    if (trim($line) == "") {
-        return $line;
-    }
-
-    $tokens = array_merge($data['settings'], $keys);
-
-    while (true) {
-        $iEnd = strpos($line, "}");
-        if ($iEnd === false) {
-            break;
-        }
-        $iStart = strrpos($line, '${', - (strlen($line) - $iEnd));
-        if ($iStart === false) {
-            break;
-        }
-
-        $left = substr($line, 0, $iStart);
-        $mid = substr($line, $iStart + 2, $iEnd - $iStart - 2);
-        $right = substr($line, $iEnd + 1);
-
-        $args = explode(" ", $mid);
-
-        $cmd = $args[0];
-
-        $fn = "cmd_" . $cmd;
-        if (function_exists($fn)) {
-            $mid = $fn($args);
-            $line = $left . $mid . $right;
-            continue;
-        }
-
-        if (array_key_exists($cmd, $tokens)) {
-            $mid = $tokens[$cmd];
-            $line = $left . $mid . $right;
-            continue;
-        }
-    
-        $line = $left . "?ERR?" . $right;
-    }
-
-    return $line;
-}
-
-function processFile($regfile, &$data, $keys = array()) {
-
-    $in = loadFile($regfile);
-    $register = "";
-    $lines = explode("\n", $in);
-    $lineno = 0;
-
-    foreach ($lines as $line) {
-        $lineno++;
-
-        $line = parseLine($line, $data, $keys);
-
-        if ($line === false) {
-            error("Syntax error", $regfile, $lineno);
-        }
-        $line = trim($line);
-        if ($line == "") continue;
-
-        $chunks = preg_split("/\s+/", $line);
-
-        switch (trim($chunks[0])) {
-
-            case "LD":
-                $data['ld'][$chunks[2]] = $chunks[1];
-                break;
-
-            case "LIB":
-                $data['lib'][] = $chunks[1];
-                break;
-
-            case "PREFIX":
-                $data['settings']['PREFIX'] = $chunks[1];
-                break;
-    
-            case "NOPREFIX":
-                $data['settings']['PREFIX'] = "";
-                break;
-
-            case "INCLUDE":
-                $filename = $chunks[1];
-                if (!file_exists($filename)) {
-                    error("File $filename not found in INCLUDE", $regfile, $lineno);
-                }
-                $args = $data['settings'];
-                for ($i = 2; $i < count($chunks); $i++) {
-                    $kv = explode("=", $chunks[$i]);
-                    $args[$kv[0]] = $kv[1];
-                }
-                processFile($filename, $data, $args);
-                break;
-
-            case "FEATURES":
-                for ($i = 1; $i < count($chunks); $i++) {
-                    $data['features'][$chunks[$i]] = 1;
-                    $data['settings'][$chunks[$i]] = 1;
-                }
-                break;
-
-            case "SET":
-                if (count($chunks) != 3) {
-                    error("Syntax error", $regfile, $lineno);
-                }
-                $data['settings'][$chunks[1]] = $chunks[2];
-                break;
-
-            case "DEFINE":
-                if (count($chunks) != 3) {
-                    error("Syntax error", $regfile, $lineno);
-                }
-                $data['defines'][$chunks[1]] = $chunks[2];
-                break;
-
-            case "PERIPHERAL":
-                $data['peripherals'][$chunks[2]] = array(
-                    "base" => intval($chunks[1], 0)
-                );
-                $data['settings'][$chunks[2] . "_BASE"] = $chunks[1];
-                break;
-            case "FAMILY":
-                $data['family'] = $chunks[1];
-                $data['settings']['FAMILY'] = strtoupper($chunks[1]);
-                break;
-
-            case "SPEED":
-                $data['speed'] = $chunks[1] - 0;
-                break;
-
-            case "FLASH":
-                $data['memory']['flash'] = $chunks[1] - 0;
-                $data['settings']['FLASH'] = $chunks[1] - 0;
-                break;
-
-            case "SRAM":
-                $data['memory']['sram'] = $chunks[1] - 0;
-                $data['settings']['SRAM'] = $chunks[1] - 0;
-                break;
-
-            case "BOOT":
-                $data['memory']['boot'] = $chunks[1] - 0;
-                $data['settings']['BOOT'] = $chunks[1] - 0;
-                break;
-
-            case "DRAM":
-                $data['memory']['dram'] = $chunks[1] - 0;
-                $data['settings']['DRAM'] = $chunks[1] - 0;
-                break;
-
-            case "PIN":
-                break;
-
-            case "INMAP":
-                break;
-           
-            case "OUTMAP":
-                break;
-
-            case "REG":
-                $register = trim($chunks[2]);
-                $address = intval($chunks[1], 0);
-                if (array_key_exists($data['settings']['PREFIX'] . $register, $data['registers'])) {
-                    error("Duplicate register " . $data['settings']['PREFIX'] . $register, $regfile, $lineno);
-                }
-                $data['registers'][$data['settings']['PREFIX'] . $register] = array(
-                    "address" => $address,
-                    "bits" => array()
-                );
-
-                $whole = array_search("WHOLE", $chunks);
-                if ($whole !== false) {
-                    unset($chunks[$whole]);
-                    $chunks = array_values($chunks);
-                    $data['registers'][$data['settings']['PREFIX'] . $register]['bits'][0] = array();
-                    for ($i = 0; $i < 32; $i++) {
-                        $data['registers'][$data['settings']['PREFIX'] . $register]['bits'][0][$i] = $register;
-                    }
-                }
-
-                for ($i = 3; $i < count($chunks); $i++) {
-                    $address += 0x4;
-                    $data['registers'][$data['settings']['PREFIX'] . $register . $chunks[$i]] = array(
-                        "address" => $address
-                    );
-                }
-                        
-                break;
-            case "BIT":
-                $bits = explode("-", $chunks[1]);
-                if (count($bits) != 2) {
-                    $bits[1] = $bits[0];
-                }
-
-                if ($bits[1] < $bits[0]) {
-                    $x = $bits[1];
-                    $bits[1] = $bits[0];
-                    $bits[0] = $x;
-                }
-
-                if (!is_numeric($bits[0]) || !is_numeric($bits[1])) {
-                    error("Bad bit span", $regfile, $lineno);
-                }
-
-                $names = explode("/", $chunks[2]);
-                for ($layer = 0; $layer < count($names); $layer++) {
-                    if (!array_key_exists($layer, $data['registers'][$data['settings']['PREFIX'] . $register]['bits'])) {
-                        $data['registers'][$data['settings']['PREFIX'] . $register]['bits'][$layer] = array();
-                        for ($bit = 0; $bit < 32; $bit++) {
-                            $data['registers'][$data['settings']['PREFIX'] . $register]['bits'][$layer][$bit] = "UNUSED";
-                        }
-                    }
-                    for ($bit = $bits[0]; $bit <= $bits[1]; $bit++) {
-                        if ($data['registers'][$data['settings']['PREFIX'] . $register]['bits'][$layer][$bit] != "UNUSED") {
-                            error("Overlapping bitmap", $regfile, $lineno);
-                        }
-                        $data['registers'][$data['settings']['PREFIX'] . $register]['bits'][$layer][$bit] = $names[$layer];
-                    }
-                }
-                break;
-            case "IRQ":
-                $data['interrupts'][$chunks[1]] = array(
-                    "irq" => $chunks[2]
-                );
-                break;
-            case "VEC":
-                $data['vectors'][$chunks[1]] = array(
-                    "vector" => $chunks[2]
-                );
-                break;
-            case "ABORT":
-                array_pop($chunks);
-                error(implode(" ", $chunks));
-                break;
-
-            case "RETURN":
-                return;
-            
-            default:
-                error("Syntax error", $regfile, $lineno, $line);
-        }
-    }
-}
-
-function collapse($bits) {
-    $out = array();
-    $ent = -1;
-    $name = "";
-
-    for ($i = 31; $i >= 0; $i--) {
-        if ($name != $bits[$i]) {
-            $ent++;
-            $name = $bits[$i];
-            $out[$ent] = array(
-                "name" => $name,
-                "size" => 0,
-                "pos" => 0,
-            );
-        }
-        $out[$ent]['size']++;
-        $out[$ent]['pos'] = $i;
-    }
-    return $out;
+    $c->generateLinkerScripts("lib/proc/$chip");
 }
 
 function error($message, $file, $line, $data = false) {
     print "Error: $message in $file at line $line\n";
     if ($data) print ">> $data\n";
-
-//    print "\n\n";
-//    foreach (debug_backtrace() as $dbg) {
-//        print $dbg['line'] . ": " . $dbg['function'] . "\n";
-//    }
     exit(10);
 }
 
-function processDataFile($in, $out, &$data) {
-    global $verbose;
-    $idata = file_get_contents($in);
-    $ilines = explode("\n", $idata);
-    $olines = array();
 
-    $verbose = 1;
-    foreach ($ilines as $iline) {
-        $olines[] = parseLine($iline, $data);
+class Chip {
+    public $chip = "";
+    public $registers = array();
+    public $interrupts = array();
+    public $vectors = array();
+    public $peripherals = array();
+    public $settings = array();
+    public $defines = array();
+    public $features = array();
+    public $family = "MX";
+    public $speed = 0;
+    public $lib = array();
+    public $memory = array(
+            "flash" => 0,
+            "sram" => 0,
+            "boot" => 0,
+            "dram" => 0
+        );
+    public $ld = array();
+
+    public function __construct($c) {
+        $this->chip = $c;
+        $this->settings['CHIP'] = $c;
+        $this->defines['_CPU_NAME_'] = '"' . strtoupper($this->chip) . '"';
+        $this->settings['PREFIX'] = '';
+
+        $this->processFile("chips/$c.reg");
     }
-    $verbose = 0;
 
-    $odata = implode("\n", $olines);
-    file_put_contents($out, $odata);
-}
+    public function generateHeader($fn = null) {
+        $header = array();
+        $header[] = "/*";
+        $header[] = " * $this->chip.h header file";
+        $header[] = " * Auto-generated " . date("r");
+        $header[] = " *";
+        $header[] = " * Copyright (c) " . date("Y") . ", Majenko Technologies";
+        $header[] = " * All rights reserved.";
+        $header[] = " *";
+        $header[] = " * Redistribution and use in source and binary forms, with or without modification,";
+        $header[] = " * are permitted provided that the following conditions are met:";
+        $header[] = " *";
+        $header[] = " * * Redistributions of source code must retain the above copyright notice, this";
+        $header[] = " *   list of conditions and the following disclaimer.";
+        $header[] = " *";
+        $header[] = " * * Redistributions in binary form must reproduce the above copyright notice, this";
+        $header[] = " *   list of conditions and the following disclaimer in the documentation and/or";
+        $header[] = " *   other materials provided with the distribution.";
+        $header[] = " *";
+        $header[] = " * * Neither the name of Majenko Technologies nor the names of its";
+        $header[] = " *   contributors may be used to endorse or promote products derived from";
+        $header[] = " *   this software without specific prior written permission.";
+        $header[] = " *";
+        $header[] = " * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND";
+        $header[] = " * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED";
+        $header[] = " * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE";
+        $header[] = " * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR";
+        $header[] = " * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES";
+        $header[] = " * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;";
+        $header[] = " * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON";
+        $header[] = " * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT";
+        $header[] = " * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS";
+        $header[] = " * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.";
+        $header[] = " */";
+        $header[] = "";
+        $header[] = "#ifndef __" . strtoupper($this->chip) . "_H";
+        $header[] = "#define __" . strtoupper($this->chip) . "_H";
+        $header[] = "";
+        $header[] = "#define __PIC32" . $this->family . "__";
 
-function loadFile($fn) {
-    $data = file_get_contents($fn);
-    $lines = explode("\n", $data);
-    $out = "";
+        foreach ($this->defines as $key=>$val) {
+            $header[] = "#define " . $key . " " . $val;
+        }
+        $header[] = "";
 
-    foreach ($lines as $line) {
-        if (substr($line, -1, 1) == "\\") {
-            $line = substr($line, 0, -1);
-            $out .= $line;
-        } else {
-            $out .= $line . "\n";
+        $header[] = "";
+        $header[] = "#if defined(__LANGUAGE_C__) || defined(__LANGUAGE_C_PLUS_PLUS)";
+        $header[] = "";
+        $header[] = "#ifdef __cplusplus";
+        $header[] = "extern \"C\" {";
+        $header[] = "#endif // __cplusplus";
+        $header[] = "";
+
+        foreach ($this->registers as $register=>$regdata) {
+            if (array_key_exists("bits", $regdata)) {
+                $header[] = "";
+                $header[] = "#define $register $register";
+            }
+            $header[] = "extern volatile unsigned int $register __attribute__((section(\"sfrs\")));";
+            if (array_key_exists("bits", $regdata)) {
+
+                $header[] = "typedef union {";
+                foreach ($regdata['bits'] as $layer) {
+                    $header[] = "    struct {";
+                    $bits = $this->collapse($layer);
+                    foreach ($bits as $bit) {
+                        if ($bit['name'] == 'UNUSED') {
+                            $header[] = "        unsigned :" . $bit['size'] . ";";
+                        } else {
+                            $header[] = "        unsigned " . $bit['name'] . ":" . $bit['size'] . ";";
+                        }
+                    }
+                    $header[] = "    };";
+                }
+                $header[] = "    struct {";
+                $header[] = "        unsigned w:32;";
+                $header[] = "    };";
+                $header[] = "} __" . $register . "bits_t;";
+                $header[] = "extern volatile __" . $register . "bits_t " . $register . "bits __asm__ (\"$register\") __attribute__((section(\"sfrs\")));";
+            }
+        }
+
+        $header[] = "";
+        $header[] = "#ifdef __cplusplus";
+        $header[] = "}";
+        $header[] = "#endif // __cplusplus";
+        $header[] = "";
+        $header[] = "#elif defined(__LANGUAGE_ASSEMBLY__)";
+        foreach ($this->registers as $register=>$regdata) {
+            $header[] = "    .extern $register";
+        }
+
+        $header[] = "";
+        $header[] = "#endif // defined(__LANGUAGE_C__) || defined(__LANGUAGE_C_PLUS_PLUS)";
+
+        foreach ($this->registers as $register=>$regdata) {
+            if (array_key_exists("bits", $regdata)) {
+                foreach ($regdata['bits'] as $layer) {
+                    $bits = $this->collapse($layer);
+                    foreach ($bits as $bit) {
+                        if ($bit['name'] != "UNUSED") {
+                            $header[] = "";
+                            $header[] = "#define _" . $register . "_" . $bit['name'] . "_POSITION 0x" . sprintf("%08X", $bit['pos']);
+                            $header[] = "#define _" . $register . "_" . $bit['name'] . "_MASK     0x" . sprintf("%08X", ((1 << $bit['size']) - 1) << $bit['pos']);
+                            $header[] = "#define _" . $register . "_" . $bit['name'] . "_LENGTH   0x" . sprintf("%08X", $bit['size']);
+                        }
+                    }
+                }
+            }
+        }
+
+        $header[] = "";
+        foreach ($this->peripherals as $perif=>$pdat) {
+            $header[] = "#define _" . $perif . "_BASE_ADDRESS " . sprintf("0x%08X", $pdat['base']);
+        }
+
+        $header[] = "";
+        foreach ($this->interrupts as $interrupt=>$intdata) {
+            $header[] = "#define _" . $interrupt . "_IRQ " . $intdata['irq'];
+        }
+
+        $header[] = "";
+        foreach ($this->vectors as $vector=>$vecdata) {
+            $header[] = "#define _" . $vector . "_VECTOR " . $vecdata['vector'];
+        }
+
+        $header[] = "";
+        foreach ($this->peripherals as $perif=>$pdat) {
+            $header[] = "#define _" . $perif;
+        }
+
+        $header[] = "";
+
+        $header[] = "#define __PIC32_HAS_L1CACHE 1";
+        $header[] = "#define __PIC32" . $this->family . "__ 1";
+        $header[] = "#define __CTYPE_NEWLIB";
+        $header[] = "#endif // __" . strtoupper($this->chip) . "_H";
+
+        $out = implode("\n", $header) . "\n";
+        if ($fn) {
+            file_put_contents($fn, $out);
+        }
+        return $out;
+    }
+
+    function processFile($regfile, $keys = array()) {
+
+        $in = $this->loadFile($regfile);
+        $register = "";
+        $lines = explode("\n", $in);
+        $lineno = 0;
+
+        foreach ($lines as $line) {
+            $lineno++;
+
+            $line = $this->parseLine($line, $keys);
+
+            if ($line === false) {
+                error("Syntax error", $regfile, $lineno);
+            }
+            $line = trim($line);
+            if ($line == "") continue;
+
+            $chunks = preg_split("/\s+/", $line);
+
+            switch (trim($chunks[0])) {
+
+                case "LD":
+                    $this->ld[$chunks[2]] = $chunks[1];
+                    break;
+
+                case "LIB":
+                    $this->lib[] = $chunks[1];
+                    break;
+
+                case "PREFIX":
+                    $this->settings['PREFIX'] = $chunks[1];
+                    break;
+        
+                case "NOPREFIX":
+                    $this->settings['PREFIX'] = "";
+                    break;
+
+                case "INCLUDE":
+                    $filename = $chunks[1];
+                    if (!file_exists($filename)) {
+                        error("File $filename not found in INCLUDE", $regfile, $lineno);
+                    }
+                    $args = array();
+                    for ($i = 2; $i < count($chunks); $i++) {
+                        $kv = explode("=", $chunks[$i]);
+                        $args[$kv[0]] = $kv[1];
+                    }
+                    $this->processFile($filename, $args);
+                    break;
+
+                case "FEATURES":
+                    for ($i = 1; $i < count($chunks); $i++) {
+                        $this->features[$chunks[$i]] = 1;
+                        $this->settings[$chunks[$i]] = 1;
+                    }
+                    break;
+
+                case "SET":
+                    if (count($chunks) != 3) {
+                        error("Syntax error", $regfile, $lineno);
+                    }
+                    $this->settings[$chunks[1]] = $chunks[2];
+                    break;
+
+                case "DEFINE":
+                    if (count($chunks) != 3) {
+                        error("Syntax error", $regfile, $lineno);
+                    }
+                    $this->defines[$chunks[1]] = $chunks[2];
+                    break;
+
+                case "PERIPHERAL":
+                    $this->peripherals[$chunks[2]] = array(
+                        "base" => intval($chunks[1], 0)
+                    );
+                    $this->settings[$chunks[2] . "_BASE"] = intval($chunks[1]);
+                    break;
+                case "FAMILY":
+                    $this->family = $chunks[1];
+                    $this->settings['FAMILY'] = strtoupper($chunks[1]);
+                    break;
+
+                case "SPEED":
+                    $this->speed = $chunks[1] - 0;
+                    break;
+
+                case "FLASH":
+                    $this->memory['flash'] = $chunks[1] - 0;
+                    $this->settings['FLASH'] = $chunks[1] - 0;
+                    break;
+
+                case "SRAM":
+                    $this->memory['sram'] = $chunks[1] - 0;
+                    $this->settings['SRAM'] = $chunks[1] - 0;
+                    break;
+
+                case "BOOT":
+                    $this->memory['boot'] = $chunks[1] - 0;
+                    $this->settings['BOOT'] = $chunks[1] - 0;
+                    break;
+
+                case "DRAM":
+                    $this->memory['dram'] = $chunks[1] - 0;
+                    $this->settings['DRAM'] = $chunks[1] - 0;
+                    break;
+
+                case "PIN":
+                    break;
+
+                case "INMAP":
+                    break;
+               
+                case "OUTMAP":
+                    break;
+
+                case "REG":
+                    $register = trim($chunks[2]);
+                    $address = intval($chunks[1], 0);
+                    if (array_key_exists($this->settings['PREFIX'] . $register, $this->registers)) {
+                        error("Duplicate register " . $this->settings['PREFIX'] . $register, $regfile, $lineno);
+                    }
+                    $this->registers[$this->settings['PREFIX'] . $register] = array(
+                        "address" => $address,
+                        "bits" => array()
+                    );
+
+                    $whole = array_search("WHOLE", $chunks);
+                    if ($whole !== false) {
+                        unset($chunks[$whole]);
+                        $chunks = array_values($chunks);
+                        $this->registers[$this->settings['PREFIX'] . $register]['bits'][0] = array();
+                        for ($i = 0; $i < 32; $i++) {
+                            $this->registers[$this->settings['PREFIX'] . $register]['bits'][0][$i] = $register;
+                        }
+                    }
+
+                    for ($i = 3; $i < count($chunks); $i++) {
+                        $address += 0x4;
+                        $this->registers[$this->settings['PREFIX'] . $register . $chunks[$i]] = array(
+                            "address" => $address
+                        );
+                    }
+                            
+                    break;
+                case "BIT":
+                    $bits = explode("-", $chunks[1]);
+                    if (count($bits) != 2) {
+                        $bits[1] = $bits[0];
+                    }
+
+                    if ($bits[1] < $bits[0]) {
+                        $x = $bits[1];
+                        $bits[1] = $bits[0];
+                        $bits[0] = $x;
+                    }
+
+                    if (!is_numeric($bits[0]) || !is_numeric($bits[1])) {
+                        error("Bad bit span", $regfile, $lineno);
+                    }
+
+                    $names = explode("/", $chunks[2]);
+                    for ($layer = 0; $layer < count($names); $layer++) {
+                        if (!array_key_exists($layer, $this->registers[$this->settings['PREFIX'] . $register]['bits'])) {
+                            $this->registers[$this->settings['PREFIX'] . $register]['bits'][$layer] = array();
+                            for ($bit = 0; $bit < 32; $bit++) {
+                                $this->registers[$this->settings['PREFIX'] . $register]['bits'][$layer][$bit] = "UNUSED";
+                            }
+                        }
+                        for ($bit = $bits[0]; $bit <= $bits[1]; $bit++) {
+                            if ($this->registers[$this->settings['PREFIX'] . $register]['bits'][$layer][$bit] != "UNUSED") {
+                                error("Overlapping bitmap", $regfile, $lineno);
+                            }
+                            $this->registers[$this->settings['PREFIX'] . $register]['bits'][$layer][$bit] = $names[$layer];
+                        }
+                    }
+                    break;
+                case "IRQ":
+                    $this->interrupts[$chunks[1]] = array(
+                        "irq" => $chunks[2]
+                    );
+                    break;
+                case "VEC":
+                    $this->vectors[$chunks[1]] = array(
+                        "vector" => $chunks[2]
+                    );
+                    break;
+                case "ABORT":
+                    array_pop($chunks);
+                    error(implode(" ", $chunks));
+                    break;
+
+                case "RETURN":
+                    return;
+                
+                default:
+                    error("Syntax error", $regfile, $lineno, $line);
+            }
         }
     }
-    return $out;
+
+    function parseLine($line, $keys = array()) {
+        global $verbose;
+        $d = explode("#", $line);
+        $line = $d[0];
+        if (trim($line) == "") {
+            return $line;
+        }
+
+        $tokens = array_merge($this->settings, $keys);
+
+        while (true) {
+            $iEnd = strpos($line, "}");
+            if ($iEnd === false) {
+                break;
+            }
+            $iStart = strrpos($line, '${', - (strlen($line) - $iEnd));
+            if ($iStart === false) {
+                break;
+            }
+
+            $left = substr($line, 0, $iStart);
+            $mid = substr($line, $iStart + 2, $iEnd - $iStart - 2);
+            $right = substr($line, $iEnd + 1);
+
+            $args = explode(" ", $mid);
+
+            $cmd = $args[0];
+
+            $fn = "cmd_" . $cmd;
+            if (method_exists($this, $fn)) {
+                $mid = $this->$fn($args);
+                $line = $left . $mid . $right;
+                continue;
+            }
+
+            if (array_key_exists($cmd, $tokens)) {
+                $mid = $tokens[$cmd];
+                $line = $left . $mid . $right;
+                continue;
+            }
+        
+            $line = $left . "?ERR?" . $right;
+        }
+
+        return $line;
+    }
+
+    function collapse($bits) {
+        $out = array();
+        $ent = -1;
+        $name = "";
+
+        for ($i = 31; $i >= 0; $i--) {
+            if ($name != $bits[$i]) {
+                $ent++;
+                $name = $bits[$i];
+                $out[$ent] = array(
+                    "name" => $name,
+                    "size" => 0,
+                    "pos" => 0,
+                );
+            }
+            $out[$ent]['size']++;
+            $out[$ent]['pos'] = $i;
+        }
+        return $out;
+    }
+    function cmd_tohex($args) {
+        return dechex(intval($args[1], 0));
+    }
+
+    function cmd_fromhex($args) {
+        return hexdec($args[1]);
+    }
+
+    function parseNumber($n) {
+        $n = "" . trim($n);
+        $mult = 1;
+        if (substr($n, -1, 1) == "k") {
+            $n = substr($n, 0, -1);
+            $mult = 1024;
+        } else if (substr($n, -1, 1) == "M") {
+            $n = substr($n, 0, -1);
+            $mult = 1024 * 1024;
+        } else if (substr($n, -1, 1) == "G") {
+            $n = substr($n, 0, -1);
+            $mult = 1024 * 1024 * 1024;
+        }
+
+        $n = intval($n, 0);
+
+        return $n * $mult;
+    }
+
+    function cmd_rpn($args) {
+        $stack = array();
+        array_shift($args);
+        foreach ($args as $arg) {
+            switch ($arg) {
+                case "+":
+                    $a = array_pop($stack);
+                    $b = array_pop($stack);
+                    array_push($stack, $b + $a);
+                    break;
+                case "-":
+                    $a = array_pop($stack);
+                    $b = array_pop($stack);
+                    array_push($stack, $b - $a);
+                    break;
+                case "/":
+                    $a = array_pop($stack);
+                    $b = array_pop($stack);
+                    array_push($stack, $b / $a);
+                    break;
+                case "*":
+                    $a = array_pop($stack);
+                    $b = array_pop($stack);
+                    array_push($stack, $b * $a);
+                    break;
+                default:
+                    $arg = $this->parseNumber($arg);
+                    array_push($stack, $arg);
+            }
+        }
+        $res = array_pop($stack);
+        return $res;
+    }
+
+
+    // ${if a == b ? blah blah blah : blah blah blah}
+    function cmd_if($args) {
+        array_shift($args);
+
+        $line = implode(" ", $args);
+
+        if (preg_match('/^(.*)\?(.*):(.*)$/', $line, $m)) {
+
+            $true = false;
+        
+            $cmp = $m[1];
+            $t = trim($m[2]);
+            $f = trim($m[3]);
+
+            if (preg_match('/^(.*)==(.*)$/', $cmp, $m)) {
+                $a = trim($m[1]);
+                $b = trim($m[2]);
+                if ($a == $b) return $t;
+                return $f;
+            }
+
+            if (preg_match('/^(.*)!=(.*)$/', $cmp, $m)) {
+                $a = trim($m[1]);
+                $b = trim($m[2]);
+                if ($a != $b) return $t;
+                return $f;
+            }
+
+            if (preg_match('/^(.*)>=(.*)$/', $cmp, $m)) {
+                $a = trim($m[1]);
+                $b = trim($m[2]);
+                if ($a >= $b) return $t;
+                return $f;
+            }
+            if (preg_match('/^(.*)<=(.*)$/', $cmp, $m)) {
+                $a = trim($m[1]);
+                $b = trim($m[2]);
+                if ($a <= $b) return $t;
+                return $f;
+            }
+            if (preg_match('/^(.*)>(.*)$/', $cmp, $m)) {
+                $a = trim($m[1]);
+                $b = trim($m[2]);
+                if ($a > $b) return $t;
+                return $f;
+            }
+            if (preg_match('/^(.*)<(.*)$/', $cmp, $m)) {
+                $a = trim($m[1]);
+                $b = trim($m[2]);
+                if ($a < $b) return $t;
+                return $f;
+            }
+        
+        }
+
+        return "";
+    }
+
+    function cmd_feat($args) {
+        $self = array_shift($args);
+        $key = array_shift($args);
+        if (array_key_exists($key, $this->features)) {
+            return implode(" ", $args);
+        }
+        return "";
+    }
+
+    function cmd_nofeat($args) {
+        $self = array_shift($args);
+        $key = array_shift($args);
+        if (!array_key_exists($key, $this->features)) {
+            return implode(" ", $args);
+        }
+        return "";
+    }
+
+    function generateRegSource($fn = null) {
+        $ld = array();
+
+        $ld[] = "/*";
+        $ld[] = " * $this->chip.S register definition file";
+        $ld[] = " * Auto-generated " . date("r");
+        $ld[] = " *";
+        $ld[] = " * Copyright (c) " . date("Y") . ", Majenko Technologies";
+        $ld[] = " * All rights reserved.";
+        $ld[] = " *";
+        $ld[] = " * Redistribution and use in source and binary forms, with or without modification,";
+        $ld[] = " * are permitted provided that the following conditions are met:";
+        $ld[] = " *";
+        $ld[] = " * * Redistributions of source code must retain the above copyright notice, this";
+        $ld[] = " *   list of conditions and the following disclaimer.";
+        $ld[] = " *";
+        $ld[] = " * * Redistributions in binary form must reproduce the above copyright notice, this";
+        $ld[] = " *   list of conditions and the following disclaimer in the documentation and/or";
+        $ld[] = " *   other materials provided with the distribution.";
+        $ld[] = " *";
+        $ld[] = " * * Neither the name of Majenko Technologies nor the names of its";
+        $ld[] = " *   contributors may be used to endorse or promote products derived from";
+        $ld[] = " *   this software without specific prior written permission.";
+        $ld[] = " *";
+        $ld[] = " * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND";
+        $ld[] = " * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED";
+        $ld[] = " * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE";
+        $ld[] = " * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR";
+        $ld[] = " * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES";
+        $ld[] = " * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;";
+        $ld[] = " * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON";
+        $ld[] = " * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT";
+        $ld[] = " * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS";
+        $ld[] = " * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.";
+        $ld[] = " */";
+        $ld[] = "";
+        foreach ($this->registers as $register=>$regdata) {
+            $ld[] = "$register = 0x" . sprintf("%08X", $regdata['address']);
+            $ld[] = "    .global $register";
+        }
+
+        $out = implode("\n", $ld) . "\n";
+        if ($fn) {
+            file_put_contents($fn, $out);
+        }
+        return $out;
+    }
+
+    function compileFile($from, $to) {
+
+        $flags = array();
+        $flags[] = "-Isrc";
+
+        if ($this->family == "MX") {
+            $flags[] = "-march=mips32r2";
+        } else if ($this->family == "MZ") {
+            $flags[] = "-march=mips32r5";
+        }
+        if (array_key_exists("FPU", $this->features)) {
+            $flags[] = "-mnan=legacy";
+            $flags[] = "-mhard-float";
+        } else {
+            $flags[] = "-msoft-float";
+        }
+
+        $flags = implode(" ", $flags);
+
+        print "Compiling $from to $to\n";
+        system("mipsel-pic32-elf-gcc $flags -c $from -o $to");
+    }
+
+    public function addLibraryFile($f) {
+        $this->lib[] = $f;
+    }
+
+    public function compileLibrary($a) {
+
+        global $opts;
+
+        foreach ($this->lib as $src) {
+            $out = "";
+            if ((substr($src, -2, 2) == ".S") || (substr($src, -2, 2) == ".c")) {
+                $out = substr($src, 0, -1) . "o";
+                $this->compileFile($src, $out);
+                system("mipsel-pic32-elf-ar rcs $a $out");
+                if (!array_key_exists("d", $opts)) {
+                    unlink($out);
+                }
+            } else {
+                print "Unsupported source: $src\n";
+            }
+        }
+    }
+
+    function loadFile($fn) {
+        $data = file_get_contents($fn);
+        $lines = explode("\n", $data);
+        $out = "";
+
+        foreach ($lines as $line) {
+            if (substr($line, -1, 1) == "\\") {
+                $line = substr($line, 0, -1);
+                $out .= $line;
+            } else {
+                $out .= $line . "\n";
+            }
+        }
+        return $out;
+    }
+
+    public function generateLinkerScripts($base) {
+        foreach ($this->ld as $type=>$src) {
+            $out = $base . "-" . $type . ".ld";
+            $this->processDataFile($src, $out, $data);
+        }
+    }
+
+    function processDataFile($in, $out, &$data) {
+        global $verbose;
+        $idata = file_get_contents($in);
+        $ilines = explode("\n", $idata);
+        $olines = array();
+
+        $verbose = 1;
+        foreach ($ilines as $iline) {
+            $olines[] = $this->parseLine($iline);
+        }
+        $verbose = 0;
+
+        $odata = implode("\n", $olines);
+        file_put_contents($out, $odata);
+    }
 }
